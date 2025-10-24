@@ -3,50 +3,279 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🧠 Descubra sua dieta ideal</title>
+  <title>🧠 Descubra qual dieta funciona pro seu tipo de corpo (em 1 minuto!)</title>
+  <meta name="description" content="Quiz interativo que identifica o melhor tipo de dieta para o seu perfil. Resultado com recomendações + WhatsApp + pagamento integrado." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Mercado Pago SDK -->
   <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <style>
+    :root { --brand: #22c55e; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    .container { max-width: 980px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
+    .choice input:checked + label { border-color: var(--brand); background: #ecfdf5; }
+    #popupPagamento { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(3px); z-index:1000; }
+  </style>
 </head>
-<body>
-  <h1>Teste de Pagamento - Dieta Pronta</h1>
-  <p>Responda a única pergunta e teste o fluxo de pagamento Mercado Pago.</p>
-  <form id="quizForm">
-    <label>Qual seu principal objetivo?</label><br>
-    <input type="radio" name="objetivo" value="A" required> Emagrecer rápido<br>
-    <input type="radio" name="objetivo" value="B"> Ganhar massa magra<br>
-    <input type="radio" name="objetivo" value="C"> Manter peso e saúde<br>
-    <button type="submit">Ver resultado</button>
-  </form>
+<body class="bg-slate-50 text-slate-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-5 w-5 text-[var(--brand)]"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+        </div>
+        <span class="font-extrabold tracking-tight">Quiz de Dieta</span>
+      </div>
+      <a href="#quiz" class="rounded-xl px-4 py-2 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar</a>
+    </div>
+  </header>
 
-  <div id="resultado" style="display:none;">
-    <h2>Resultado</h2>
-    <p id="descricao"></p>
-    <button id="btnPagar">Pagar R$ 9,90</button>
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-100">
+    <div class="container mx-auto px-4 py-12 grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">🧠 Descubra qual dieta realmente funciona pro seu tipo de corpo <span class="whitespace-nowrap">(teste rápido)</span></h1>
+        <p class="mt-4 text-lg text-slate-600">Responda <strong>1 pergunta</strong> para testar o fluxo. Depois voltamos às 15 perguntas completas.</p>
+        <div class="mt-6 flex gap-3">
+          <a href="#quiz" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar agora</a>
+          <a href="#como-funciona" class="rounded-xl px-6 py-3 border border-slate-300 font-semibold hover:bg-white transition">Como funciona</a>
+        </div>
+        <p class="mt-3 text-sm text-slate-500">⚠️ Conteúdo informativo. Para condições de saúde, procure um profissional.</p>
+      </div>
+      <div class="relative">
+        <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600&auto=format&fit=crop" alt="Comida saudável" class="w-full h-72 object-cover"/>
+          <div class="p-6">
+            <h3 class="text-xl font-bold">Resultado personalizado</h3>
+            <p class="mt-1 text-slate-600">Perfis: Low Carb/Cetogênica, Balanceada/Mediterrânea, Proteica/Hiperproteica ou Jejum Intermitente/Flexível.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="como-funciona" class="py-10">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-extrabold">Como funciona</h2>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-soft">
+          <p class="text-sm text-slate-500">1 de 3</p>
+          <h3 class="font-bold mt-1">Responda 1 pergunta</h3>
+          <p class="mt-2 text-slate-600">Versão de teste rápida para validar pagamento e WhatsApp.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-soft">
+          <p class="text-sm text-slate-500">2 de 3</p>
+          <h3 class="font-bold mt-1">Veja seu resultado</h3>
+          <p class="mt-2 text-slate-600">Mostramos a dieta recomendada com dicas e cardápio exemplo.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-soft">
+          <p class="text-sm text-slate-500">3 de 3</p>
+          <h3 class="font-bold mt-1">Destrave o plano completo</h3>
+          <p class="mt-2 text-slate-600">Por R$ 9,90 você recebe o plano detalhado no WhatsApp e e‑mail.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quiz -->
+  <section id="quiz" class="py-10 bg-white border-t border-b border-slate-200">
+    <div class="container mx-auto px-4">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-extrabold">Responda à pergunta</h2>
+          <div class="w-44">
+            <div class="h-2 rounded-full bg-slate-200 overflow-hidden" aria-hidden="true">
+              <div id="progress" class="h-2 bg-[var(--brand)] w-0"></div>
+            </div>
+            <p id="pct" class="text-xs text-right text-slate-500 mt-1">0%</p>
+          </div>
+        </div>
+
+        <form id="quizForm" class="grid gap-6"></form>
+
+        <div class="mt-6 flex items-center justify-between">
+          <button id="btnPrev" class="rounded-xl px-4 py-2 border border-slate-300 font-semibold disabled:opacity-40" disabled>Voltar</button>
+          <button id="btnNext" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Ver resultado</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Result -->
+  <section id="resultado" class="py-12 hidden">
+    <div class="container mx-auto px-4">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <p class="text-sm text-slate-500">Seu resultado</p>
+        <h2 id="resultTitle" class="text-2xl md:text-3xl font-extrabold"></h2>
+        <p id="resultDesc" class="mt-2 text-slate-700"></p>
+
+        <div class="mt-6 grid md:grid-cols-2 gap-6">
+          <div class="p-5 rounded-2xl border border-slate-200">
+            <h3 class="font-bold">Sugestões práticas</h3>
+            <ul id="tips" class="mt-2 list-disc list-inside text-slate-700 space-y-1"></ul>
+          </div>
+          <div class="p-5 rounded-2xl border border-slate-200">
+            <h3 class="font-bold">Mini cardápio (exemplo)</h3>
+            <ul id="menu" class="mt-2 list-disc list-inside text-slate-700 space-y-1"></ul>
+          </div>
+        </div>
+
+        <div class="mt-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-200">
+          <h3 class="font-bold">Receba seu plano personalizado no WhatsApp</h3>
+          <p class="text-slate-700 mt-1">Preencha seu nome e número. Após o pagamento de <strong>R$ 9,90</strong>, enviamos o plano completo.</p>
+          <form id="leadForm" class="mt-3 grid md:grid-cols-3 gap-3" onsubmit="return handleLead(event)">
+            <input id="nome" type="text" required placeholder="Seu nome" class="rounded-xl border-slate-300" />
+            <input id="whats" type="tel" inputmode="tel" required placeholder="(61) 9 9999-9999" class="rounded-xl border-slate-300" />
+            <button class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold">Continuar</button>
+          </form>
+          <p id="leadOk" class="hidden text-emerald-700 text-sm mt-2">Quase lá! Abra o pagamento para liberar seu plano completo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popup Pagamento -->
+  <div id="popupPagamento" class="flex items-center justify-center">
+    <div class="bg-white p-6 rounded-2xl shadow-soft w-[90%] max-w-md text-center">
+      <h2 class="text-2xl font-extrabold mb-2 text-[var(--brand)]">Pagamento R$ 9,90</h2>
+      <p class="text-slate-700 mb-4">Finalize o pagamento para receber seu plano de dieta completo no WhatsApp.</p>
+      <div id="mp-checkout" class="mb-3"></div>
+      <button onclick="fecharPopup()" class="mt-1 text-slate-500 text-sm underline">Fechar</button>
+      <p class="text-xs text-slate-400 mt-3">Pagamento processado pelo Mercado Pago. Aceitamos Pix, cartão e boleto.</p>
+    </div>
   </div>
 
+  <!-- Footer -->
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> SuaMarca. Todos os direitos reservados.</p>
+    <a href="#" class="underline">Política de Privacidade</a>
+  </footer>
+
   <script>
-    const MP_PUBLIC_KEY = 'APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0';
-    const WHATS_NUMBER = '55619998514680';
+    // ===================== CONFIGURÁVEIS =====================
+    const WHATS_NUMBER = '55619998514680'; // 55 + DDD + número
+    const MP_PUBLIC_KEY = 'APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0'; // sua Public Key
+    let MP_PREFERENCE_ID = null; // será preenchido pelo backend
 
-    document.getElementById('quizForm').addEventListener('submit', function(e){
-      e.preventDefault();
-      document.getElementById('descricao').innerText = 'Seu plano de dieta está pronto!';
-      document.getElementById('resultado').style.display = 'block';
-    });
+    // Perfis e conteúdos
+    const PROFILES = {
+      A: { title: '🥑 Perfil A — Low Carb / Cetogênica', desc: 'Seu corpo tende a responder melhor a baixos carboidratos, priorizando proteínas magras e gorduras boas. Controle açúcar e farinhas refinadas.', tips: ['Priorize ovos, peixes, carnes magras, abacate e azeite','Troque refrigerantes por água com limão','Monitore sódio e ingestão de fibras'], menu: ['Café: omelete com queijo + abacate','Almoço: frango grelhado + salada com azeite','Jantar: salmão + legumes salteados'] },
+      B: { title: '🍚 Perfil B — Balanceada / Mediterrânea', desc: 'Seu metabolismo pede equilíbrio entre carboidratos complexos, proteínas e gorduras boas. Foco em alimentos naturais e variedade.', tips: ['Monte pratos coloridos e variados','Prefira grãos integrais e frutas','Inclua azeite e oleaginosas com moderação'], menu: ['Café: iogurte + granola + frutas','Almoço: arroz integral, feijão, filé de peixe e salada','Jantar: sopa de legumes + frango desfiado'] },
+      C: { title: '🥩 Perfil C — Proteica / Hiperproteica', desc: 'Alta ingestão de proteína com carboidratos ajustados favorece definição e manutenção de massa magra.', tips: ['Inclua fonte proteica em todas as refeições','Avalie uso de whey/proteína conforme orientação profissional','Hidrate-se e ajuste fibras para o intestino funcionar bem'], menu: ['Café: ovos mexidos + queijo branco','Almoço: patinho grelhado + salada + quinoa','Jantar: omelete de claras + legumes'] },
+      D: { title: '🕒 Perfil D — Jejum Intermitente / Flexível', desc: 'Você lida bem com janelas de alimentação. Foque em refeições completas e evite exageros nas quebras do jejum.', tips: ['Defina janela (ex.: 16/8) com profissional, se possível','Priorize proteínas e fibras na primeira refeição','Beba água, café sem açúcar e chás no jejum'], menu: ['Primeira refeição: bowl proteico (iogurte grego + nuts)','Segunda: frango + legumes + arroz integral','Terceira (opcional): sopa de legumes + ovos'] }
+    };
 
-    document.getElementById('btnPagar').addEventListener('click', async function(){
-      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' });
-      const resp = await fetch('https://dietapronta.online/api/mp-preference', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ valor: 9.9, titulo: 'Plano de Dieta Completo' })
-      });
-      const data = await resp.json();
-      if(!data.id){
-        alert('Erro ao criar preferência. Verifique backend.');
+    // === APENAS 1 PERGUNTA PARA TESTE ===
+    const QUESTIONS = [
+      { q: 'Qual seu principal objetivo agora?', a: ['Emagrecer rápido','Ganhar massa magra','Manter peso e saúde','Reduzir gordura localizada'] }
+    ];
+
+    const scores = { A:0, B:0, C:0, D:0 };
+    let current = 0;
+    const form = document.getElementById('quizForm');
+
+    function renderQuestions(){
+      form.innerHTML = QUESTIONS.map((item, idx)=>{
+        return `
+          <fieldset data-step="${idx}" class="step">
+            <legend class="font-semibold">${idx+1}. ${item.q}</legend>
+            <div class="mt-3 grid sm:grid-cols-2 gap-3">
+              ${item.a.map((opt, i)=>{
+                const letter = String.fromCharCode(65 + i);
+                const id = `q${idx}_${letter}`;
+                return `
+                  <div class="choice">
+                    <input class="peer hidden" type="radio" id="${id}" name="q${idx}" value="${letter}" required />
+                    <label for="${id}" class="block rounded-xl border border-slate-300 p-3 peer-checked:border-[var(--brand)] peer-checked:bg-emerald-50 cursor-pointer">${opt}</label>
+                  </div>`
+              }).join('')}
+            </div>
+          </fieldset>`
+      }).join('');
+      updateProgress();
+    }
+
+    function updateProgress(){
+      const pct = Math.round((current)/QUESTIONS.length*100);
+      document.getElementById('progress').style.width = pct + '%';
+      document.getElementById('pct').textContent = pct + '%';
+      document.getElementById('btnPrev').disabled = current === 0;
+      document.getElementById('btnNext').textContent = 'Ver resultado';
+    }
+
+    function nextStep(){
+      const chosen = form.querySelector(`.step[data-step="${current}"] input[type=radio]:checked`);
+      if(!chosen){
+        alert('Selecione uma opção para continuar.');
         return;
       }
-      mp.checkout({ preference: { id: data.id }, render: { container: document.body, label: 'Pagar agora' } });
-    });
+      scores[chosen.value]++;
+      document.getElementById('quiz').classList.add('hidden');
+      showResult();
+    }
+
+    function prevStep(){ /* desnecessário com 1 pergunta */ }
+
+    function showResult(){
+      const resKey = Object.entries(scores).sort((a,b)=> b[1]-a[1])[0][0];
+      const profile = PROFILES[resKey];
+      document.getElementById('resultTitle').textContent = profile.title;
+      document.getElementById('resultDesc').textContent = profile.desc;
+      document.getElementById('tips').innerHTML = profile.tips.map(t=>`<li>${t}</li>`).join('');
+      document.getElementById('menu').innerHTML = profile.menu.map(t=>`<li>${t}</li>`).join('');
+      document.getElementById('resultado').classList.remove('hidden');
+      document.getElementById('progress').style.width = '100%';
+      document.getElementById('pct').textContent = '100%';
+    }
+
+    // === LEAD & PAGAMENTO ===
+    function handleLead(e){
+      e.preventDefault();
+      document.getElementById('leadOk').classList.remove('hidden');
+      abrirPopupPagamento();
+      return false;
+    }
+
+    function abrirPopupPagamento(){
+      const popup = document.getElementById('popupPagamento');
+      popup.style.display = 'flex';
+      const container = document.getElementById('mp-checkout');
+      container.innerHTML = '';
+
+      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' });
+      fetch('https://dietapronta.online/api/mp-preference', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ valor: 9.90, titulo: 'Plano de Dieta Completo' }) })
+        .then(async r=>{ if(!r.ok){ const t=await r.text(); throw new Error('HTTP '+r.status+' '+t); } return r.json(); })
+        .then(data=>{ if(!data?.id) throw new Error('Resposta sem id'); mp.checkout({ preference: { id: data.id }, render: { container: '#mp-checkout', label: 'Pagar R$ 9,90' } }); })
+        .catch(err=>{ console.error('Erro ao criar preferência:', err); container.innerHTML = '<p class="text-sm text-red-600">Não foi possível iniciar o pagamento. Verifique o backend /api/mp-preference e o Access Token.</p>'; });
+    }
+
+    function fecharPopup(){ document.getElementById('popupPagamento').style.display = 'none'; }
+
+    function abrirWhatsAppComResultado(){
+      const nome = document.getElementById('nome').value.trim();
+      const result = document.getElementById('resultTitle').textContent;
+      const desc = document.getElementById('resultDesc').textContent;
+      const texto = encodeURIComponent(`Oi, sou ${nome}. Meu resultado no Quiz de Dieta foi: ${result}.\nResumo: ${desc}\nPagamento confirmado. Quero receber meu plano completo.`);
+      const link = `https://wa.me/${WHATS_NUMBER}?text=${texto}`;
+      window.open(link, '_blank');
+    }
+
+    (function detectarSucesso(){
+      const p = new URLSearchParams(location.search);
+      const approved = ['approved','success','pagamento_sucesso'].includes(p.get('status')) || p.get('collection_status') === 'approved' || p.get('paid') === '1';
+      if(approved){ fecharPopup(); setTimeout(abrirWhatsAppComResultado, 300); }
+    })();
+
+    document.getElementById('btnNext').addEventListener('click', (e)=>{ e.preventDefault(); nextStep(); });
+    document.getElementById('btnPrev').addEventListener('click', (e)=>{ e.preventDefault(); prevStep(); });
+
+    renderQuestions();
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
