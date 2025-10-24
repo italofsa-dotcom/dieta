@@ -248,7 +248,7 @@
       container.innerHTML = '';
 
       const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' });
-      fetch('https://dietapronta.online/api/mp-preference', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ valor: 9.90, titulo: 'Plano de Dieta Completo' }) })
+      fetch('https://dieta-self.vercel.app/api/mp-preference', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ valor: 9.90, titulo: 'Plano de Dieta Completo' }) })
         .then(async r=>{ if(!r.ok){ const t=await r.text(); throw new Error('HTTP '+r.status+' '+t); } return r.json(); })
         .then(data=>{ if(!data?.id) throw new Error('Resposta sem id'); mp.checkout({ preference: { id: data.id }, render: { container: '#mp-checkout', label: 'Pagar R$ 9,90' } }); })
         .catch(err=>{ console.error('Erro ao criar preferência:', err); container.innerHTML = '<p class="text-sm text-red-600">Não foi possível iniciar o pagamento. Verifique o backend /api/mp-preference e o Access Token.</p>'; });
