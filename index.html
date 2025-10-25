@@ -4,43 +4,196 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🧠 Descubra qual dieta funciona pro seu tipo de corpo (em 1 minuto!)</title>
+  <meta name="description" content="Quiz interativo com 15 perguntas que identifica o melhor tipo de dieta para o seu perfil. Resultado com recomendações + WhatsApp + pagamento integrado." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Mercado Pago SDK -->
   <script src="https://sdk.mercadopago.com/js/v2"></script>
   <style>
     :root { --brand: #22c55e; }
-    body { font-family: 'Inter', sans-serif; }
-    .question-text { font-size: 1.25rem; font-weight: 600; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    .container { max-width: 980px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
+    .choice input:checked + label { border-color: var(--brand); background: #ecfdf5; }
+    #popupPagamento { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(3px); z-index:1000; }
+    /* Destaque maior nas perguntas */
+    fieldset.step legend { font-size: 1.25rem; font-weight: 700; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-5 w-5 text-[var(--brand)]"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+        </div>
+        <span class="font-extrabold tracking-tight">Quiz de Dieta</span>
+      </div>
+      <a href="#quiz" class="rounded-xl px-4 py-2 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-100">
+    <div class="container mx-auto px-4 py-12 grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">🧠 Descubra qual dieta realmente funciona pro seu tipo de corpo <span class="whitespace-nowrap">(em 1 minuto!)</span></h1>
+        <p class="mt-4 text-lg text-slate-600">Responda 15 perguntas rápidas e receba um plano de dieta recomendado para o seu perfil — com dicas e a opção de receber tudo no WhatsApp. Para destravar o plano completo, há uma taxa simbólica de <strong>R$ 9,90</strong>.</p>
+        <div class="mt-6 flex gap-3">
+          <a href="#quiz" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar agora</a>
+          <a href="#como-funciona" class="rounded-xl px-6 py-3 border border-slate-300 font-semibold hover:bg-white transition">Como funciona</a>
+        </div>
+        <p class="mt-3 text-sm text-slate-500">⚠️ Conteúdo informativo. Para condições de saúde, procure um profissional.</p>
+      </div>
+      <div class="relative">
+        <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600&auto=format&fit=crop" alt="Comida saudável" class="w-full h-72 object-cover"/>
+          <div class="p-6">
+            <h3 class="text-xl font-bold">Resultado personalizado</h3>
+            <p class="mt-1 text-slate-600">Receba a melhor estratégia entre: Low Carb/Cetogênica, Balanceada/Mediterrânea, Proteica/Hiperproteica ou Jejum Intermitente/Flexível.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="como-funciona" class="py-10">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-extrabold">Como funciona</h2>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-soft">
+          <p class="text-sm text-slate-500">1 de 3</p>
+          <h3 class="font-bold mt-1">Responda 15 perguntas</h3>
+          <p class="mt-2 text-slate-600">Leva cerca de 1 minuto. Suas respostas indicam seu perfil metabólico e comportamental.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-soft">
+          <p class="text-sm text-slate-500">2 de 3</p>
+          <h3 class="font-bold mt-1">Veja seu resultado</h3>
+          <p class="mt-2 text-slate-600">Mostramos a dieta recomendada para o seu tipo de corpo, com dicas e macetes práticos.</p>
+        </div>
+        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-soft">
+          <p class="text-sm text-slate-500">3 de 3</p>
+          <h3 class="font-bold mt-1">Destrave o plano completo</h3>
+          <p class="mt-2 text-slate-600">Por R$ 9,90 você recebe o plano detalhado no WhatsApp e e-mail.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quiz -->
   <section id="quiz" class="py-10 bg-white border-t border-b border-slate-200">
     <div class="container mx-auto px-4">
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-extrabold">Responda às perguntas</h2>
           <div class="w-44">
-            <div class="h-2 rounded-full bg-slate-200 overflow-hidden">
+            <div class="h-2 rounded-full bg-slate-200 overflow-hidden" aria-hidden="true">
               <div id="progress" class="h-2 bg-[var(--brand)] w-0"></div>
             </div>
             <p id="pct" class="text-xs text-right text-slate-500 mt-1">0%</p>
           </div>
         </div>
+
         <form id="quizForm" class="grid gap-6"></form>
+
         <div class="mt-6 flex items-center justify-between">
           <button id="btnPrev" class="rounded-xl px-4 py-2 border border-slate-300 font-semibold disabled:opacity-40" disabled>Voltar</button>
+          <!-- Botão Próxima removido por auto-avanço -->
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Result -->
+  <section id="resultado" class="py-12 hidden">
+    <div class="container mx-auto px-4">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <p class="text-sm text-slate-500">Seu resultado</p>
+        <h2 id="resultTitle" class="text-2xl md:text-3xl font-extrabold"></h2>
+        <p id="resultDesc" class="mt-2 text-slate-700"></p>
+
+        <div class="mt-6 grid md:grid-cols-2 gap-6">
+          <div class="p-5 rounded-2xl border border-slate-200">
+            <h3 class="font-bold">Sugestões práticas</h3>
+            <ul id="tips" class="mt-2 list-disc list-inside text-slate-700 space-y-1"></ul>
+          </div>
+          <div class="p-5 rounded-2xl border border-slate-200">
+            <h3 class="font-bold">Mini cardápio (exemplo)</h3>
+            <ul id="menu" class="mt-2 list-disc list-inside text-slate-700 space-y-1"></ul>
+          </div>
+        </div>
+
+        <div class="mt-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-200">
+          <h3 class="font-bold">Receba seu plano personalizado no WhatsApp</h3>
+          <p class="text-slate-700 mt-1">Preencha seu nome e número. Após o pagamento de <strong>R$ 9,90</strong>, enviamos o plano completo.</p>
+          <form id="leadForm" class="mt-3 grid md:grid-cols-3 gap-3" onsubmit="return handleLead(event)">
+            <input id="nome" type="text" required placeholder="Seu nome" class="rounded-xl border-slate-300" />
+            <input id="whats" type="tel" inputmode="tel" required placeholder="(61) 9 9999-9999" class="rounded-xl border-slate-300" />
+            <button class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold">Continuar</button>
+          </form>
+          <p id="leadOk" class="hidden text-emerald-700 text-sm mt-2">Quase lá! Abra o pagamento para liberar seu plano completo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popup Pagamento -->
+  <div id="popupPagamento" class="flex items-center justify-center">
+    <div class="bg-white p-6 rounded-2xl shadow-soft w-[90%] max-w-md text-center">
+      <h2 class="text-2xl font-extrabold mb-2 text-[var(--brand)]">Pagamento R$ 9,90</h2>
+      <p class="text-slate-700 mb-4">Finalize o pagamento para receber seu plano de dieta completo no WhatsApp.</p>
+      <div id="mp-checkout" class="mb-3"></div>
+      <button onclick="fecharPopup()" class="mt-1 text-slate-500 text-sm underline">Fechar</button>
+      <p class="text-xs text-slate-400 mt-3">Pagamento processado pelo Mercado Pago. Aceitamos Pix, cartão e boleto.</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> SuaMarca. Todos os direitos reservados.</p>
+    <a href="#" class="underline">Política de Privacidade</a>
+  </footer>
+
   <script>
+    // ===================== CONFIGURÁVEIS =====================
+    const WHATS_NUMBER = '55619998514680'; // 55 + DDD + número
+    const MP_PUBLIC_KEY = 'APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0'; // sua Public Key
+    // endpoint de preferência (enquanto testa no vercel.app)
+    const MP_ENDPOINT = 'https://dieta-self.vercel.app/api/mp-preference';
+
+    // Perfis e conteúdos
+    const PROFILES = {
+      A: { title: '🥑 Perfil A — Low Carb / Cetogênica', desc: 'Seu corpo tende a responder melhor a baixos carboidratos, priorizando proteínas magras e gorduras boas. Controle açúcar e farinhas refinadas.', tips: ['Priorize ovos, peixes, carnes magras, abacate e azeite','Troque refrigerantes por água com limão','Monitore sódio e ingestão de fibras'], menu: ['Café: omelete com queijo + abacate','Almoço: frango grelhado + salada com azeite','Jantar: salmão + legumes salteados'] },
+      B: { title: '🍚 Perfil B — Balanceada / Mediterrânea', desc: 'Seu metabolismo pede equilíbrio entre carboidratos complexos, proteínas e gorduras boas. Foco em alimentos naturais e variedade.', tips: ['Monte pratos coloridos e variados','Prefira grãos integrais e frutas','Inclua azeite e oleaginosas com moderação'], menu: ['Café: iogurte + granola + frutas','Almoço: arroz integral, feijão, filé de peixe e salada','Jantar: sopa de legumes + frango desfiado'] },
+      C: { title: '🥩 Perfil C — Proteica / Hiperproteica', desc: 'Alta ingestão de proteína com carboidratos ajustados favorece definição e manutenção de massa magra.', tips: ['Inclua fonte proteica em todas as refeições','Avalie uso de whey/proteína conforme orientação profissional','Hidrate-se e ajuste fibras para o intestino funcionar bem'], menu: ['Café: ovos mexidos + queijo branco','Almoço: patinho grelhado + salada + quinoa','Jantar: omelete de claras + legumes'] },
+      D: { title: '🕒 Perfil D — Jejum Intermitente / Flexível', desc: 'Você lida bem com janelas de alimentação. Foque em refeições completas e evite exageros nas quebras do jejum.', tips: ['Defina janela (ex.: 16/8) com profissional, se possível','Priorize proteínas e fibras na primeira refeição','Beba água, café sem açúcar e chás no jejum'], menu: ['Primeira refeição: bowl proteico (iogurte grego + nuts)','Segunda: frango + legumes + arroz integral','Terceira (opcional): sopa de legumes + ovos'] }
+    };
+
+    // 15 PERGUNTAS
     const QUESTIONS = [
       { q: 'Qual seu principal objetivo agora?', a: ['Emagrecer rápido','Ganhar massa magra','Manter peso e saúde','Reduzir gordura localizada'] },
       { q: 'Seu nível de energia diário é…', a: ['Sempre cansado','Oscila muito','Constante','Muito alto'] },
-      { q: 'Seu apetite ao longo do dia é…', a: ['Forte de manhã','Mais fome à noite','Pouco apetite','Muita fome o tempo todo'] }
+      { q: 'Seu apetite ao longo do dia é…', a: ['Forte de manhã','Mais fome à noite','Pouco apetite','Muita fome o tempo todo'] },
+      { q: 'Quantas refeições principais por dia?', a: ['2 ou menos','3','4 a 5','Mais de 5 pequenas'] },
+      { q: 'Fome emocional/ansiosa?', a: ['Sim, muito','Às vezes','Raramente','Nunca'] },
+      { q: 'Nível de atividade física', a: ['Sedentário','Leve','Moderado (3x/sem)','Intenso (5x+)'] },
+      { q: 'Seu sono é…', a: ['Ruim','Durmo bem mas acordo cansado','Regular','Muito bom'] },
+      { q: 'Costuma pular o café da manhã?', a: ['Sempre','Às vezes','Raramente','Nunca'] },
+      { q: 'Seu estilo de alimentação atual', a: ['Muito carboidrato','Equilibrada','Rica em proteína','Desorganizada'] },
+      { q: 'Vontade de doces', a: ['Sempre','Às vezes','Raramente','Quase nunca'] },
+      { q: 'Seu tipo de corpo', a: ['Ganha peso fácil','Dificuldade para ganhar peso','Oscila rápido','Equilibrado'] },
+      { q: 'Reação aos carboidratos', a: ['Engordo rápido','Sem efeito','Dá energia','Fico inchado'] },
+      { q: 'Prefere refeições…', a: ['Leves e frequentes','Poucas e completas','Grandes à noite','Equilibradas'] },
+      { q: 'Consegue ficar longos períodos sem comer?', a: ['Sim, tranquilo','Pouco tempo','Depende do dia','Não consigo'] },
+      { q: 'Qual frase te representa?', a: ['Quero resultados rápidos','Prefiro algo sustentável','Quero comer bem e perder peso','Quero performance máxima'] }
     ];
 
+    // Estado e pontuação: recomputa a cada escolha (100% consistente ao voltar/trocar)
+    const selected = Array(QUESTIONS.length).fill(null); // A/B/C/D por pergunta
     const scores = { A:0, B:0, C:0, D:0 };
     let current = 0;
     const form = document.getElementById('quizForm');
@@ -50,7 +203,7 @@
         const hiddenClass = idx === 0 ? '' : 'hidden';
         return `
           <fieldset data-step="${idx}" class="step ${hiddenClass}">
-            <legend class="question-text">${idx+1}. ${item.q}</legend>
+            <legend>${idx+1}. ${item.q}</legend>
             <div class="mt-3 grid sm:grid-cols-2 gap-3">
               ${item.a.map((opt, i)=>{
                 const letter = String.fromCharCode(65 + i);
@@ -64,6 +217,12 @@
             </div>
           </fieldset>`
       }).join('');
+      updateProgress();
+    }
+
+    function recomputeScores(){
+      scores.A = scores.B = scores.C = scores.D = 0;
+      for(const v of selected){ if(v && scores[v] !== undefined) scores[v]++; }
     }
 
     function updateProgress(){
@@ -73,38 +232,121 @@
       document.getElementById('btnPrev').disabled = current === 0;
     }
 
-    function nextStep(){
-      if(current < QUESTIONS.length){
-        const chosen = form.querySelector(`.step[data-step="${current}"] input[type=radio]:checked`);
-        if(!chosen) return;
-        form.querySelector(`.step[data-step="${current}"]`).classList.add('hidden');
-        current++;
-      }
-      if(current < QUESTIONS.length){
-        form.querySelector(`.step[data-step="${current}"]`).classList.remove('hidden');
-        updateProgress();
-        return;
-      }
-      alert('Fim do quiz!');
+    function gotoStep(n){
+      const curEl = form.querySelector(`.step[data-step="${current}"]`);
+      const nextEl = form.querySelector(`.step[data-step="${n}"]`);
+      if(curEl) curEl.classList.add('hidden');
+      if(nextEl) nextEl.classList.remove('hidden');
+      current = n;
+      updateProgress();
     }
 
-    document.getElementById('btnPrev').addEventListener('click', (e)=>{
-      e.preventDefault();
-      if(current===0) return;
-      form.querySelector(`.step[data-step="${current}"]`).classList.add('hidden');
-      current--;
-      form.querySelector(`.step[data-step="${current}"]`).classList.remove('hidden');
-      updateProgress();
-    });
-
-    document.getElementById('quizForm').addEventListener('change', (e)=>{
-      const t = e.target;
-      if (t && t.matches('input[type=radio]')) {
-        setTimeout(() => nextStep(), 120);
+    function nextStep(){
+      if(current < QUESTIONS.length - 1){
+        gotoStep(current + 1);
+        return;
       }
+      // terminou
+      document.getElementById('quiz').classList.add('hidden');
+      showResult();
+    }
+
+    function prevStep(){
+      if(current === 0) return;
+      gotoStep(current - 1);
+    }
+
+    function showResult(){
+      // perfil com maior pontuação
+      const resKey = Object.entries(scores).sort((a,b)=> b[1]-a[1])[0][0];
+      const profile = PROFILES[resKey];
+      document.getElementById('resultTitle').textContent = profile.title;
+      document.getElementById('resultDesc').textContent = profile.desc;
+      document.getElementById('tips').innerHTML = profile.tips.map(t=>`<li>${t}</li>`).join('');
+      document.getElementById('menu').innerHTML = profile.menu.map(t=>`<li>${t}</li>`).join('');
+      document.getElementById('resultado').classList.remove('hidden');
+      document.getElementById('progress').style.width = '100%';
+      document.getElementById('pct').textContent = '100%';
+    }
+
+    // Avanço automático: ao selecionar alternativa, salva, recalcula e avança
+    form.addEventListener('change', (e)=>{
+      const input = e.target;
+      if(!(input instanceof HTMLElement)) return;
+      if(!input.matches('input[type=radio]')) return;
+      const fs = input.closest('fieldset.step');
+      if(!fs) return;
+      const idx = Number(fs.getAttribute('data-step'));
+      selected[idx] = input.value; // salva escolha
+      recomputeScores(); // garante pontuação correta mesmo ao voltar/trocar
+      setTimeout(nextStep, 120);
     });
 
+    // Botão Voltar
+    document.getElementById('btnPrev').addEventListener('click', (e)=>{ e.preventDefault(); prevStep(); });
+
+    // === LEAD & PAGAMENTO ===
+    function handleLead(e){
+      e.preventDefault();
+      document.getElementById('leadOk').classList.remove('hidden');
+      abrirPopupPagamento();
+      return false;
+    }
+
+    function abrirPopupPagamento(){
+      const popup = document.getElementById('popupPagamento');
+      popup.style.display = 'flex';
+      const container = document.getElementById('mp-checkout');
+      container.innerHTML = '';
+
+      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' });
+      fetch(MP_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify({ valor: 9.90, titulo: 'Plano de Dieta Completo' })
+      })
+        .then(async r => { if(!r.ok){ const t=await r.text(); throw new Error('HTTP '+r.status+' '+t); } return r.json(); })
+        .then(data => {
+          if(!data?.id) throw new Error('Resposta sem id');
+          // Render normal (botão Mercado Pago)
+          mp.checkout({ preference: { id: data.id }, render: { container: '#mp-checkout', label: 'Pagar R$ 9,90' } });
+          // Fallback visível
+          if(data.init_point){
+            const fallback = document.createElement('a');
+            fallback.href = data.init_point; fallback.target = '_blank'; fallback.rel = 'noopener';
+            fallback.className = 'block mt-3 text-sm underline';
+            fallback.textContent = '⚠️ Se o botão não abrir, clique aqui para pagar';
+            container.appendChild(fallback);
+          }
+          console.log('[MP] preference_id:', data.id, 'init_point:', data.init_point);
+        })
+        .catch(err => {
+          console.error('Erro ao criar preferência:', err);
+          container.innerHTML = '<p class="text-sm text-red-600">Não foi possível iniciar o pagamento. Verifique o backend /api/mp-preference e o Access Token.</p>';
+        });
+    }
+
+    function fecharPopup(){ document.getElementById('popupPagamento').style.display = 'none'; }
+
+    function abrirWhatsAppComResultado(){
+      const nome = document.getElementById('nome').value.trim();
+      const result = document.getElementById('resultTitle').textContent;
+      const desc = document.getElementById('resultDesc').textContent;
+      const texto = encodeURIComponent(`Oi, sou ${nome}. Meu resultado no Quiz de Dieta foi: ${result}.\nResumo: ${desc}\nPagamento confirmado. Quero receber meu plano completo.`);
+      const link = `https://wa.me/${WHATS_NUMBER}?text=${texto}`;
+      window.open(link, '_blank');
+    }
+
+    // Detecta retorno de sucesso via parâmetros de URL
+    (function detectarSucesso(){
+      const p = new URLSearchParams(location.search);
+      const approved = ['approved','success','pagamento_sucesso'].includes(p.get('status')) || p.get('collection_status') === 'approved' || p.get('paid') === '1';
+      if(approved){ fecharPopup(); setTimeout(abrirWhatsAppComResultado, 300); }
+    })();
+
+    // Init
     renderQuestions();
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
