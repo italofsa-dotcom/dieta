@@ -8,9 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Mercado Pago SDK -->
-  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://sdk.mercadopago.com/js/v2" defer></script>
   <style>
     :root { --brand: #22c55e; }
     body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
@@ -99,7 +98,9 @@
           </div>
         </div>
 
-        <form id="quizForm" class="grid gap-6"></form>
+        <form id="quizForm" class="grid gap-6">
+          <noscript>Ative o JavaScript para visualizar as perguntas do quiz.</noscript>
+        </form>
 
         <div class="mt-6 flex items-center justify-between">
           <button id="btnPrev" class="rounded-xl px-4 py-2 border border-slate-300 font-semibold disabled:opacity-40" disabled>Voltar</button>
@@ -156,6 +157,7 @@
   </footer>
 
   <script>
+  document.addEventListener('DOMContentLoaded', () => {
     const WHATS_NUMBER = '55619998514680';
     const MP_PUBLIC_KEY = 'APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0';
     const MP_ENDPOINT = 'https://dieta-self.vercel.app/api/mp-preference';
@@ -324,7 +326,9 @@
       const nome = document.getElementById('nome').value.trim();
       const result = document.getElementById('resultTitle').textContent;
       const desc = document.getElementById('resultDesc').textContent;
-      const texto = encodeURIComponent(`Oi, sou ${nome}. Meu resultado no Quiz de Dieta foi: ${result}.\nResumo: ${desc}\nPagamento confirmado. Quero receber meu plano completo.`);
+      const texto = encodeURIComponent(`Oi, sou ${nome}. Meu resultado no Quiz de Dieta foi: ${result}.
+Resumo: ${desc}
+Pagamento confirmado. Quero receber meu plano completo.`);
       const link = `https://wa.me/${WHATS_NUMBER}?text=${texto}`;
       window.open(link, '_blank');
     }
@@ -337,6 +341,14 @@
 
     renderQuestions();
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    setTimeout(() => {
+      if (!form.innerHTML.trim()) {
+        console.warn('[Quiz] Form vazio após init. Tentando render novamente…');
+        renderQuestions();
+      }
+    }, 300);
+  });
   </script>
 </body>
 </html>
