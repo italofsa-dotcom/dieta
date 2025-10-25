@@ -20,19 +20,32 @@
     fieldset.step legend { font-size: 1.25rem; font-weight: 700; }
     .hidden { display: none !important; }
 
-    /* ===== Fundo degradê moderno do BOX de perguntas ===== */
-    fieldset.step {
-      background: linear-gradient(135deg, #d1fae5, #a7f3d0); /* verde clarinho */
-      border-radius: 20px;
-      padding: 20px;
-      border: 1px solid #6ee7b7;
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.20);
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-    fieldset.step:hover {
-      transform: scale(1.01);
-      box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25);
-    }
+/* Fundo degradê moderno do BOX de perguntas — ajustado */
+fieldset.step {
+  position: relative;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  border-radius: 20px;
+  padding: 28px 20px 20px 20px; /* mais espaço no topo */
+  border: 1px solid #6ee7b7;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.20);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+fieldset.step:hover {
+  transform: scale(1.01);
+  box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25);
+}
+
+/* Garante que o título da pergunta fique dentro e bem visível */
+fieldset.step legend {
+  position: relative;
+  background: none;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #064e3b;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
 
     /* ===== Opções (respostas) em branco ===== */
     .choice label {
