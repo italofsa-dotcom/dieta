@@ -399,16 +399,8 @@ Pagamento confirmado. Quero receber meu plano completo.`);
     document.getElementById('btnPrev').addEventListener('click', (e)=>{ e.preventDefault(); prevStep(); });
 
     // Init
-    \1
-    // Avanço automático: ao escolher uma opção, pula para a próxima pergunta
-    document.getElementById('quizForm').addEventListener('change', (e)=>{
-      const t = e.target;
-      if (t && t.matches('input[type=radio]')) {
-        // pequeno delay para UX mais suave
-        setTimeout(()=> nextStep(), 120);
-      }
-    });
-
-</script>
+    renderQuestions();
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
