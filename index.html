@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Mercado Pago SDK -->
+  <!-- Mercado Pago SDK (Checkout Pro / Bricks) -->
   <script src="https://sdk.mercadopago.com/js/v2"></script>
   <style>
     :root { --brand: #22c55e; }
@@ -76,7 +76,7 @@
         <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-soft">
           <p class="text-sm text-slate-500">3 de 3</p>
           <h3 class="font-bold mt-1">Destrave o plano completo</h3>
-          <p class="mt-2 text-slate-600">Por R$ 9,90 você recebe o plano detalhado no WhatsApp e e‑mail.</p>
+          <p class="mt-2 text-slate-600">Por R$ 9,90 você recebe o plano detalhado no WhatsApp e e-mail.</p>
         </div>
       </div>
     </div>
@@ -139,7 +139,7 @@
     </div>
   </section>
 
-  <!-- Popup Pagamento -->
+  <!-- Popup Pagamento (Mercado Pago modal/embutido) -->
   <div id="popupPagamento" class="flex items-center justify-center">
     <div class="bg-white p-6 rounded-2xl shadow-soft w-[90%] max-w-md text-center">
       <h2 class="text-2xl font-extrabold mb-2 text-[var(--brand)]">Pagamento R$ 9,90</h2>
@@ -159,18 +159,72 @@
   <script>
     // ===================== CONFIGURÁVEIS =====================
     const WHATS_NUMBER = '55619998514680'; // 55 + DDD + número
-    const MP_PUBLIC_KEY = 'APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0'; // sua Public Key
-    let MP_PREFERENCE_ID = null; // será preenchido pelo backend
+    const MP_PUBLIC_KEY = 'APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0'; // Public Key de produção // ex.: APP_USR-...
+    // O preferenceId precisa ser criado pelo backend/serveless (valor R$ 9,90, título, back_urls)
+    // Coloque aqui o ID retornado pelo seu endpoint:
+    let MP_PREFERENCE_ID = null; // Ex.: '123456789-abcdef-...'
 
-    // Perfis e conteúdos (iguais ao original)
+    // Perfis e conteúdos
     const PROFILES = {
-      A: { title: '🥑 Perfil A — Low Carb / Cetogênica', desc: 'Seu corpo tende a responder melhor a baixos carboidratos, priorizando proteínas magras e gorduras boas. Controle açúcar e farinhas refinadas.', tips: ['Priorize ovos, peixes, carnes magras, abacate e azeite','Troque refrigerantes por água com limão','Monitore sódio e ingestão de fibras'], menu: ['Café: omelete com queijo + abacate','Almoço: frango grelhado + salada com azeite','Jantar: salmão + legumes salteados'] },
-      B: { title: '🍚 Perfil B — Balanceada / Mediterrânea', desc: 'Seu metabolismo pede equilíbrio entre carboidratos complexos, proteínas e gorduras boas. Foco em alimentos naturais e variedade.', tips: ['Monte pratos coloridos e variados','Prefira grãos integrais e frutas','Inclua azeite e oleaginosas com moderação'], menu: ['Café: iogurte + granola + frutas','Almoço: arroz integral, feijão, filé de peixe e salada','Jantar: sopa de legumes + frango desfiado'] },
-      C: { title: '🥩 Perfil C — Proteica / Hiperproteica', desc: 'Alta ingestão de proteína com carboidratos ajustados favorece definição e manutenção de massa magra.', tips: ['Inclua fonte proteica em todas as refeições','Avalie uso de whey/proteína conforme orientação profissional','Hidrate-se e ajuste fibras para o intestino funcionar bem'], menu: ['Café: ovos mexidos + queijo branco','Almoço: patinho grelhado + salada + quinoa','Jantar: omelete de claras + legumes'] },
-      D: { title: '🕒 Perfil D — Jejum Intermitente / Flexível', desc: 'Você lida bem com janelas de alimentação. Foque em refeições completas e evite exageros nas quebras do jejum.', tips: ['Defina janela (ex.: 16/8) com profissional, se possível','Priorize proteínas e fibras na primeira refeição','Beba água, café sem açúcar e chás no jejum'], menu: ['Primeira refeição: bowl proteico (iogurte grego + nuts)','Segunda: frango + legumes + arroz integral','Terceira (opcional): sopa de legumes + ovos'] }
+      A: {
+        title: '🥑 Perfil A — Low Carb / Cetogênica',
+        desc: 'Seu corpo tende a responder melhor a baixos carboidratos, priorizando proteínas magras e gorduras boas. Controle açúcar e farinhas refinadas.',
+        tips: [
+          'Priorize ovos, peixes, carnes magras, abacate e azeite',
+          'Troque refrigerantes por água com limão',
+          'Monitore sódio e ingestão de fibras'
+        ],
+        menu: [
+          'Café: omelete com queijo + abacate',
+          'Almoço: frango grelhado + salada com azeite',
+          'Jantar: salmão + legumes salteados'
+        ]
+      },
+      B: {
+        title: '🍚 Perfil B — Balanceada / Mediterrânea',
+        desc: 'Seu metabolismo pede equilíbrio entre carboidratos complexos, proteínas e gorduras boas. Foco em alimentos naturais e variedade.',
+        tips: [
+          'Monte pratos coloridos e variados',
+          'Prefira grãos integrais e frutas',
+          'Inclua azeite e oleaginosas com moderação'
+        ],
+        menu: [
+          'Café: iogurte + granola + frutas',
+          'Almoço: arroz integral, feijão, filé de peixe e salada',
+          'Jantar: sopa de legumes + frango desfiado'
+        ]
+      },
+      C: {
+        title: '🥩 Perfil C — Proteica / Hiperproteica',
+        desc: 'Alta ingestão de proteína com carboidratos ajustados favorece definição e manutenção de massa magra.',
+        tips: [
+          'Inclua fonte proteica em todas as refeições',
+          'Avalie uso de whey/proteína conforme orientação profissional',
+          'Hidrate-se e ajuste fibras para o intestino funcionar bem'
+        ],
+        menu: [
+          'Café: ovos mexidos + queijo branco',
+          'Almoço: patinho grelhado + salada + quinoa',
+          'Jantar: omelete de claras + legumes'
+        ]
+      },
+      D: {
+        title: '🕒 Perfil D — Jejum Intermitente / Flexível',
+        desc: 'Você lida bem com janelas de alimentação. Foque em refeições completas e evite exageros nas quebras do jejum.',
+        tips: [
+          'Defina janela (ex.: 16/8) com profissional, se possível',
+          'Priorize proteínas e fibras na primeira refeição',
+          'Beba água, café sem açúcar e chás no jejum'
+        ],
+        menu: [
+          'Primeira refeição: bowl proteico (iogurte grego + nuts)',
+          'Segunda: frango + legumes + arroz integral',
+          'Terceira (opcional): sopa de legumes + ovos'
+        ]
+      }
     };
 
-    // === 15 PERGUNTAS (original) ===
+    // Perguntas (15) e alternativas A-D
     const QUESTIONS = [
       { q: 'Qual seu principal objetivo agora?', a: ['Emagrecer rápido','Ganhar massa magra','Manter peso e saúde','Reduzir gordura localizada'] },
       { q: 'Seu nível de energia diário é…', a: ['Sempre cansado','Oscila muito','Constante','Muito alto'] },
@@ -189,10 +243,10 @@
       { q: 'Qual frase te representa?', a: ['Quero resultados rápidos','Prefiro algo sustentável','Quero comer bem e perder peso','Quero performance máxima'] }
     ];
 
-    // Pontuação e estado
+    // Mapeamento simples: cada alternativa A/B/C/D soma ponto para perfil A/B/C/D
     const scores = { A:0, B:0, C:0, D:0 };
-    // guarda a alternativa escolhida por passo (A/B/C/D) para permitir trocar respostas ao voltar
-    const selected = Array(QUESTIONS.length).fill(null);
+
+    // Estado
     let current = 0;
     const form = document.getElementById('quizForm');
 
@@ -204,7 +258,7 @@
             <legend class="font-semibold">${idx+1}. ${item.q}</legend>
             <div class="mt-3 grid sm:grid-cols-2 gap-3">
               ${item.a.map((opt, i)=>{
-                const letter = String.fromCharCode(65 + i);
+                const letter = String.fromCharCode(65 + i); // A-D
                 const id = `q${idx}_${letter}`;
                 return `
                   <div class="choice">
@@ -226,25 +280,17 @@
       document.getElementById('btnNext').textContent = current === QUESTIONS.length ? 'Ver resultado' : 'Próxima';
     }
 
-    function nextStep(auto = false){
+    function nextStep(){
       if(current < QUESTIONS.length){
-        const fieldset = form.querySelector(`.step[data-step="${current}"]`);
-        const chosen = fieldset.querySelector('input[type=radio]:checked');
+        const chosen = form.querySelector(`.step[data-step="${current}"] input[type=radio]:checked`);
         if(!chosen){
-          if(!auto){
-            const first = fieldset.querySelector('input[type=radio]');
-            if(first) first.focus();
-            alert('Selecione uma opção para continuar.');
-          }
+          const first = form.querySelector(`.step[data-step="${current}"] input[type=radio]`);
+          if(first) first.focus();
+          alert('Selecione uma opção para continuar.');
           return;
         }
-        // Se ainda não pontuou este passo, pontua agora
-        if(!fieldset.dataset.answered){
-          scores[chosen.value]++;
-          selected[current] = chosen.value;
-          fieldset.dataset.answered = '1';
-        }
-        fieldset.classList.add('hidden');
+        scores[chosen.value]++;
+        form.querySelector(`.step[data-step="${current}"]`).classList.add('hidden');
         current++;
       }
       if(current < QUESTIONS.length){
@@ -259,15 +305,10 @@
     function prevStep(){
       if(current === 0) return;
       const prevIndex = current - 1;
-      const fs = form.querySelector(`.step[data-step="${prevIndex}"]`);
-      const prevRadio = fs.querySelector('input[type=radio]:checked');
+      const prevRadio = form.querySelector(`.step[data-step="${prevIndex}"] input[type=radio]:checked`);
       if(prevRadio){ scores[prevRadio.value] = Math.max(0, scores[prevRadio.value]-1); }
-      selected[prevIndex] = null; // libera para recontar ao escolher novamente
-      fs.removeAttribute('data-answered');
-      fs.classList.remove('hidden');
-      if(current < QUESTIONS.length){
-        form.querySelector(`.step[data-step="${current}"]`).classList.add('hidden');
-      }
+      form.querySelector(`.step[data-step="${prevIndex}"]`).classList.remove('hidden');
+      if(current < QUESTIONS.length){ form.querySelector(`.step[data-step="${current}"]`).classList.add('hidden'); }
       current--;
       updateProgress();
     }
@@ -295,79 +336,79 @@
     function abrirPopupPagamento(){
       const popup = document.getElementById('popupPagamento');
       popup.style.display = 'flex';
+      // Renderiza botão/modal do Mercado Pago
+      if(!MP_PUBLIC_KEY){
+        console.warn('Defina MP_PUBLIC_KEY');
+        return;
+      }
+      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' });
+
       const container = document.getElementById('mp-checkout');
       container.innerHTML = '';
 
-      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'pt-BR' });
-      fetch('https://dieta-self.vercel.app/api/mp-preference', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify({ valor: 9.90, titulo: 'Plano de Dieta Completo' })
-      })
-        .then(async r => { if(!r.ok){ const t=await r.text(); throw new Error('HTTP '+r.status+' '+t); } return r.json(); })
-        .then(data => {
-          if(!data?.id) throw new Error('Resposta sem id');
-          // Render normal (modal) com o botão do Mercado Pago
-          mp.checkout({ preference: { id: data.id }, render: { container: '#mp-checkout', label: 'Pagar R$ 9,90' } });
-          // Fallback visível
-          if(data.init_point){
-            const fallback = document.createElement('a');
-            fallback.href = data.init_point; fallback.target = '_blank'; fallback.rel = 'noopener';
-            fallback.className = 'block mt-3 text-sm underline';
-            fallback.textContent = '⚠️ Se o botão não abrir, clique aqui para pagar';
-            container.appendChild(fallback);
-          }
-          console.log('[MP] preference_id:', data.id, 'init_point:', data.init_point);
-        })
-        .catch(err => {
-          console.error('Erro ao criar preferência:', err);
-          container.innerHTML = '<p class="text-sm text-red-600">Não foi possível iniciar o pagamento. Verifique o backend /api/mp-preference e o Access Token.</p>';
+      // Caso você já tenha um preferenceId fixo, atribua a MP_PREFERENCE_ID.
+      // Alternativamente, crie a preferência via seu endpoint e, ao resolver, chame renderCheckout(id).
+      if(MP_PREFERENCE_ID){
+        renderCheckout(MP_PREFERENCE_ID);
+      } else {
+        // Exemplo: chamada ao seu endpoint (SUBSTITUA '/api/mp-preference' pelo seu)
+        // O endpoint deve criar uma preferência de R$ 9,90 com back_urls de sucesso e retornar { id }
+        fetch('/api/mp-preference', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ valor: 9.90, titulo: 'Plano de Dieta Completo' }) })
+          .then(r=>r.json())
+          .then(data=>{ MP_PREFERENCE_ID = data.id; renderCheckout(MP_PREFERENCE_ID); })
+          .catch(err=>{ console.error(err); container.innerHTML = '<p class="text-sm text-red-600">Não foi possível iniciar o pagamento. Tente novamente.</p>'; });
+      }
+
+      function renderCheckout(prefId){
+        mp.checkout({
+          preference: { id: prefId },
+          render: { container: '#mp-checkout', label: 'Pagar R$ 9,90' }
         });
+      }
     }
 
-    function fecharPopup(){ document.getElementById('popupPagamento').style.display = 'none'; }
+    function fecharPopup(){
+      document.getElementById('popupPagamento').style.display = 'none';
+    }
 
+    // === WhatsApp pós-pagamento ===
     function abrirWhatsAppComResultado(){
       const nome = document.getElementById('nome').value.trim();
+      const num = document.getElementById('whats').value.replace(/\D/g,'');
       const result = document.getElementById('resultTitle').textContent;
       const desc = document.getElementById('resultDesc').textContent;
-      const texto = encodeURIComponent(`Oi, sou ${nome}. Meu resultado no Quiz de Dieta foi: ${result}.\nResumo: ${desc}\nPagamento confirmado. Quero receber meu plano completo.`);
+      const texto = encodeURIComponent(`Oi, sou ${nome}. Meu resultado no Quiz de Dieta foi: ${result}.
+Resumo: ${desc}
+Pagamento confirmado. Quero receber meu plano completo.`);
       const link = `https://wa.me/${WHATS_NUMBER}?text=${texto}`;
       window.open(link, '_blank');
     }
 
+    // Detecta retorno de sucesso via parâmetros de URL (configure back_urls no Mercado Pago)
     (function detectarSucesso(){
       const p = new URLSearchParams(location.search);
       const approved = ['approved','success','pagamento_sucesso'].includes(p.get('status')) || p.get('collection_status') === 'approved' || p.get('paid') === '1';
-      if(approved){ fecharPopup(); setTimeout(abrirWhatsAppComResultado, 300); }
+      if(approved){
+        fecharPopup();
+        // Abre WhatsApp automaticamente com o resultado
+        setTimeout(abrirWhatsAppComResultado, 300);
+      }
     })();
 
-    document.getElementById('btnNext').addEventListener('click', (e)=>{ e.preventDefault(); nextStep(); }); nextStep(); });
+    document.getElementById('btnNext').addEventListener('click', (e)=>{ e.preventDefault(); nextStep(); });
     document.getElementById('btnPrev').addEventListener('click', (e)=>{ e.preventDefault(); prevStep(); });
 
-    // Avanço automático ao marcar uma alternativa
-    form.addEventListener('change', (e)=>{
-      const input = e.target;
-      if(!(input instanceof HTMLElement)) return;
-      if(input.matches('input[type=radio]')){
-        const fs = input.closest('fieldset.step');
-        if(!fs) return;
-        const idx = Number(fs.getAttribute('data-step'));
-        const novo = input.value;
-        const antigo = selected[idx];
-        // Se já tinha uma resposta e o usuário trocou, ajusta pontuação
-        if(antigo && antigo !== novo){
-          scores[antigo] = Math.max(0, scores[antigo]-1);
-          fs.removeAttribute('data-answered');
-          selected[idx] = null; // será regravado no nextStep
-        }
-        // Dá um pequeno delay para UX e acessibilidade
-        setTimeout(()=> nextStep(true), 120);
+    // Init
+    \1
+    // Avanço automático: ao escolher uma opção, pula para a próxima pergunta
+    document.getElementById('quizForm').addEventListener('change', (e)=>{
+      const t = e.target;
+      if (t && t.matches('input[type=radio]')) {
+        // pequeno delay para UX mais suave
+        setTimeout(()=> nextStep(), 120);
       }
     });
 
-    renderQuestions();
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+</script>
 </body>
 </html>
