@@ -19,6 +19,7 @@
     .choice input:checked + label { border-color: var(--brand); background: #ecfdf5; }
     #popupPagamento { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(3px); z-index:1000; }
     fieldset.step legend { font-size: 1.25rem; font-weight: 700; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -190,25 +191,32 @@
     const form = document.getElementById('quizForm');
 
     function renderQuestions(){
-      form.innerHTML = QUESTIONS.map((item, idx)=>{
-        const hiddenClass = idx === 0 ? '' : 'hidden';
-        return `
-          <fieldset data-step="${idx}" class="step ${hiddenClass}">
-            <legend>${idx+1}. ${item.q}</legend>
-            <div class="mt-3 grid sm:grid-cols-2 gap-3">
-              ${item.a.map((opt, i)=>{
-                const letter = String.fromCharCode(65 + i);
-                const id = \`q\${idx}_\${letter}\`;
-                return \`
-                  <div class="choice">
-                    <input class="peer hidden" type="radio" id="\${id}" name="q\${idx}" value="\${letter}" required />
-                    <label for="\${id}" class="block rounded-xl border border-slate-300 p-3 peer-checked:border-[var(--brand)] peer-checked:bg-emerald-50 cursor-pointer">\${opt}</label>
-                  </div>\`
-              }).join('')}
-            </div>
-          </fieldset>`
-      }).join('');
-      updateProgress();
+      try{
+        console.log('[Quiz] Render start. QUESTIONS:', QUESTIONS?.length);
+        form.innerHTML = QUESTIONS.map((item, idx)=>{
+          const hiddenClass = idx === 0 ? '' : 'hidden';
+          return `
+            <fieldset data-step="${idx}" class="step ${hiddenClass}">
+              <legend>${idx+1}. ${item.q}</legend>
+              <div class="mt-3 grid sm:grid-cols-2 gap-3">
+                ${item.a.map((opt, i)=>{
+                  const letter = String.fromCharCode(65 + i);
+                  const id = \`q\${idx}_\${letter}\`;
+                  return \`
+                    <div class="choice">
+                      <input class="peer hidden" type="radio" id="\${id}" name="q\${idx}" value="\${letter}" required />
+                      <label for="\${id}" class="block rounded-xl border border-slate-300 p-3 peer-checked:border-[var(--brand)] peer-checked:bg-emerald-50 cursor-pointer">\${opt}</label>
+                    </div>\`
+                }).join('')}
+              </div>
+            </fieldset>`
+        }).join('');
+        const first = form.querySelector('.step[data-step="0"]');
+        if(first){ first.classList.remove('hidden'); }
+        updateProgress();
+      }catch(err){
+        console.error('[Quiz] Erro ao renderizar perguntas:', err);
+      }
     }
 
     function recomputeScores(){
