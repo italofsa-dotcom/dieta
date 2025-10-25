@@ -12,10 +12,8 @@
   <meta http-equiv="refresh" content="4;url=https://dietapronta.online/quiz?status=pending">
   <script>
     window.addEventListener('DOMContentLoaded', function(){
-      setTimeout(function(){
-        var url = 'https://dietapronta.online/quiz?status=pending';
-        try { window.location.replace(url); } catch(e){ window.location.href = url; }
-      }, 400);
+      var url = 'https://dietapronta.online/?status=pending#quiz';
+      try { location.replace(url); } catch(e){ location.href = url; }
     });
   </script>
 </head>
