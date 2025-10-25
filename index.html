@@ -9,16 +9,36 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Mercado Pago SDK -->
   <script src="https://sdk.mercadopago.com/js/v2"></script>
   <style>
     :root { --brand: #22c55e; }
     body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
-    .choice input:checked + label { border-color: var(--brand); background: #ecfdf5; }
     #popupPagamento { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(3px); z-index:1000; }
     fieldset.step legend { font-size: 1.25rem; font-weight: 700; }
     .hidden { display: none !important; }
+
+    /* === Estilo VERDE moderno para os boxes das perguntas === */
+    .choice label {
+      background: linear-gradient(135deg, #a7f3d0, #6ee7b7); /* verde claro -> turquesa */
+      border: 2px solid #10b981;   /* emerald-500 */
+      color: #064e3b;               /* green-900 */
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      box-shadow: 0 6px 18px rgba(16,185,129,0.18);
+    }
+    .choice label:hover {
+      transform: translateY(-1px) scale(1.02);
+      background: linear-gradient(135deg, #6ee7b7, #34d399); /* turquesa -> emerald-400 */
+      box-shadow: 0 10px 22px rgba(16,185,129,0.25);
+    }
+    .choice input:checked + label {
+      background: linear-gradient(135deg, #34d399, #059669); /* emerald-400 -> emerald-600 */
+      color: #ffffff;
+      border-color: #047857; /* emerald-700 */
+      box-shadow: 0 10px 24px rgba(5,150,105,0.35);
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -165,10 +185,12 @@
 
   <script>
   (function(){
+    // CONFIG
     var WHATS_NUMBER = "55619998514680";
     var MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
     var MP_ENDPOINT = "https://dieta-self.vercel.app/api/mp-preference";
 
+    // Perfis
     var PROFILES = {
       A: { title: "🥑 Perfil A — Low Carb / Cetogênica", desc: "Seu corpo tende a responder melhor a baixos carboidratos, priorizando proteínas magras e gorduras boas. Controle açúcar e farinhas refinadas.", tips: ["Priorize ovos, peixes, carnes magras, abacate e azeite","Troque refrigerantes por água com limão","Monitore sódio e ingestão de fibras"], menu: ["Café: omelete com queijo + abacate","Almoço: frango grelhado + salada com azeite","Jantar: salmão + legumes salteados"] },
       B: { title: "🍚 Perfil B — Balanceada / Mediterrânea", desc: "Seu metabolismo pede equilíbrio entre carboidratos complexos, proteínas e gorduras boas. Foco em alimentos naturais e variedade.", tips: ["Monte pratos coloridos e variados","Prefira grãos integrais e frutas","Inclua azeite e oleaginosas com moderação"], menu: ["Café: iogurte + granola + frutas","Almoço: arroz integral, feijão, filé de peixe e salada","Jantar: sopa de legumes + frango desfiado"] },
@@ -176,6 +198,7 @@
       D: { title: "🕒 Perfil D — Jejum Intermitente / Flexível", desc: "Você lida bem com janelas de alimentação. Foque em refeições completas e evite exageros nas quebras do jejum.", tips: ["Defina janela (ex.: 16/8) com profissional, se possível","Priorize proteínas e fibras na primeira refeição","Beba água, café sem açúcar e chás no jejum"], menu: ["Primeira refeição: bowl proteico (iogurte grego + nuts)","Segunda: frango + legumes + arroz integral","Terceira (opcional): sopa de legumes + ovos"] }
     };
 
+    // Perguntas
     var QUESTIONS = [
       { q: "Qual seu principal objetivo agora?", a: ["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"] },
       { q: "Seu nível de energia diário é…", a: ["Sempre cansado","Oscila muito","Constante","Muito alto"] },
@@ -194,6 +217,7 @@
       { q: "Qual frase te representa?", a: ["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"] }
     ];
 
+    // Estado
     var selected = new Array(QUESTIONS.length);
     for(var si=0; si<selected.length; si++){ selected[si] = null; }
     var scores = { A:0, B:0, C:0, D:0 };
@@ -202,6 +226,7 @@
     function $(id){ return document.getElementById(id); }
     var form = $("quizForm");
 
+    // Render perguntas (sem crases/backticks)
     function renderQuestions(){
       try {
         var html = "";
@@ -212,10 +237,10 @@
           html += '<div class="mt-3 grid sm:grid-cols-2 gap-3">';
           for(var j=0;j<item.a.length;j++){
             var letter = String.fromCharCode(65+j);
-            var id = 'q'+i+'_'+letter;
+            var id = "q"+i+"_"+letter;
             html += '<div class="choice">';
             html += '<input class="peer hidden" type="radio" id="'+id+'" name="q'+i+'" value="'+letter+'" required />';
-            html += '<label for="'+id+'" class="block rounded-xl border border-slate-300 p-3 peer-checked:border-[var(--brand)] peer-checked:bg-emerald-50 cursor-pointer">'+ item.a[j] +'</label>';
+            html += '<label for="'+id+'" class="block rounded-xl p-3 border">'+ item.a[j] +'</label>';
             html += '</div>';
           }
           html += '</div></fieldset>';
@@ -252,7 +277,10 @@
     }
 
     function nextStep(){
-      if(current < QUESTIONS.length - 1){ gotoStep(current + 1); return; }
+      if(current < QUESTIONS.length - 1){
+        gotoStep(current + 1);
+        return;
+      }
       $("quiz").classList.add("hidden");
       showResult();
     }
@@ -271,6 +299,7 @@
       $("progress").style.width = "100%"; $("pct").textContent = "100%";
     }
 
+    // Avanço automático via delegação
     document.addEventListener("change", function(e){
       var t = e.target;
       if(!t || t.type !== "radio") return;
@@ -282,8 +311,10 @@
       setTimeout(nextStep, 120);
     });
 
+    // Voltar
     $("btnPrev").addEventListener("click", function(e){ e.preventDefault(); prevStep(); });
 
+    // Lead + Pagamento
     function handleLead(e){
       e.preventDefault();
       $("leadOk").classList.remove("hidden");
@@ -338,6 +369,7 @@
       if(approved){ window.fecharPopup(); setTimeout(abrirWhatsAppComResultado, 300); }
     })();
 
+    // Init
     renderQuestions();
     document.getElementById("year").textContent = new Date().getFullYear();
   })();
