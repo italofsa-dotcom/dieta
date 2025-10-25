@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Pagamento aprovado • Dieta Pronta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta http-equiv="refresh" content="2;url=https://dietapronta.online/quiz?status=approved">
+  <script>
+    // Tenta redirecionar rápido sem esperar o meta refresh
+    window.addEventListener('DOMContentLoaded', function(){
+      var url = 'https://dietapronta.online/quiz?status=approved';
+      try { window.location.replace(url); } catch(e){ window.location.href = url; }
+    });
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800" style="font-family:Inter,system-ui,sans-serif">
+  <div class="min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow p-8 text-center border border-emerald-200">
+      <div class="mx-auto mb-4 h-14 w-14 rounded-full bg-emerald-100 flex items-center justify-center">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h1 class="text-2xl font-bold text-emerald-700">Pagamento aprovado!</h1>
+      <p class="mt-2 text-slate-600">Redirecionando para finalizar e enviar seu plano no WhatsApp…</p>
+      <a href="https://dietapronta.online/quiz?status=approved" class="inline-block mt-5 px-5 py-2 rounded-xl bg-emerald-600 text-white font-semibold">Ir agora</a>
+    </div>
+  </div>
+</body>
+</html>
