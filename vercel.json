@@ -1,0 +1,11 @@
+{
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.dietapronta.online" }],
+      "destination": "https://dietapronta.online/$1",
+      "permanent": true
+    }
+  ]
+}
