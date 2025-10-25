@@ -38,6 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         pending: 'https://dietapronta.online/pending',
       },
       auto_return: 'approved',
+      notification_url: 'https://dietapronta.online/api/mp-webhook',
     };
 
     const resp = await fetch('https://api.mercadopago.com/checkout/preferences', {
