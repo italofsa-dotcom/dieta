@@ -401,6 +401,15 @@ Pagamento confirmado. Quero receber meu plano completo.`);
     // Init
     renderQuestions();
     document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  
+// --- Auto-avanço seguro: usa o próprio botão "Próxima" já existente ---
+document.getElementById('quizForm').addEventListener('change', (e) => {
+  const t = e.target;
+  if (t && t.matches('input[type=radio]')) {
+    setTimeout(() => document.getElementById('btnNext')?.click(), 120);
+  }
+});
+
+</script>
 </body>
 </html>
