@@ -358,7 +358,7 @@ fieldset.step legend {
       fetch(MP_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ valor: 9.90, titulo: "Plano de Dieta Completo" })
+        body: JSON.stringify({ valor: 1.90, titulo: "Plano de Dieta Completo" })
       })
       .then(function(r){ if(!r.ok){ return r.text().then(function(t){ throw new Error("HTTP "+r.status+" "+t); }); } return r.json(); })
       .then(function(data){
