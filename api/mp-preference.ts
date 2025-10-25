@@ -33,9 +33,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         },
       ],
       back_urls: {
-        success: 'https://dieta-self.vercel.app/quiz?status=approved',
-        failure: 'https://dieta-self.vercel.app/quiz?status=failure',
-        pending: 'https://dieta-self.vercel.app/quiz?status=pending',
+        success: 'https://dietapronta.online/approved',
+        failure: 'https://dietapronta.online/failure',
+        pending: 'https://dietapronta.online/pending',
       },
       auto_return: 'approved',
     };
