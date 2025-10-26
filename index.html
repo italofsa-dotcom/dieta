@@ -17,51 +17,51 @@
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
     #popupPagamento { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(3px); z-index:1000; }
-    fieldset.step legend { font-size: 1.25rem; font-weight: 700; }
     .hidden { display: none !important; }
 
-/* Fundo degradê moderno do BOX de perguntas — ajustado */
-fieldset.step {
-  position: relative;
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-  border-radius: 20px;
-  padding: 28px 20px 20px 20px; /* mais espaço no topo */
-  border: 1px solid #6ee7b7;
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.20);
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-fieldset.step:hover {
-  transform: scale(1.01);
-  box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25);
-}
-
-/* Garante que o título da pergunta fique dentro e bem visível */
-fieldset.step legend {
-  position: relative;
-  background: none;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #064e3b;
-  margin-bottom: 10px;
-  padding: 0 4px;
-}
-
+    /* ===== BOX da pergunta (degradê verde) ===== */
+    fieldset.step {
+      position: relative;
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      border-radius: 20px;
+      padding: 28px 20px 20px 20px; /* espaço extra no topo p/ legend */
+      border: 1px solid #6ee7b7;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.20);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    fieldset.step:hover {
+      transform: scale(1.01);
+      box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25);
+    }
+    fieldset.step legend {
+      position: relative;
+      background: none;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #064e3b;
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
 
     /* ===== Opções (respostas) em branco ===== */
     .choice label {
-      background: #ffffff;             /* branco limpo */
-      border: 1.5px solid #e5e7eb;     /* slate-200/300 */
-      color: #0f172a;                  /* slate-900 */
+      background: #ffffff;
+      border: 1.5px solid #e5e7eb;
+      color: #0f172a;
+      border-radius: 12px;
       transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
       box-shadow: 0 4px 14px rgba(2, 6, 23, 0.06);
+      display: block;
+      padding: 12px;
+      cursor: pointer;
     }
     .choice label:hover {
       transform: translateY(-1px);
       box-shadow: 0 8px 18px rgba(2, 6, 23, 0.10);
-      border-color: #cbd5e1; /* slate-300 */
+      border-color: #cbd5e1;
     }
     .choice input:checked + label {
-      border-color: #10b981;           /* emerald-500 */
+      border-color: #10b981;
       box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25);
     }
   </style>
@@ -137,6 +137,10 @@ fieldset.step legend {
   <section id="quiz" class="py-10 bg-white border-t border-b border-slate-200">
     <div class="container mx-auto px-4">
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+
+        <!-- ===== (1) BANNER DE STATUS (NOVO) ===== -->
+        <div id="statusBanner" class="hidden mb-4 rounded-xl px-4 py-3 text-sm border"></div>
+
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-extrabold">Responda às perguntas</h2>
           <div class="w-44">
@@ -213,7 +217,7 @@ fieldset.step legend {
     // CONFIG
     var WHATS_NUMBER = "55619998514680";
     var MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
-    var MP_ENDPOINT = "https://dieta-self.vercel.app/api/mp-preference";
+    var MP_ENDPOINT = "https://dietapronta.online/api/mp-preference";
 
     // Perfis
     var PROFILES = {
@@ -243,15 +247,14 @@ fieldset.step legend {
     ];
 
     // Estado
-    var selected = new Array(QUESTIONS.length);
-    for(var si=0; si<selected.length; si++){ selected[si] = null; }
+    var selected = new Array(QUESTIONS.length); for(var si=0; si<selected.length; si++){ selected[si] = null; }
     var scores = { A:0, B:0, C:0, D:0 };
     var current = 0;
 
     function $(id){ return document.getElementById(id); }
     var form = $("quizForm");
 
-    // Render perguntas (sem crases/backticks)
+    // Render perguntas
     function renderQuestions(){
       try {
         var html = "";
@@ -265,7 +268,7 @@ fieldset.step legend {
             var id = "q"+i+"_"+letter;
             html += '<div class="choice">';
             html += '<input class="peer hidden" type="radio" id="'+id+'" name="q'+i+'" value="'+letter+'" required />';
-            html += '<label for="'+id+'" class="block rounded-xl p-3">'+ item.a[j] +'</label>';
+            html += '<label for="'+id+'" class="block">'+ item.a[j] +'</label>';
             html += '</div>';
           }
           html += '</div></fieldset>';
@@ -279,10 +282,7 @@ fieldset.step legend {
 
     function recomputeScores(){
       scores.A = scores.B = scores.C = scores.D = 0;
-      for(var i=0;i<selected.length;i++){
-        var v = selected[i];
-        if(v && scores[v] !== undefined){ scores[v]++; }
-      }
+      for(var i=0;i<selected.length;i++){ var v = selected[i]; if(v && scores[v] !== undefined){ scores[v]++; } }
     }
 
     function updateProgress(){
@@ -297,17 +297,12 @@ fieldset.step legend {
       var nextEl = form.querySelector('.step[data-step="'+n+'"]');
       if(curEl) curEl.classList.add('hidden');
       if(nextEl) nextEl.classList.remove('hidden');
-      current = n;
-      updateProgress();
+      current = n; updateProgress();
     }
 
     function nextStep(){
-      if(current < QUESTIONS.length - 1){
-        gotoStep(current + 1);
-        return;
-      }
-      $("quiz").classList.add("hidden");
-      showResult();
+      if(current < QUESTIONS.length - 1){ gotoStep(current + 1); return; }
+      $("quiz").classList.add("hidden"); showResult();
     }
 
     function prevStep(){ if(current>0){ gotoStep(current-1); } }
@@ -324,15 +319,12 @@ fieldset.step legend {
       $("progress").style.width = "100%"; $("pct").textContent = "100%";
     }
 
-    // Avanço automático via delegação
+    // Avanço automático
     document.addEventListener("change", function(e){
-      var t = e.target;
-      if(!t || t.type !== "radio") return;
-      var fs = t.closest("fieldset.step");
-      if(!fs) return;
+      var t = e.target; if(!t || t.type !== "radio") return;
+      var fs = t.closest("fieldset.step"); if(!fs) return;
       var idx = parseInt(fs.getAttribute("data-step"), 10);
-      selected[idx] = t.value;
-      recomputeScores();
+      selected[idx] = t.value; recomputeScores();
       setTimeout(nextStep, 120);
     });
 
@@ -355,27 +347,33 @@ fieldset.step legend {
       container.innerHTML = "";
 
       var mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
-      fetch(MP_ENDPOINT, {
+
+      // Timeout de segurança
+      var timeout = new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('Timeout criando preferência')); }, 12000); });
+
+      var req = fetch(MP_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ valor: 1.90, titulo: "Plano de Dieta Completo" })
+        body: JSON.stringify({ valor: 9.90, titulo: "Plano de Dieta Completo" })
       })
-      .then(function(r){ if(!r.ok){ return r.text().then(function(t){ throw new Error("HTTP "+r.status+" "+t); }); } return r.json(); })
-      .then(function(data){
-        if(!data || !data.id) throw new Error("Resposta sem id");
-        mp.checkout({ preference: { id: data.id }, render: { container: "#mp-checkout", label: "Pagar R$ 9,90" } });
-        if(data.init_point){
-          var a = document.createElement("a");
-          a.href = data.init_point; a.target = "_blank"; a.rel = "noopener";
-          a.className = "block mt-3 text-sm underline";
-          a.textContent = "⚠️ Se o botão não abrir, clique aqui para pagar";
-          container.appendChild(a);
-        }
-      })
-      .catch(function(err){
-        console.error("Erro ao criar preferência:", err);
-        container.innerHTML = '<p class="text-sm text-red-600">Não foi possível iniciar o pagamento. Verifique o backend /api/mp-preference e o Access Token.</p>';
-      });
+      .then(function(r){ return r.text().then(function(txt){ var data={}; try{data=JSON.parse(txt);}catch{} if(!r.ok) throw new Error("HTTP "+r.status+" "+txt); if(!data.id) throw new Error("Preferência sem id: "+txt); return data; }); });
+
+      Promise.race([timeout, req])
+        .then(function(data){
+          mp.checkout({ preference: { id: data.id }, render: { container: "#mp-checkout", label: "Pagar R$ 9,90" } });
+          if(data.init_point){
+            try { window.open(data.init_point, "_blank"); } catch(e){}
+            var a = document.createElement("a");
+            a.href = data.init_point; a.target = "_blank"; a.rel = "noopener";
+            a.className = "block mt-3 text-sm underline";
+            a.textContent = "⚠️ Se o botão não abrir, clique aqui para pagar";
+            container.appendChild(a);
+          }
+        })
+        .catch(function(err){
+          console.error("[MP] Falha:", err);
+          container.innerHTML = '<p class="text-sm text-red-600">Não foi possível iniciar o pagamento agora. Tente novamente em alguns instantes.</p>';
+        });
     }
     window.fecharPopup = function(){ $("popupPagamento").style.display = "none"; };
 
@@ -388,11 +386,45 @@ fieldset.step legend {
       window.open(link, "_blank");
     }
 
-    (function detectarSucesso(){
+    /* ===== (2) NOVA DETECÇÃO DE STATUS + BOTÃO “VERIFICAR” ===== */
+    (function detectarStatus(){
       var p = new URLSearchParams(location.search);
-      var approved = (["approved","success","pagamento_sucesso"].indexOf(p.get("status"))>=0) || p.get("collection_status")==="approved" || p.get("paid")==="1";
-      if(approved){ window.fecharPopup(); setTimeout(abrirWhatsAppComResultado, 300); }
+      var status = p.get("status");
+      var banner = document.getElementById("statusBanner");
+
+      function showBanner(texto, classes){
+        banner.textContent = texto;
+        banner.className = "mb-4 rounded-xl px-4 py-3 text-sm border " + classes;
+        banner.classList.remove("hidden");
+      }
+
+      if(status === "approved"){
+        if (window.fecharPopup) window.fecharPopup();
+        setTimeout(abrirWhatsAppComResultado, 300);
+      } else if(status === "pending"){
+        showBanner(
+          "Pagamento pendente. Se foi Pix, a confirmação costuma sair em alguns minutos. Assim que for aprovado, liberamos seu plano.",
+          "bg-amber-50 border-amber-300 text-amber-800"
+        );
+        // Botão "Já paguei / Verificar pagamento"
+        var btn = document.createElement("button");
+        btn.className = "mt-2 inline-flex items-center gap-2 rounded-xl px-3 py-2 border border-slate-300 text-sm";
+        btn.textContent = "Já paguei / Verificar pagamento";
+        btn.onclick = function(e){ e.preventDefault(); verificarPagamento(); };
+        banner.appendChild(btn);
+      } else if(status === "failure"){
+        showBanner(
+          "Pagamento não aprovado. Você pode tentar novamente com Pix, outro cartão ou outro método.",
+          "bg-rose-50 border-rose-300 text-rose-800"
+        );
+      }
     })();
+
+    // Verificação simples (recarga). Depois podemos substituir por checagem via webhook/endpoint.
+    window.verificarPagamento = function(){
+      location.reload();
+      // ou: fetch('/api/mp-check-status?payment_id=...').then(...)
+    };
 
     // Init
     renderQuestions();
