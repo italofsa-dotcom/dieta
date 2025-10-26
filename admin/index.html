@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin • Vendas — Dieta Pronta</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <div class="min-h-screen flex items-start justify-center p-6">
+    <div class="w-full max-w-4xl">
+      <div class="bg-white p-6 rounded-2xl shadow">
+        <h1 class="text-2xl font-bold">Painel de Vendas — Dieta Pronta</h1>
+        <p class="text-sm text-slate-500 mt-1">Acesso restrito. Informe usuário e senha.</p>
+
+        <form id="authForm" class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <input id="user" placeholder="Usuário" class="rounded border px-3 py-2"/>
+          <input id="pass" type="password" placeholder="Senha" class="rounded border px-3 py-2"/>
+          <button class="rounded bg-emerald-600 text-white px-4 py-2" type="submit">Entrar</button>
+        </form>
+
+        <div id="panel" class="hidden mt-6">
+          <div class="flex items-center justify-between">
+            <h2 class="font-bold">Vendas registradas</h2>
+            <button id="refresh" class="text-sm underline">Atualizar</button>
+          </div>
+
+          <div id="list" class="mt-4 overflow-auto max-h-[60vh]">
+            <!-- tabela -->
+          </div>
+        </div>
+
+        <div id="msg" class="mt-4 text-sm text-rose-600"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const form = document.getElementById('authForm');
+    const panel = document.getElementById('panel');
+    const list = document.getElementById('list');
+    const msg = document.getElementById('msg');
+
+    function basicAuthHeader(user, pass){
+      return 'Basic ' + btoa(user + ':' + pass);
+    }
+
+    async function fetchSales(authHeader){
+      try {
+        const r = await fetch('/api/admin/sales', { headers: { Authorization: authHeader }});
+        if (r.status === 401) { msg.textContent = 'Usuário ou senha incorretos.'; return null; }
+        const data = await r.json();
+        return data;
+      } catch (e) { msg.textContent = 'Erro ao buscar vendas: ' + e.message; return null; }
+    }
+
+    function renderTable(rows){
+      if(!rows || rows.length === 0) { list.innerHTML = '<p class="text-sm text-slate-500">Nenhuma venda encontrada.</p>'; return; }
+      let html = '<table class="w-full text-sm"><thead class="text-left"><tr><th>Data</th><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Valor</th><th>Status</th><th>Ref</th></tr></thead><tbody>';
+      for(const r of rows){
+        html += `<tr class="border-t"><td class="py-2">${r.created_at || ''}</td><td class="py-2">${r.customer_name || ''}</td><td>${r.customer_email || ''}</td><td>${r.customer_whatsapp || ''}</td><td>R$ ${Number(r.amount||0).toFixed(2)}</td><td>${r.status||''}</td><td>${r.external_reference||''}</td></tr>`;
+      }
+      html += '</tbody></table>';
+      list.innerHTML = html;
+    }
+
+    let authHeader = null;
+
+    form.addEventListener('submit', async function(e){
+      e.preventDefault(); msg.textContent = '';
+      const user = document.getElementById('user').value.trim();
+      const pass = document.getElementById('pass').value.trim();
+      if(!user || !pass) { msg.textContent = 'Preencha usuário e senha.'; return; }
+      authHeader = basicAuthHeader(user, pass);
+      const data = await fetchSales(authHeader);
+      if(data) {
+        panel.classList.remove('hidden'); form.classList.add('hidden');
+        renderTable(data);
+      }
+    });
+
+    document.getElementById('refresh').addEventListener('click', async function(){
+      if(!authHeader) return;
+      const data = await fetchSales(authHeader);
+      if(data) renderTable(data);
+    });
+  })();
+  </script>
+</body>
+</html>
