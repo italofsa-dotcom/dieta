@@ -122,6 +122,24 @@
       try { localStorage.setItem("mp_external_ref", ref); } catch(e){}
     }
 
+    // ===== Lead data (nome/email/whats) – automático =====
+    function getQS(key){ return new URLSearchParams(location.search).get(key) || ""; }
+    // tenta localStorage primeiro
+    var customer_name    = "";
+    var customer_email   = "";
+    var customer_whats   = "";
+
+    try {
+      customer_name  = localStorage.getItem("lead_nome")  || "";
+      customer_email = localStorage.getItem("lead_email") || "";
+      customer_whats = localStorage.getItem("lead_whats") || "";
+    } catch(e){}
+
+    // fallback para query string
+    if(!customer_name)  customer_name  = getQS("nome");
+    if(!customer_email) customer_email = getQS("email");
+    if(!customer_whats) customer_whats = getQS("whats");
+
     // ===== Mercado Pago: criar preferência e renderizar =====
     var mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
 
@@ -143,11 +161,18 @@
       }
     }
 
-    // Cria a preferência
+    // Cria a preferência (agora enviando nome/email/whats automaticamente)
     fetch(MP_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type":"application/json" },
-      body: JSON.stringify({ valor: 9.90, titulo: "Plano de Dieta Completo", external_reference: ref })
+      body: JSON.stringify({
+        valor: 9.90,
+        titulo: "Plano de Dieta Completo",
+        external_reference: ref,
+        customer_name: customer_name || "",
+        customer_email: customer_email || "",
+        customer_whatsapp: customer_whats || ""
+      })
     })
     .then(function(r){ return r.text().then(function(txt){ var data={}; try{data=JSON.parse(txt);}catch{} if(!r.ok) throw new Error("HTTP "+r.status+" "+txt); if(!data.id) throw new Error("Preferência sem id: "+txt); return data; }); })
     .then(function(data){
@@ -201,4 +226,3 @@
   </script>
 </body>
 </html>
-
