@@ -365,7 +365,7 @@
       var req = fetch(MP_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ valor: 9.90, titulo: "Plano de Dieta Completo", external_reference: ref })
+        body: JSON.stringify({ valor: 1.90, titulo: "Plano de Dieta Completo", external_reference: ref })
       })
       .then(function(r){ return r.text().then(function(txt){ var data={}; try{data=JSON.parse(txt);}catch{} if(!r.ok) throw new Error("HTTP "+r.status+" "+txt); if(!data.id) throw new Error("Preferência sem id: "+txt); return data; }); });
 
