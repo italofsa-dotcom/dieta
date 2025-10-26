@@ -10,7 +10,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(500).json({ error: 'ACCESS_TOKEN ausente no ambiente' });
   }
 
-  const { valor = 9.9, titulo = 'Plano de Dieta Completo', external_reference } = req.body || {};
+  // Agora recebemos external_reference do frontend
+  const {
+    valor = 9.9,
+    titulo = 'Plano de Dieta Completo',
+    external_reference
+  } = req.body || {};
+
+  if (!external_reference || typeof external_reference !== 'string') {
+    return res.status(400).json({ error: 'external_reference ausente' });
+  }
 
   try {
     const prefBody = {
@@ -29,7 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
       auto_return: 'approved',
       notification_url: 'https://dietapronta.online/api/mp-webhook',
-      external_reference: external_reference || 'quiz-dieta',
+      external_reference, // <- repassamos o ref único
     };
 
     const resp = await fetch('https://api.mercadopago.com/checkout/preferences', {
@@ -47,8 +56,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(resp.status).json({ error: data });
     }
 
-    // Retorna também init_point (fallback)
-    return res.status(200).json({ id: data.id, init_point: data.init_point });
+    // Retorna também o external_reference para debug e o init_point como fallback
+    return res.status(200).json({
+      id: data.id,
+      init_point: data.init_point,
+      external_reference
+    });
   } catch (err: any) {
     console.error(err);
     return res.status(500).json({ error: 'Erro interno ao criar preferência' });
