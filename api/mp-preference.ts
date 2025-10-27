@@ -1,6 +1,6 @@
 // /api/mp-preference.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import fetch from 'node-fetch'; // se necessário no seu ambiente
+// import fetch from 'node-fetch'; // se necessário no seu ambiente
 
 const MP_API = 'https://api.mercadopago.com';
 const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
