@@ -15,6 +15,7 @@
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
     .hidden { display: none !important; }
+    /* Box da pergunta (degradê verde) */
     fieldset.step {
       position: relative;
       background: linear-gradient(135deg, #d1fae5, #a7f3d0);
@@ -26,6 +27,7 @@
     }
     fieldset.step:hover { transform: scale(1.01); box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25); }
     fieldset.step legend { font-size: 1.25rem; font-weight: 800; color: #064e3b; margin-bottom: 10px; padding: 0 4px; }
+    /* Opções (respostas) em branco */
     .choice label {
       background: #ffffff; border: 1.5px solid #e5e7eb; color: #0f172a; border-radius: 12px;
       transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
@@ -36,6 +38,7 @@
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
+  <!-- Header -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -53,6 +56,7 @@
     </div>
   </header>
 
+  <!-- Hero -->
   <section class="bg-gradient-to-b from-white to-slate-100">
     <div class="container mx-auto px-4 py-12 grid lg:grid-cols-2 gap-10 items-center">
       <div>
@@ -76,6 +80,7 @@
     </div>
   </section>
 
+  <!-- Como funciona -->
   <section id="como-funciona" class="py-10">
     <div class="container mx-auto px-4">
       <h2 class="text-2xl md:text-3xl font-extrabold">Como funciona</h2>
@@ -99,6 +104,7 @@
     </div>
   </section>
 
+  <!-- Quiz -->
   <section id="quiz" class="py-10 bg-white border-t border-b border-slate-200">
     <div class="container mx-auto px-4">
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
@@ -123,6 +129,7 @@
     </div>
   </section>
 
+  <!-- Resultado -->
   <section id="resultado" class="py-12 hidden">
     <div class="container mx-auto px-4">
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
@@ -158,6 +165,7 @@
     </div>
   </section>
 
+  <!-- Footer -->
   <footer class="py-10 text-center text-sm text-slate-500">
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
     <a href="#" class="underline">Política de Privacidade</a>
@@ -168,6 +176,7 @@
     var WHATS_NUMBER = "55619998514680";
     var PAGAMENTO_URL = "/pagamento/";
 
+    // Perfis
     var PROFILES = {
       A:{title:"🥑 Perfil A — Low Carb / Cetogênica",desc:"Seu corpo tende a responder melhor a baixos carboidratos, priorizando proteínas magras e gorduras boas. Controle açúcar e farinhas refinadas.",tips:["Priorize ovos, peixes, carnes magras, abacate e azeite","Troque refrigerantes por água com limão","Monitore sódio e ingestão de fibras"],menu:["Café: omelete com queijo + abacate","Almoço: frango grelhado + salada com azeite","Jantar: salmão + legumes salteados"]},
       B:{title:"🍚 Perfil B — Balanceada / Mediterrânea",desc:"Seu metabolismo pede equilíbrio entre carboidratos complexos, proteínas e gorduras boas. Foco em alimentos naturais e variedade.",tips:["Monte pratos coloridos e variados","Prefira grãos integrais e frutas","Inclua azeite e oleaginosas com moderação"],menu:["Café: iogurte + granola + frutas","Almoço: arroz integral, feijão, filé de peixe e salada","Jantar: sopa de legumes + frango desfiado"]},
@@ -175,8 +184,26 @@
       D:{title:"🕒 Perfil D — Jejum Intermitente / Flexível",desc:"Você lida bem com janelas de alimentação. Foque em refeições completas e evite exageros nas quebras do jejum.",tips:["Defina janela (ex.: 16/8) com profissional, se possível","Priorize proteínas e fibras na primeira refeição","Beba água, café sem açúcar e chás no jejum"],menu:["Primeira refeição: bowl proteico (iogurte grego + nuts)","Segunda: frango + legumes + arroz integral","Terceira (opcional): sopa de legumes + ovos"]}
     };
 
-    var QUESTIONS=[{q:"Qual seu principal objetivo agora?",a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},{q:"Seu nível de energia diário é…",a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},{q:"Seu apetite ao longo do dia é…",a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome o tempo todo"]},{q:"Quantas refeições principais por dia?",a:["2 ou menos","3","4 a 5","Mais de 5 pequenas"]},{q:"Fome emocional/ansiosa?",a:["Sim, muito","Às vezes","Raramente","Nunca"]},{q:"Nível de atividade física",a:["Sedentário","Leve","Moderado (3x/sem)","Intenso (5x+)"]},{q:"Seu sono é…",a:["Ruim","Durmo bem mas acordo cansado","Regular","Muito bom"]},{q:"Costuma pular o café da manhã?",a:["Sempre","Às vezes","Raramente","Nunca"]},{q:"Seu estilo de alimentação atual",a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"]},{q:"Vontade de doces",a:["Sempre","Às vezes","Raramente","Quase nunca"]},{q:"Seu tipo de corpo",a:["Ganha peso fácil","Dificuldade para ganhar peso","Oscila rápido","Equilibrado"]},{q:"Reação aos carboidratos",a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"]},{q:"Prefere refeições…",a:["Leves e frequentes","Poucas e completas","Grandes à noite","Equilibradas"]},{q:"Consegue ficar longos períodos sem comer?",a:["Sim, tranquilo","Pouco tempo","Depende do dia","Não consigo"]},{q:"Qual frase te representa?",a:["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"]}];
+    // Perguntas
+    var QUESTIONS=[
+      {q:"Qual seu principal objetivo agora?",a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},
+      {q:"Seu nível de energia diário é…",a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},
+      {q:"Seu apetite ao longo do dia é…",a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome o tempo todo"]},
+      {q:"Quantas refeições principais por dia?",a:["2 ou menos","3","4 a 5","Mais de 5 pequenas"]},
+      {q:"Fome emocional/ansiosa?",a:["Sim, muito","Às vezes","Raramente","Nunca"]},
+      {q:"Nível de atividade física",a:["Sedentário","Leve","Moderado (3x/sem)","Intenso (5x+)"]},
+      {q:"Seu sono é…",a:["Ruim","Durmo bem mas acordo cansado","Regular","Muito bom"]},
+      {q:"Costuma pular o café da manhã?",a:["Sempre","Às vezes","Raramente","Nunca"]},
+      {q:"Seu estilo de alimentação atual",a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"]},
+      {q:"Vontade de doces",a:["Sempre","Às vezes","Raramente","Quase nunca"]},
+      {q:"Seu tipo de corpo",a:["Ganha peso fácil","Dificuldade para ganhar peso","Oscila rápido","Equilibrado"]},
+      {q:"Reação aos carboidratos",a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"]},
+      {q:"Prefere refeições…",a:["Leves e frequentes","Poucas e completas","Grandes à noite","Equilibradas"]},
+      {q:"Consegue ficar longos períodos sem comer?",a:["Sim, tranquilo","Pouco tempo","Depende do dia","Não consigo"]},
+      {q:"Qual frase te representa?",a:["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"]}
+    ];
 
+    // Estado
     var selected = new Array(QUESTIONS.length).fill(null);
     var scores = {A:0,B:0,C:0,D:0};
     var current = 0;
@@ -184,6 +211,7 @@
     function $(id){ return document.getElementById(id); }
     var form = $("quizForm");
 
+    // Render
     function renderQuestions(){
       var html="";
       for(var i=0;i<QUESTIONS.length;i++){
@@ -204,23 +232,56 @@
       form.innerHTML=html; updateProgress();
     }
 
-    function recomputeScores(){ scores.A=scores.B=scores.C=scores.D=0; for(var i=0;i<selected.length;i++){ var v=selected[i]; if(v && scores[v]!=null){ scores[v]++; } } }
-    function updateProgress(){ var pct=Math.round((current)/QUESTIONS.length*100); $("progress").style.width=pct+"%"; $("pct").textContent=pct+"%"; $("btnPrev").disabled=(current===0); }
-    function gotoStep(n){ var cur=form.querySelector('.step[data-step="'+current+'"]'); var nxt=form.querySelector('.step[data-step="'+n+'"]'); if(cur)cur.classList.add('hidden'); if(nxt)nxt.classList.remove('hidden'); current=n; updateProgress(); }
-    function nextStep(){ if(current<QUESTIONS.length-1){ gotoStep(current+1); return; } $("quiz").classList.add("hidden"); showResult(); }
+    function recomputeScores(){
+      scores.A=scores.B=scores.C=scores.D=0;
+      for(var i=0;i<selected.length;i++){ var v=selected[i]; if(v && scores[v]!=null){ scores[v]++; } }
+    }
+
+    function updateProgress(){
+      var pct=Math.round((current)/QUESTIONS.length*100);
+      $("progress").style.width=pct+"%";
+      $("pct").textContent=pct+"%";
+      $("btnPrev").disabled=(current===0);
+    }
+
+    function gotoStep(n){
+      var cur=form.querySelector('.step[data-step="'+current+'"]');
+      var nxt=form.querySelector('.step[data-step="'+n+'"]');
+      if(cur)cur.classList.add('hidden');
+      if(nxt)nxt.classList.remove('hidden');
+      current=n; updateProgress();
+    }
+
+    function nextStep(){
+      if(current<QUESTIONS.length-1){ gotoStep(current+1); return; }
+      $("quiz").classList.add("hidden"); showResult();
+    }
+
     function prevStep(){ if(current>0) gotoStep(current-1); }
 
+    // >>> Patch: salva resultado no localStorage
     function showResult(){
-      var bestKey="A",best=-1; for(var k in scores){ if(scores[k]>best){best=scores[k]; bestKey=k;} }
+      var bestKey="A",best=-1;
+      for(var k in scores){ if(scores[k]>best){best=scores[k]; bestKey=k;} }
       var p=PROFILES[bestKey];
+
+      // UI
       $("resultTitle").textContent=p.title;
       $("resultDesc").textContent=p.desc;
       $("tips").innerHTML=p.tips.map(x=>"<li>"+x+"</li>").join("");
       $("menu").innerHTML=p.menu.map(x=>"<li>"+x+"</li>").join("");
       $("resultado").classList.remove("hidden");
       $("progress").style.width="100%"; $("pct").textContent="100%";
+
+      // Salva para uso pós-pagamento
+      try{
+        localStorage.setItem('quiz_result_key',   bestKey);
+        localStorage.setItem('quiz_result_title', p.title);
+        localStorage.setItem('quiz_result_desc',  p.desc);
+      }catch(_){}
     }
 
+    // Avanço automático
     document.addEventListener("change", function(e){
       var t=e.target; if(!t||t.type!=="radio") return;
       var fs=t.closest("fieldset.step"); if(!fs) return;
@@ -229,8 +290,10 @@
       setTimeout(nextStep,120);
     });
 
+    // Voltar
     $("btnPrev").addEventListener("click", function(e){ e.preventDefault(); prevStep(); });
 
+    // Lead + redirect
     function uuidRef(){ return 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8); }
 
     function handleLead(e){
@@ -238,10 +301,14 @@
       var nome=$("nome").value.trim();
       var email=$("email").value.trim();
       var whats=$("whats").value.trim();
-      try{ localStorage.setItem('lead_nome',nome); localStorage.setItem('lead_email',email); localStorage.setItem('lead_whats',whats);}catch(_){}
+      try{
+        localStorage.setItem('lead_nome',nome);
+        localStorage.setItem('lead_email',email);
+        localStorage.setItem('lead_whats',whats);
+      }catch(_){}
       $("leadOk").classList.remove("hidden");
 
-      // SEMPRE gera um ref novo
+      // REF novo sempre
       var ref=uuidRef();
       try{ localStorage.setItem('mp_external_ref', ref);}catch(_){}
 
@@ -255,18 +322,34 @@
     }
     window.handleLead=handleLead;
 
+    // Pós-pagamento: usa resultado real salvo
     (function detectarStatus(){
       var p=new URLSearchParams(location.search);
       var status=p.get("status");
       var banner=document.getElementById("statusBanner");
-      function showBanner(texto,classes){ banner.textContent=texto; banner.className="mb-4 rounded-xl px-4 py-3 text-sm border "+classes; banner.classList.remove("hidden"); }
+
+      function showBanner(texto,classes){
+        banner.textContent=texto;
+        banner.className="mb-4 rounded-xl px-4 py-3 text-sm border "+classes;
+        banner.classList.remove("hidden");
+      }
+
+      // >>> Patch: lê título/descrição salvos
       function abrirWhatsAppComResultado(){
         var nome=$("nome")?$("nome").value.trim():(localStorage.getItem('lead_nome')||'');
-        var result=$("resultTitle").textContent||'Plano de dieta';
-        var desc=$("resultDesc").textContent||'';
-        var link="https://wa.me/55619998514680?text="+encodeURIComponent("Oi, sou "+nome+". Meu resultado no Quiz de Dieta foi: "+result+".\nResumo: "+desc+"\nPagamento confirmado. Quero receber meu plano completo.");
+        var result= localStorage.getItem('quiz_result_title')
+                  || ($("resultTitle")?$("resultTitle").textContent:'')
+                  || 'Plano de dieta';
+        var desc  = localStorage.getItem('quiz_result_desc')
+                  || ($("resultDesc")?$("resultDesc").textContent:'')
+                  || '';
+        var texto = "Oi, sou " + (nome||"cliente") + ". Meu resultado no Quiz de Dieta foi: " + result + "."
+                  + (desc ? "\nResumo: " + desc : "")
+                  + "\nPagamento confirmado. Quero receber meu plano completo.";
+        var link="https://wa.me/55619998514680?text="+encodeURIComponent(texto);
         window.open(link,"_blank");
       }
+
       if(status==="approved"){ setTimeout(abrirWhatsAppComResultado,300); return; }
       if(status==="failure"){ showBanner("Pagamento não aprovado. Você pode tentar novamente com Pix, outro cartão ou outro método.","bg-rose-50 border-rose-300 text-rose-800"); return; }
       if(status==="pending"){ showBanner("Pagamento pendente. Se foi Pix, a confirmação costuma sair em alguns minutos. Assim que for aprovado, liberamos seu plano.","bg-amber-50 border-amber-300 text-amber-800"); }
