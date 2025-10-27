@@ -343,9 +343,10 @@
         var desc  = localStorage.getItem('quiz_result_desc')
                   || ($("resultDesc")?$("resultDesc").textContent:'')
                   || '';
-        var texto = "Oi, sou " + (nome||"cliente") + ". Meu resultado no Quiz de Dieta foi: " + result + "."
+       // var texto = "Oi, sou " + (nome||"cliente") + ". Meu resultado no Quiz de Dieta foi: " + result + "."
              //     + (desc ? "\nResumo: " + desc : "")
-                  + "\nPagamento confirmado. Quero receber meu plano completo.";
+        var texto = "\nPagamento confirmado. Quero receber meu plano completo." + ". Meu resultado no Quiz de Dieta foi: " + result + ".";
+          //        + ;
         var link="https://wa.me/55619998514680?text="+encodeURIComponent(texto);
         window.open(link,"_blank");
       }
