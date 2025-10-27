@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Mercado Pago SDK -->
   <script src="https://sdk.mercadopago.com/js/v2"></script>
   <style>
     :root { --brand: #22c55e; }
@@ -19,7 +18,6 @@
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
-  <!-- Header simples -->
   <header class="bg-white border-b border-slate-200">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -34,7 +32,6 @@
     </div>
   </header>
 
-  <!-- Conteúdo -->
   <main class="container mx-auto px-4 py-10">
     <div class="grid lg:grid-cols-3 gap-8 items-start">
       <section class="lg:col-span-2">
@@ -42,16 +39,11 @@
           <h1 class="text-2xl md:text-3xl font-extrabold">Finalize o pagamento</h1>
           <p class="text-slate-600 mt-2">Valor: <strong>R$ 9,90</strong>. Aceitamos Pix, cartão e boleto.</p>
 
-          <!-- Banner de status -->
           <div id="statusBanner" class="hidden mt-4 mb-2 rounded-xl px-4 py-3 text-sm border"></div>
 
-          <!-- Checkout renderizado aqui -->
           <div id="mp-checkout" class="mt-4"></div>
-
-          <!-- Fallback link aparece se necessário -->
           <div id="fallbackLink" class="mt-3"></div>
 
-          <!-- Ajuda -->
           <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">
             <strong>Como funciona:</strong> após pagar por <em>Pix</em>, a confirmação costuma ocorrer em poucos minutos. Assim que aprovado, você será redirecionado e seu WhatsApp abrirá automaticamente para receber o plano.
           </div>
@@ -71,7 +63,6 @@
               <strong>R$ 9,90</strong>
             </li>
           </ul>
-
           <div class="mt-6 text-xs text-slate-500">
             Pagamento processado com Mercado Pago.  
             Em caso de dúvidas, volte para a <a href="/" class="underline">página principal</a>.
@@ -87,15 +78,12 @@
 
   <script>
   (function(){
-    // ===== Config =====
     var MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
-    var MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";     // cria preferência
-    var CHECK_STATUS  = "/api/mp-check-status";                             // checa status por external_reference
-    var HOME_APPROVED = "https://dietapronta.online/?status=approved#quiz"; // seu site já abre o WhatsApp ao ver 'approved'
-    var HOME_PENDING  = "https://dietapronta.online/?status=pending#quiz";
+    var MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
+    var CHECK_STATUS  = "/api/mp-check-status";
+    var HOME_APPROVED = "https://dietapronta.online/?status=approved#quiz";
     var HOME_FAILURE  = "https://dietapronta.online/?status=failure#quiz";
 
-    // ===== Util =====
     function $(id){ return document.getElementById(id); }
     function uuidRef(){ return 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8); }
 
@@ -106,62 +94,36 @@
       banner.classList.remove("hidden");
     }
 
-    // ===== External Reference =====
-    var url = new URL(location.href);
-    var ref = url.searchParams.get("ref");
-    if(!ref){
-      // se não veio na URL, gerar um novo e salvar
-      ref = uuidRef();
-      try { localStorage.setItem("mp_external_ref", ref); } catch(e){}
-      // acrescentar ref na própria URL sem recarregar
-      var u = new URL(location.href);
-      u.searchParams.set("ref", ref);
-      history.replaceState(null, "", u.toString());
-    } else {
-      // sincronizar localStorage com a ref que veio
-      try { localStorage.setItem("mp_external_ref", ref); } catch(e){}
-    }
+    // ===== SEMPRE forçar um ref novo ao abrir a página =====
+    var ref = uuidRef();
+    try { localStorage.setItem("mp_external_ref", ref); } catch(e){}
+    var u = new URL(location.href); u.searchParams.set("ref", ref); history.replaceState(null, "", u.toString());
 
-    // ===== Lead data (nome/email/whats) – automático =====
+    // ===== Dados do lead (nome/email/whats) — da URL ou localStorage =====
     function getQS(key){ return new URLSearchParams(location.search).get(key) || ""; }
-    // tenta localStorage primeiro
-    var customer_name    = "";
-    var customer_email   = "";
-    var customer_whats   = "";
-
+    var customer_name="", customer_email="", customer_whats="";
     try {
       customer_name  = localStorage.getItem("lead_nome")  || "";
       customer_email = localStorage.getItem("lead_email") || "";
       customer_whats = localStorage.getItem("lead_whats") || "";
     } catch(e){}
-
-    // fallback para query string
     if(!customer_name)  customer_name  = getQS("nome");
     if(!customer_email) customer_email = getQS("email");
     if(!customer_whats) customer_whats = getQS("whats");
 
-    // ===== Mercado Pago: criar preferência e renderizar =====
     var mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
 
     function renderCheckout(prefId, initPoint){
-      // Botão/Widget
-      mp.checkout({
-        preference: { id: prefId },
-        render: { container: "#mp-checkout", label: "Pagar R$ 9,90" }
-      });
-      // Fallback link
+      mp.checkout({ preference: { id: prefId }, render: { container: "#mp-checkout", label: "Pagar R$ 9,90" } });
       if(initPoint){
-        var a = document.createElement("a");
-        a.href = initPoint;
-        a.target = "_blank";
-        a.rel = "noopener";
-        a.className = "text-sm underline";
-        a.textContent = "⚠️ Se o botão não abrir, clique aqui para pagar";
+        var a=document.createElement("a");
+        a.href=initPoint; a.target="_blank"; a.rel="noopener";
+        a.className="text-sm underline"; a.textContent="⚠️ Se o botão não abrir, clique aqui para pagar";
         $("fallbackLink").appendChild(a);
       }
     }
 
-    // Cria a preferência (agora enviando nome/email/whats automaticamente)
+    // Cria a preferência com o ref NOVO
     fetch(MP_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type":"application/json" },
@@ -185,42 +147,27 @@
       showBanner("Não foi possível iniciar o pagamento agora. Tente reabrir esta página ou volte para a página principal.", "bg-rose-50 border-rose-300 text-rose-800");
     });
 
-    // ===== Polling leve enquanto 'pending' =====
-    var pollTimer = null;
-    function startPolling(){
-      // Primeira checagem imediata, depois a cada 12s
-      checkNow();
-      pollTimer = setInterval(checkNow, 12000);
-    }
+    var pollTimer=null;
+    function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 12000); }
 
     async function checkNow(){
       try {
-        var qs = "?ref=" + encodeURIComponent(ref);
-        var r = await fetch(CHECK_STATUS + qs, { method: "GET" });
+        var r = await fetch(CHECK_STATUS + "?ref=" + encodeURIComponent(ref));
         var data = await r.json();
-        // console.log("[check-status]", data);
-
         if(data && data.found){
           if(data.status === "approved"){
             if(pollTimer) clearInterval(pollTimer);
             showBanner("Pagamento aprovado! Redirecionando…", "bg-emerald-50 border-emerald-300 text-emerald-800");
             setTimeout(function(){ location.href = HOME_APPROVED; }, 600);
-          } else if(data.status === "pending"){
-            // permanece aguardando
           } else if(data.status === "rejected" || data.status === "cancelled" || data.status === "canceled"){
             if(pollTimer) clearInterval(pollTimer);
             showBanner("Pagamento não aprovado. Você pode tentar novamente.", "bg-rose-50 border-rose-300 text-rose-800");
             setTimeout(function(){ location.href = HOME_FAILURE; }, 1200);
           }
-        } else {
-          // ainda não achou; mantém aguardando
         }
-      } catch (e) {
-        // silencioso; tenta novamente no próximo ciclo
-      }
+      } catch(e){}
     }
 
-    // Ano
     $("year").textContent = new Date().getFullYear();
   })();
   </script>
