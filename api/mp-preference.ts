@@ -21,6 +21,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     customer_whatsapp = ''
   } = req.body || {};
 
+  // Fallback seguro no servidor
   const extRef = (typeof external_reference === 'string' && external_reference.trim())
     ? external_reference.trim()
     : genRef();
@@ -36,7 +37,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       auto_return: 'approved',
       notification_url: 'https://dietapronta.online/api/mp-webhook',
       external_reference: extRef,
-      // opcional: dados do comprador para sua auditoria
       payer: {
         name: customer_name || undefined,
         email: customer_email || undefined
