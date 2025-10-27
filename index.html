@@ -15,27 +15,56 @@
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
     .hidden { display: none !important; }
+
+    /* ===== BOX da pergunta (degradê verde) ===== */
     fieldset.step {
       position: relative;
       background: linear-gradient(135deg, #d1fae5, #a7f3d0);
       border-radius: 20px;
-      padding: 28px 20px 20px 20px;
+      padding: 28px 20px 20px 20px; /* espaço extra no topo p/ legend */
       border: 1px solid #6ee7b7;
       box-shadow: 0 8px 24px rgba(16, 185, 129, 0.20);
       transition: transform .2s ease, box-shadow .2s ease;
     }
-    fieldset.step:hover { transform: scale(1.01); box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25); }
-    fieldset.step legend { font-size: 1.25rem; font-weight: 800; color: #064e3b; margin-bottom: 10px; padding: 0 4px; }
-    .choice label {
-      background: #ffffff; border: 1.5px solid #e5e7eb; color: #0f172a; border-radius: 12px;
-      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
-      box-shadow: 0 4px 14px rgba(2, 6, 23, 0.06); display: block; padding: 12px; cursor: pointer;
+    fieldset.step:hover {
+      transform: scale(1.01);
+      box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25);
     }
-    .choice label:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(2, 6, 23, 0.10); border-color: #cbd5e1; }
-    .choice input:checked + label { border-color: #10b981; box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25); }
+    fieldset.step legend {
+      position: relative;
+      background: none;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #064e3b;
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+
+    /* ===== Opções (respostas) em branco ===== */
+    .choice label {
+      background: #ffffff;
+      border: 1.5px solid #e5e7eb;
+      color: #0f172a;
+      border-radius: 12px;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+      box-shadow: 0 4px 14px rgba(2, 6, 23, 0.06);
+      display: block;
+      padding: 12px;
+      cursor: pointer;
+    }
+    .choice label:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(2, 6, 23, 0.10);
+      border-color: #cbd5e1;
+    }
+    .choice input:checked + label {
+      border-color: #10b981;
+      box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25);
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
+  <!-- Header -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -53,10 +82,11 @@
     </div>
   </header>
 
+  <!-- Hero -->
   <section class="bg-gradient-to-b from-white to-slate-100">
     <div class="container mx-auto px-4 py-12 grid lg:grid-cols-2 gap-10 items-center">
       <div>
-        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">🧠 Descubra qual dieta realmente funciona pro seu tipo de corpo <span class="whitespace-nowrap">(em 1 minuto!)</span></h1>
+        <h1 class="text-3xl md:text-5xl font-exrabold leading-tight">🧠 Descubra qual dieta realmente funciona pro seu tipo de corpo <span class="whitespace-nowrap">(em 1 minuto!)</span></h1>
         <p class="mt-4 text-lg text-slate-600">Responda 15 perguntas rápidas e receba um plano de dieta recomendado para o seu perfil — com dicas e a opção de receber tudo no WhatsApp. Para destravar o plano completo, há uma taxa simbólica de <strong>R$ 9,90</strong>.</p>
         <div class="mt-6 flex gap-3">
           <a href="#quiz" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar agora</a>
@@ -76,6 +106,7 @@
     </div>
   </section>
 
+  <!-- Como funciona -->
   <section id="como-funciona" class="py-10">
     <div class="container mx-auto px-4">
       <h2 class="text-2xl md:text-3xl font-extrabold">Como funciona</h2>
@@ -99,9 +130,12 @@
     </div>
   </section>
 
+  <!-- Quiz -->
   <section id="quiz" class="py-10 bg-white border-t border-b border-slate-200">
     <div class="container mx-auto px-4">
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+
+        <!-- Banner de status -->
         <div id="statusBanner" class="hidden mb-4 rounded-xl px-4 py-3 text-sm border"></div>
 
         <div class="flex items-center justify-between mb-4">
@@ -114,7 +148,9 @@
           </div>
         </div>
 
-        <form id="quizForm" class="grid gap-6"><noscript>Ative o JavaScript para visualizar as perguntas do quiz.</noscript></form>
+        <form id="quizForm" class="grid gap-6">
+          <noscript>Ative o JavaScript para visualizar as perguntas do quiz.</noscript>
+        </form>
 
         <div class="mt-6 flex items-center justify-between">
           <button id="btnPrev" class="rounded-xl px-4 py-2 border border-slate-300 font-semibold disabled:opacity-40" disabled>Voltar</button>
@@ -123,6 +159,7 @@
     </div>
   </section>
 
+  <!-- Resultado -->
   <section id="resultado" class="py-12 hidden">
     <div class="container mx-auto px-4">
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
@@ -144,9 +181,22 @@
         <div class="mt-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-200">
           <h3 class="font-bold">Receba seu plano personalizado no WhatsApp</h3>
           <p class="text-slate-700 mt-1">Preencha seus dados. Após o pagamento de <strong>R$ 9,90</strong>, enviamos o plano completo.</p>
+          <!-- >>> Campo de E-MAIL atualizado (sem mascaramento) <<< -->
           <form id="leadForm" class="mt-3 grid md:grid-cols-4 gap-3" onsubmit="return handleLead(event)">
             <input id="nome" type="text" required placeholder="Seu nome" class="rounded-xl border-slate-300" />
-            <input id="email" type="email" required placeholder="Seu e-mail" class="rounded-xl border-slate-300" />
+            <input
+              id="email"
+              type="email"
+              required
+              placeholder="Seu e-mail"
+              class="rounded-xl border-slate-300"
+              autocomplete="email"
+              inputmode="email"
+              autocapitalize="none"
+              autocorrect="off"
+              spellcheck="false"
+              style="-webkit-text-security: none !important; text-security: none !important;"
+            />
             <input id="whats" type="tel" inputmode="tel" required placeholder="(61) 9 9999-9999" class="rounded-xl border-slate-300" />
             <button class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold">Continuar</button>
           </form>
@@ -156,6 +206,7 @@
     </div>
   </section>
 
+  <!-- Footer -->
   <footer class="py-10 text-center text-sm text-slate-500">
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
     <a href="#" class="underline">Política de Privacidade</a>
@@ -163,116 +214,12 @@
 
   <script>
   (function(){
-    var WHATS_NUMBER = "55619998514680";
+    // ====== CONFIG ======
+    var WHATS_NUMBER = "55619998514680"; // seu número com DDI
+    // Página de pagamento sem popup:
     var PAGAMENTO_URL = "/pagamento/";
 
+    // ====== PERFIS ======
     var PROFILES = {
-      A:{title:"🥑 Perfil A — Low Carb / Cetogênica",desc:"Seu corpo tende a responder melhor a baixos carboidratos, priorizando proteínas magras e gorduras boas. Controle açúcar e farinhas refinadas.",tips:["Priorize ovos, peixes, carnes magras, abacate e azeite","Troque refrigerantes por água com limão","Monitore sódio e ingestão de fibras"],menu:["Café: omelete com queijo + abacate","Almoço: frango grelhado + salada com azeite","Jantar: salmão + legumes salteados"]},
-      B:{title:"🍚 Perfil B — Balanceada / Mediterrânea",desc:"Seu metabolismo pede equilíbrio entre carboidratos complexos, proteínas e gorduras boas. Foco em alimentos naturais e variedade.",tips:["Monte pratos coloridos e variados","Prefira grãos integrais e frutas","Inclua azeite e oleaginosas com moderação"],menu:["Café: iogurte + granola + frutas","Almoço: arroz integral, feijão, filé de peixe e salada","Jantar: sopa de legumes + frango desfiado"]},
-      C:{title:"🥩 Perfil C — Proteica / Hiperproteica",desc:"Alta ingestão de proteína com carboidratos ajustados favorece definição e manutenção de massa magra.",tips:["Inclua fonte proteica em todas as refeições","Avalie uso de whey/proteína conforme orientação profissional","Hidrate-se e ajuste fibras para o intestino funcionar bem"],menu:["Café: ovos mexidos + queijo branco","Almoço: patinho grelhado + salada + quinoa","Jantar: omelete de claras + legumes"]},
-      D:{title:"🕒 Perfil D — Jejum Intermitente / Flexível",desc:"Você lida bem com janelas de alimentação. Foque em refeições completas e evite exageros nas quebras do jejum.",tips:["Defina janela (ex.: 16/8) com profissional, se possível","Priorize proteínas e fibras na primeira refeição","Beba água, café sem açúcar e chás no jejum"],menu:["Primeira refeição: bowl proteico (iogurte grego + nuts)","Segunda: frango + legumes + arroz integral","Terceira (opcional): sopa de legumes + ovos"]}
-    };
-
-    var QUESTIONS=[{q:"Qual seu principal objetivo agora?",a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},{q:"Seu nível de energia diário é…",a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},{q:"Seu apetite ao longo do dia é…",a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome o tempo todo"]},{q:"Quantas refeições principais por dia?",a:["2 ou menos","3","4 a 5","Mais de 5 pequenas"]},{q:"Fome emocional/ansiosa?",a:["Sim, muito","Às vezes","Raramente","Nunca"]},{q:"Nível de atividade física",a:["Sedentário","Leve","Moderado (3x/sem)","Intenso (5x+)"]},{q:"Seu sono é…",a:["Ruim","Durmo bem mas acordo cansado","Regular","Muito bom"]},{q:"Costuma pular o café da manhã?",a:["Sempre","Às vezes","Raramente","Nunca"]},{q:"Seu estilo de alimentação atual",a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"]},{q:"Vontade de doces",a:["Sempre","Às vezes","Raramente","Quase nunca"]},{q:"Seu tipo de corpo",a:["Ganha peso fácil","Dificuldade para ganhar peso","Oscila rápido","Equilibrado"]},{q:"Reação aos carboidratos",a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"]},{q:"Prefere refeições…",a:["Leves e frequentes","Poucas e completas","Grandes à noite","Equilibradas"]},{q:"Consegue ficar longos períodos sem comer?",a:["Sim, tranquilo","Pouco tempo","Depende do dia","Não consigo"]},{q:"Qual frase te representa?",a:["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"]}];
-
-    var selected = new Array(QUESTIONS.length).fill(null);
-    var scores = {A:0,B:0,C:0,D:0};
-    var current = 0;
-
-    function $(id){ return document.getElementById(id); }
-    var form = $("quizForm");
-
-    function renderQuestions(){
-      var html="";
-      for(var i=0;i<QUESTIONS.length;i++){
-        var item=QUESTIONS[i];
-        html+='<fieldset data-step="'+i+'" class="step'+(i===0?'':' hidden')+'">';
-        html+='<legend>'+(i+1)+'. '+ item.q +'</legend>';
-        html+='<div class="mt-3 grid sm:grid-cols-2 gap-3">';
-        for(var j=0;j<item.a.length;j++){
-          var letter=String.fromCharCode(65+j);
-          var id="q"+i+"_"+letter;
-          html+='<div class="choice">';
-          html+='<input class="peer hidden" type="radio" id="'+id+'" name="q'+i+'" value="'+letter+'" required />';
-          html+='<label for="'+id+'" class="block text-[1.05rem]">'+ item.a[j] +'</label>';
-          html+='</div>';
-        }
-        html+='</div></fieldset>';
-      }
-      form.innerHTML=html; updateProgress();
-    }
-
-    function recomputeScores(){ scores.A=scores.B=scores.C=scores.D=0; for(var i=0;i<selected.length;i++){ var v=selected[i]; if(v && scores[v]!=null){ scores[v]++; } } }
-    function updateProgress(){ var pct=Math.round((current)/QUESTIONS.length*100); $("progress").style.width=pct+"%"; $("pct").textContent=pct+"%"; $("btnPrev").disabled=(current===0); }
-    function gotoStep(n){ var cur=form.querySelector('.step[data-step="'+current+'"]'); var nxt=form.querySelector('.step[data-step="'+n+'"]'); if(cur)cur.classList.add('hidden'); if(nxt)nxt.classList.remove('hidden'); current=n; updateProgress(); }
-    function nextStep(){ if(current<QUESTIONS.length-1){ gotoStep(current+1); return; } $("quiz").classList.add("hidden"); showResult(); }
-    function prevStep(){ if(current>0) gotoStep(current-1); }
-
-    function showResult(){
-      var bestKey="A",best=-1; for(var k in scores){ if(scores[k]>best){best=scores[k]; bestKey=k;} }
-      var p=PROFILES[bestKey];
-      $("resultTitle").textContent=p.title;
-      $("resultDesc").textContent=p.desc;
-      $("tips").innerHTML=p.tips.map(x=>"<li>"+x+"</li>").join("");
-      $("menu").innerHTML=p.menu.map(x=>"<li>"+x+"</li>").join("");
-      $("resultado").classList.remove("hidden");
-      $("progress").style.width="100%"; $("pct").textContent="100%";
-    }
-
-    document.addEventListener("change", function(e){
-      var t=e.target; if(!t||t.type!=="radio") return;
-      var fs=t.closest("fieldset.step"); if(!fs) return;
-      var idx=parseInt(fs.getAttribute("data-step"),10);
-      selected[idx]=t.value; recomputeScores();
-      setTimeout(nextStep,120);
-    });
-
-    $("btnPrev").addEventListener("click", function(e){ e.preventDefault(); prevStep(); });
-
-    function uuidRef(){ return 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8); }
-
-    function handleLead(e){
-      e.preventDefault();
-      var nome=$("nome").value.trim();
-      var email=$("email").value.trim();
-      var whats=$("whats").value.trim();
-      try{ localStorage.setItem('lead_nome',nome); localStorage.setItem('lead_email',email); localStorage.setItem('lead_whats',whats);}catch(_){}
-      $("leadOk").classList.remove("hidden");
-
-      // SEMPRE gera um ref novo
-      var ref=uuidRef();
-      try{ localStorage.setItem('mp_external_ref', ref);}catch(_){}
-
-      var u=new URL(PAGAMENTO_URL, location.origin);
-      u.searchParams.set('ref', ref);
-      u.searchParams.set('nome', nome);
-      u.searchParams.set('email', email);
-      u.searchParams.set('whats', whats);
-      location.href=u.toString();
-      return false;
-    }
-    window.handleLead=handleLead;
-
-    (function detectarStatus(){
-      var p=new URLSearchParams(location.search);
-      var status=p.get("status");
-      var banner=document.getElementById("statusBanner");
-      function showBanner(texto,classes){ banner.textContent=texto; banner.className="mb-4 rounded-xl px-4 py-3 text-sm border "+classes; banner.classList.remove("hidden"); }
-      function abrirWhatsAppComResultado(){
-        var nome=$("nome")?$("nome").value.trim():(localStorage.getItem('lead_nome')||'');
-        var result=$("resultTitle").textContent||'Plano de dieta';
-        var desc=$("resultDesc").textContent||'';
-        var link="https://wa.me/55619998514680?text="+encodeURIComponent("Oi, sou "+nome+". Meu resultado no Quiz de Dieta foi: "+result+".\nResumo: "+desc+"\nPagamento confirmado. Quero receber meu plano completo.");
-        window.open(link,"_blank");
-      }
-      if(status==="approved"){ setTimeout(abrirWhatsAppComResultado,300); return; }
-      if(status==="failure"){ showBanner("Pagamento não aprovado. Você pode tentar novamente com Pix, outro cartão ou outro método.","bg-rose-50 border-rose-300 text-rose-800"); return; }
-      if(status==="pending"){ showBanner("Pagamento pendente. Se foi Pix, a confirmação costuma sair em alguns minutos. Assim que for aprovado, liberamos seu plano.","bg-amber-50 border-amber-300 text-amber-800"); }
-    })();
-
-    document.getElementById("year").textContent=(new Date()).getFullYear();
-    renderQuestions();
-  })();
-  </script>
-</body>
-</html>
+      A: { title: "🥑 Perfil A — Low Carb / Cetogênica", desc: "Seu corpo tende a responder melhor a baixos carboidratos, priorizando proteínas magras e gorduras boas. Controle açúcar e farinhas refinadas.", tips: ["Priorize ovos, peixes, carnes magras, abacate e azeite","Troque refrigerantes por água com limão","Monitore sódio e ingestão de fibras"], menu: ["Café: omelete com queijo + abacate","Almoço: frango grelhado + salada com azeite","Jantar: salmão + legumes salteados"] },
+      B: { title: "🍚 Perfil B — Balanceada / Mediterrânea", desc: "Seu metabolismo pede equilíbrio entre carboidratos complexos
