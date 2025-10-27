@@ -3,87 +3,335 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Admin • Vendas — Dieta Pronta</title>
+  <title>Admin • Vendas — Dieta Pronta Online</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand:#22c55e; }
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial; }
+    .badge { padding: 0.125rem .5rem; border-radius: .625rem; font-size:.75rem; font-weight:600; }
+    .badge-approved { background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; }
+    .badge-pending { background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
+    .badge-failure,.badge-rejected,.badge-canceled,.badge-cancelled { background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .table-wrap { overflow:auto; max-height: 70vh; }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
   <div class="min-h-screen flex items-start justify-center p-6">
-    <div class="w-full max-w-4xl">
-      <div class="bg-white p-6 rounded-2xl shadow">
-        <h1 class="text-2xl font-bold">Painel de Vendas — Dieta Pronta</h1>
-        <p class="text-sm text-slate-500 mt-1">Acesso restrito. Informe usuário e senha.</p>
+    <div class="w-full max-w-6xl">
+      <div class="bg-white p-6 rounded-2xl shadow border border-slate-200">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-extrabold">Painel de Vendas — Dieta Pronta Online</h1>
+            <p class="text-sm text-slate-500 mt-1">Acesso restrito. Informe usuário e senha.</p>
+          </div>
+          <a href="/" class="text-sm text-slate-500 underline">Voltar ao site</a>
+        </div>
 
-        <form id="authForm" class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-          <input id="user" placeholder="Usuário" class="rounded border px-3 py-2"/>
-          <input id="pass" type="password" placeholder="Senha" class="rounded border px-3 py-2"/>
-          <button class="rounded bg-emerald-600 text-white px-4 py-2" type="submit">Entrar</button>
+        <!-- Login -->
+        <form id="authForm" class="mt-5 grid grid-cols-1 md:grid-cols-5 gap-3">
+          <input id="user" placeholder="Usuário (ADMIN_USER)" class="rounded border px-3 py-2 md:col-span-2"/>
+          <input id="pass" type="password" placeholder="Senha (ADMIN_PASS)" class="rounded border px-3 py-2 md:col-span-2"/>
+          <button class="rounded bg-emerald-600 text-white px-4 py-2 font-semibold">Entrar</button>
         </form>
 
+        <!-- Barra do painel -->
         <div id="panel" class="hidden mt-6">
-          <div class="flex items-center justify-between">
-            <h2 class="font-bold">Vendas registradas</h2>
-            <button id="refresh" class="text-sm underline">Atualizar</button>
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+              <div>
+                <label class="text-xs text-slate-500 block mb-1">Fonte de dados</label>
+                <select id="dataSource" class="rounded border px-3 py-2">
+                  <option value="airtable">Airtable (recomendado)</option>
+                  <option value="mp">Mercado Pago (direto)</option>
+                </select>
+                <p class="text-[11px] text-slate-400 mt-1">Airtable requer AIRTABLE_API_KEY + BASE_ID + tabela “Vendas”. “MP direto” usa /api/admin/sales-mp.</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 block mb-1">Filtro rápido</label>
+                <select id="statusFilter" class="rounded border px-3 py-2">
+                  <option value="">Todos os status</option>
+                  <option value="approved">Aprovados</option>
+                  <option value="pending">Pendentes</option>
+                  <option value="rejected">Rejeitados</option>
+                  <option value="canceled">Cancelados</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 block mb-1">Pesquisar (nome, e-mail, ref)</label>
+                <input id="searchBox" class="rounded border px-3 py-2 w-full" placeholder="Digite para filtrar…"/>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button id="refresh" class="rounded border px-3 py-2">Atualizar</button>
+              <button id="exportCsv" class="rounded bg-emerald-600 text-white px-3 py-2">Exportar CSV</button>
+              <button id="logout" class="rounded bg-slate-800 text-white px-3 py-2">Sair</button>
+            </div>
           </div>
 
-          <div id="list" class="mt-4 overflow-auto max-h-[60vh]">
-            <!-- tabela -->
+          <!-- KPIs -->
+          <div id="kpis" class="mt-5 grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div class="p-4 rounded-xl border">
+              <div class="text-xs text-slate-500">Vendas (total)</div>
+              <div id="kpiTotal" class="text-xl font-bold">0</div>
+            </div>
+            <div class="p-4 rounded-xl border">
+              <div class="text-xs text-slate-500">Aprovadas</div>
+              <div id="kpiAprovadas" class="text-xl font-bold text-emerald-700">0</div>
+            </div>
+            <div class="p-4 rounded-xl border">
+              <div class="text-xs text-slate-500">Pendentes</div>
+              <div id="kpiPendentes" class="text-xl font-bold text-amber-700">0</div>
+            </div>
+            <div class="p-4 rounded-xl border">
+              <div class="text-xs text-slate-500">Receita (aprovadas)</div>
+              <div id="kpiReceita" class="text-xl font-bold">R$ 0,00</div>
+            </div>
+          </div>
+
+          <!-- Tabela -->
+          <div class="table-wrap mt-5 rounded-xl border">
+            <table class="w-full text-sm">
+              <thead class="sticky top-0 bg-slate-100">
+                <tr>
+                  <th class="text-left p-2">Data</th>
+                  <th class="text-left p-2">Nome</th>
+                  <th class="text-left p-2">E-mail</th>
+                  <th class="text-left p-2">WhatsApp</th>
+                  <th class="text-left p-2">Valor</th>
+                  <th class="text-left p-2">Status</th>
+                  <th class="text-left p-2">Ref</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
           </div>
         </div>
 
         <div id="msg" class="mt-4 text-sm text-rose-600"></div>
+        <div id="hint" class="mt-1 text-xs text-slate-500"></div>
       </div>
     </div>
   </div>
 
   <script>
   (function(){
-    const form = document.getElementById('authForm');
-    const panel = document.getElementById('panel');
-    const list = document.getElementById('list');
-    const msg = document.getElementById('msg');
+    const authForm    = document.getElementById('authForm');
+    const panel       = document.getElementById('panel');
+    const msg         = document.getElementById('msg');
+    const hint        = document.getElementById('hint');
+    const tbody       = document.getElementById('tbody');
+    const refreshBtn  = document.getElementById('refresh');
+    const exportBtn   = document.getElementById('exportCsv');
+    const logoutBtn   = document.getElementById('logout');
+    const dataSource  = document.getElementById('dataSource');
+    const statusFilter= document.getElementById('statusFilter');
+    const searchBox   = document.getElementById('searchBox');
 
-    function basicAuthHeader(user, pass){
-      return 'Basic ' + btoa(user + ':' + pass);
-    }
-
-    async function fetchSales(authHeader){
-      try {
-        const r = await fetch('/api/admin/sales', { headers: { Authorization: authHeader }});
-        if (r.status === 401) { msg.textContent = 'Usuário ou senha incorretos.'; return null; }
-        const data = await r.json();
-        return data;
-      } catch (e) { msg.textContent = 'Erro ao buscar vendas: ' + e.message; return null; }
-    }
-
-    function renderTable(rows){
-      if(!rows || rows.length === 0) { list.innerHTML = '<p class="text-sm text-slate-500">Nenhuma venda encontrada.</p>'; return; }
-      let html = '<table class="w-full text-sm"><thead class="text-left"><tr><th>Data</th><th>Nome</th><th>E-mail</th><th>WhatsApp</th><th>Valor</th><th>Status</th><th>Ref</th></tr></thead><tbody>';
-      for(const r of rows){
-        html += `<tr class="border-t"><td class="py-2">${r.created_at || ''}</td><td class="py-2">${r.customer_name || ''}</td><td>${r.customer_email || ''}</td><td>${r.customer_whatsapp || ''}</td><td>R$ ${Number(r.amount||0).toFixed(2)}</td><td>${r.status||''}</td><td>${r.external_reference||''}</td></tr>`;
-      }
-      html += '</tbody></table>';
-      list.innerHTML = html;
-    }
+    const kpiTotal     = document.getElementById('kpiTotal');
+    const kpiAprovadas = document.getElementById('kpiAprovadas');
+    const kpiPendentes = document.getElementById('kpiPendentes');
+    const kpiReceita   = document.getElementById('kpiReceita');
 
     let authHeader = null;
+    let rawRows = [];   // dados originais vindos da API
+    let viewRows = [];  // dados filtrados/ordenados
 
-    form.addEventListener('submit', async function(e){
-      e.preventDefault(); msg.textContent = '';
+    // ===== Utils =====
+    function basicAuthHeader(user, pass){ return 'Basic ' + btoa(user + ':' + pass); }
+    function fmtMoney(n){ n = Number(n||0); return n.toLocaleString('pt-BR', { style:'currency', currency:'BRL' }); }
+    function toBadge(status){
+      if(!status) return '';
+      const s = String(status).toLowerCase();
+      let cls = 'badge ';
+      if(s === 'approved') cls += 'badge-approved';
+      else if(s === 'pending') cls += 'badge-pending';
+      else if(['rejected','failure','failed','canceled','cancelled'].includes(s)) cls += 'badge-failure';
+      else cls += 'badge-pending';
+      return `<span class="${cls}">${s}</span>`;
+    }
+    function safe(v){ return (v===undefined || v===null) ? '' : String(v); }
+    function parseDate(d){
+      if(!d) return '';
+      try { return new Date(d).toLocaleString('pt-BR'); } catch(e){ return d; }
+    }
+
+    function currentEndpoint(){
+      return (dataSource.value === 'mp') ? '/api/admin/sales-mp' : '/api/admin/sales';
+    }
+
+    // ===== Fetch & Render =====
+    async function fetchSales(){
+      msg.textContent = '';
+      hint.textContent = '';
+      try {
+        const r = await fetch(currentEndpoint(), { headers: { Authorization: authHeader }});
+        const text = await r.text();
+        let data = [];
+        try { data = JSON.parse(text); } catch(e) {
+          throw new Error('Resposta não é JSON: ' + text.slice(0,180));
+        }
+        if (r.status === 401) { throw new Error('Usuário ou senha incorretos.'); }
+        if (r.status >= 400) { throw new Error((data && data.error) ? JSON.stringify(data.error) : 'Erro '+r.status); }
+
+        // normaliza campos entre airtable e mp
+        rawRows = data.map((x)=>normalizeRow(x));
+        applyFiltersAndRender();
+        updateKpis();
+
+        hint.textContent = (dataSource.value==='airtable')
+          ? 'Fonte: Airtable (/api/admin/sales).'
+          : 'Fonte: Mercado Pago (/api/admin/sales-mp).';
+      } catch (e) {
+        msg.textContent = 'Erro ao buscar vendas: ' + (e.message || e);
+      }
+    }
+
+    function normalizeRow(r){
+      // Airtable route: campos ficam em nível superior (mapeado em /api/admin/sales)
+      // MP route: campos seguem o search (results)
+      // Normalizamos para: { created_at, customer_name, customer_email, customer_whatsapp, amount, status, external_reference }
+      if ('transaction_amount' in r || 'date_created' in r) {
+        // Mercado Pago (sales-mp)
+        return {
+          created_at: r.date_created || '',
+          customer_name: r.metadata?.customer_name || '', // só aparece se você mandou metadata
+          customer_email: r.payer_email || '',
+          customer_whatsapp: r.metadata?.customer_whatsapp || '',
+          amount: r.transaction_amount || 0,
+          status: r.status || '',
+          external_reference: r.external_reference || ''
+        };
+      } else {
+        // Airtable / arquivo local (sales)
+        return {
+          created_at: r.created_at || '',
+          customer_name: r.customer_name || '',
+          customer_email: r.customer_email || '',
+          customer_whatsapp: r.customer_whatsapp || '',
+          amount: r.amount || 0,
+          status: r.status || '',
+          external_reference: r.external_reference || ''
+        };
+      }
+    }
+
+    function applyFiltersAndRender(){
+      const term = searchBox.value.trim().toLowerCase();
+      const st   = statusFilter.value;
+
+      viewRows = rawRows.filter((row)=>{
+        if (st && String(row.status).toLowerCase() !== st) return false;
+        if (term) {
+          const blob = (safe(row.customer_name)+' '+safe(row.customer_email)+' '+safe(row.external_reference)).toLowerCase();
+          if (!blob.includes(term)) return false;
+        }
+        return true;
+      });
+
+      // ordenar por data desc
+      viewRows.sort((a,b)=> String(b.created_at||'').localeCompare(String(a.created_at||'')));
+
+      // render
+      let html = '';
+      if (viewRows.length === 0) {
+        html = `<tr><td colspan="7" class="p-3 text-slate-500">Nenhuma venda encontrada.</td></tr>`;
+      } else {
+        for (const r of viewRows) {
+          html += `
+            <tr class="border-t">
+              <td class="p-2 whitespace-nowrap">${parseDate(r.created_at)}</td>
+              <td class="p-2">${safe(r.customer_name)}</td>
+              <td class="p-2">${safe(r.customer_email)}</td>
+              <td class="p-2">${safe(r.customer_whatsapp)}</td>
+              <td class="p-2 whitespace-nowrap">${fmtMoney(r.amount)}</td>
+              <td class="p-2">${toBadge(r.status)}</td>
+              <td class="p-2 mono">${safe(r.external_reference)}</td>
+            </tr>`;
+        }
+      }
+      tbody.innerHTML = html;
+    }
+
+    function updateKpis(){
+      kpiTotal.textContent = String(rawRows.length);
+      const ap = rawRows.filter(r => String(r.status).toLowerCase()==='approved');
+      const pe = rawRows.filter(r => String(r.status).toLowerCase()==='pending');
+      kpiAprovadas.textContent = String(ap.length);
+      kpiPendentes.textContent = String(pe.length);
+      const receita = ap.reduce((acc,x)=> acc + Number(x.amount||0), 0);
+      kpiReceita.textContent = fmtMoney(receita);
+    }
+
+    function exportCSV(rows){
+      if (!rows || rows.length===0) { alert('Nada para exportar.'); return; }
+      const cols = ['created_at','customer_name','customer_email','customer_whatsapp','amount','status','external_reference'];
+      const csvHeader = cols.join(';');
+      const csvBody = rows.map(r => cols.map(c => {
+        let v = (r[c]!==undefined && r[c]!==null) ? String(r[c]) : '';
+        // escapa ; e quebras de linha
+        v = v.replace(/;/g, ',').replace(/\r?\n|\r/g, ' ');
+        return v;
+      }).join(';')).join('\n');
+
+      const blob = new Blob([csvHeader+'\n'+csvBody], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const ts = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+      a.download = `vendas-${dataSource.value}-${ts}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // ===== Events =====
+    authForm.addEventListener('submit', async function(e){
+      e.preventDefault(); msg.textContent = ''; hint.textContent='';
       const user = document.getElementById('user').value.trim();
       const pass = document.getElementById('pass').value.trim();
-      if(!user || !pass) { msg.textContent = 'Preencha usuário e senha.'; return; }
+      if(!user || !pass){ msg.textContent = 'Preencha usuário e senha.'; return; }
       authHeader = basicAuthHeader(user, pass);
-      const data = await fetchSales(authHeader);
-      if(data) {
-        panel.classList.remove('hidden'); form.classList.add('hidden');
-        renderTable(data);
-      }
+      panel.classList.remove('hidden');
+      authForm.classList.add('hidden');
+      await fetchSales();
     });
 
-    document.getElementById('refresh').addEventListener('click', async function(){
-      if(!authHeader) return;
-      const data = await fetchSales(authHeader);
-      if(data) renderTable(data);
+    refreshBtn.addEventListener('click', function(){
+      if(!authHeader){ msg.textContent='Faça login primeiro.'; return; }
+      fetchSales();
+    });
+
+    logoutBtn.addEventListener('click', function(){
+      authHeader = null;
+      rawRows = []; viewRows = [];
+      tbody.innerHTML = '';
+      kpiTotal.textContent = '0';
+      kpiAprovadas.textContent = '0';
+      kpiPendentes.textContent = '0';
+      kpiReceita.textContent = 'R$ 0,00';
+      panel.classList.add('hidden');
+      authForm.classList.remove('hidden');
+      msg.textContent = 'Sessão encerrada.';
+    });
+
+    exportBtn.addEventListener('click', function(){
+      exportCSV(viewRows);
+    });
+
+    dataSource.addEventListener('change', function(){
+      if(!authHeader){ msg.textContent='Faça login primeiro.'; return; }
+      fetchSales();
+    });
+
+    statusFilter.addEventListener('change', function(){
+      applyFiltersAndRender(); updateKpis();
+    });
+
+    searchBox.addEventListener('input', function(){
+      applyFiltersAndRender(); updateKpis();
     });
   })();
   </script>
