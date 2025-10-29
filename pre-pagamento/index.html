@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pagamento aprovado ✅ | Dieta Pronta Online</title>
+  <meta name="description" content="Confirmação de pagamento aprovado. Mostra o resultado do quiz e orienta o próximo passo pelo WhatsApp." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand: #22c55e; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    .container { max-width: 960px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
+    .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-5 w-5 text-[var(--brand)]"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+        </div>
+        <a href="/" class="font-extrabold tracking-tight hover:opacity-80">Dieta Pronta Online</a>
+      </div>
+      <nav class="hidden md:flex gap-6 text-sm text-slate-600">
+        <a href="/" class="hover:text-slate-900">Início</a>
+        <a href="/pre-pagamento/" class="hover:text-slate-900">Plano</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="py-10">
+    <div class="container mx-auto px-4">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <div class="flex items-start gap-4">
+          <div class="h-12 w-12 rounded-2xl bg-emerald-100 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-extrabold">Pagamento aprovado com sucesso! 🎉</h1>
+            <p class="mt-2 text-slate-700">Obrigado, <span id="nomeSpan">cliente</span>! Recebemos sua confirmação e já liberamos seu acesso ao plano.</p>
+            <p class="text-slate-600">Para agilizar, enviamos tudo pelo <strong>WhatsApp</strong>. Se preferir, você também receberá por e‑mail.</p>
+          </div>
+        </div>
+
+        <div id="resumo" class="mt-6 grid md:grid-cols-3 gap-6">
+          <div class="md:col-span-2 p-5 rounded-2xl border border-slate-200">
+            <p class="text-sm text-slate-500">Resumo do seu plano</p>
+            <h2 id="planoTitle" class="mt-1 text-xl font-bold">Plano personalizado</h2>
+            <p id="planoDesc" class="mt-2 text-slate-700"></p>
+
+            <div id="etiquetas" class="mt-4 flex flex-wrap gap-2 text-sm">
+              <span id="etqDieta" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
+              <span id="etqBiotipo" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
+              <span id="etqImc" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
+              <span id="refSpan" class="badge bg-slate-100 text-slate-800 hidden"></span>
+            </div>
+
+            <div class="mt-6 grid sm:grid-cols-2 gap-4">
+              <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200">
+                <p class="font-semibold">O que você vai receber</p>
+                <ul class="mt-2 list-disc list-inside text-slate-800 space-y-1">
+                  <li>Dieta completa com 3 opções por refeição (café, almoço, lanche, jantar e ceia)</li>
+                  <li>Livro digital com 200+ receitas saudáveis</li>
+                  <li>Suplementação recomendada ao seu perfil</li>
+                  <li>Estratégias complementares e hábitos-chave</li>
+                  <li>Explicação do seu metabolismo e biotipo</li>
+                </ul>
+              </div>
+              <div class="p-4 rounded-xl border border-slate-200">
+                <p class="font-semibold">Como funciona a entrega</p>
+                <p class="mt-2 text-slate-700">Nós geramos seu material personalizado e te enviamos pelo WhatsApp. Se não abrir automaticamente, clique no botão abaixo:</p>
+                <a id="btnWhats" href="#" class="mt-3 inline-flex items-center gap-2 rounded-xl px-4 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="h-5 w-5" fill="currentColor"><path d="M19.11 17.46c-.29-.14-1.68-.83-1.94-.93-.26-.1-.45-.14-.64.14-.19.29-.74.93-.91 1.12-.17.19-.34.22-.63.07-.29-.14-1.23-.45-2.34-1.43-.86-.77-1.44-1.72-1.61-2-.17-.29-.02-.45.12-.59.12-.12.29-.31.43-.46.14-.15.19-.26.29-.43.1-.19.05-.36-.02-.5-.07-.14-.64-1.54-.88-2.11-.23-.55-.47-.48-.64-.49-.17-.01-.36-.01-.55-.01-.19 0-.5.07-.76.36-.26.29-1 1-1 2.43s1.02 2.82 1.16 3.01c.14.19 2.01 3.06 4.87 4.29.68.29 1.21.46 1.62.59.68.22 1.3.19 1.79.12.55-.08 1.68-.69 1.92-1.35.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.33zM27 16c0 6.07-4.93 11-11 11-1.94 0-3.76-.51-5.33-1.41L5 27l1.41-5.67C5.51 19.76 5 17.94 5 16 5 9.93 9.93 5 16 5s11 4.93 11 11z"/></svg>
+                  Abrir WhatsApp
+                </a>
+                <p id="autoMsg" class="mt-2 text-xs text-slate-500">Tentando abrir automaticamente… Caso não abra, toque no botão.</p>
+              </div>
+            </div>
+          </div>
+          <aside class="p-5 rounded-2xl border border-slate-200">
+            <p class="text-sm text-slate-500">Próximos passos</p>
+            <ol class="mt-2 text-slate-700 list-decimal list-inside space-y-1">
+              <li>Abra o WhatsApp pelo botão ao lado;</li>
+              <li>Confirme seu nome e e-mail (para envio do material);</li>
+              <li>Receba seu plano completo e receitas.</li>
+            </ol>
+            <div class="mt-4 text-xs text-slate-500">Se precisar de ajuda, fale conosco: <a class="underline" href="https://wa.me/55619998514680" target="_blank" rel="noopener">suporte pelo WhatsApp</a>.</div>
+          </aside>
+        </div>
+      </div>
+
+      <div class="mt-6 text-center">
+        <a class="text-sm underline text-slate-600 hover:text-slate-900" href="/">Voltar para a página inicial</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    (function(){
+      function $(id){ return document.getElementById(id); }
+      function qs(k){ try{ return new URLSearchParams(location.search).get(k)||''; }catch(_){ return ''; } }
+
+      // Dados do lead e resultado
+      var nome  = qs('nome')  || localStorage.getItem('lead_nome')  || '';
+      var email = qs('email') || localStorage.getItem('lead_email') || '';
+      var whats = qs('whats') || localStorage.getItem('lead_whats') || '';
+      var ref   = qs('ref')   || localStorage.getItem('mp_external_ref') || '';
+
+      var resultTitle = localStorage.getItem('quiz_result_title') || '';
+      var resultDesc  = localStorage.getItem('quiz_result_desc')  || '';
+      var dietTitle   = localStorage.getItem('quiz_result_diet_title') || '';
+      var bodyName    = localStorage.getItem('quiz_result_body_name')  || '';
+      var imcVal      = localStorage.getItem('quiz_imc_value') || '';
+      var imcLbl      = localStorage.getItem('quiz_imc_label') || '';
+
+      if(nome) { $('nomeSpan').textContent = nome; }
+      if(resultTitle) { $('planoTitle').textContent = resultTitle; }
+      if(resultDesc)  { $('planoDesc').textContent  = resultDesc; }
+
+      if(dietTitle){ var e=$('etqDieta'); e.textContent='Dieta: '+dietTitle; e.classList.remove('hidden'); }
+      if(bodyName){ var e=$('etqBiotipo'); e.textContent='Biotipo: '+bodyName; e.classList.remove('hidden'); }
+      if(imcVal){ var e=$('etqImc'); e.textContent='IMC: '+imcVal + (imcLbl? ' ('+imcLbl+')':'' ); e.classList.remove('hidden'); }
+      if(ref){ var e=$('refSpan'); e.textContent='Ref: '+ref; e.classList.remove('hidden'); }
+
+      // Monta o texto do WhatsApp (mesmo padrão do site principal)
+      var linhas=[];
+      linhas.push('Oi, sou ' + (nome||'cliente') + '.');
+      linhas.push('Meu pagamento foi aprovado e meu resultado no Quiz foi: ' + (resultTitle||'Plano de dieta') + '.');
+      if(dietTitle || bodyName){ linhas.push('• Biotipo: ' + (bodyName||'-') + ' • Dieta: ' + (dietTitle||'-')); }
+      if(imcVal){ linhas.push('• IMC: ' + imcVal + (imcLbl? ' ('+imcLbl+')':'')); }
+      if(resultDesc){ linhas.push('Resumo: ' + resultDesc); }
+      linhas.push('Quero receber meu plano completo.');
+      var texto = encodeURIComponent(linhas.join('\n'));
+      var link  = 'https://wa.me/55619998514680?text=' + texto;
+
+      var btn = $('btnWhats');
+      btn.setAttribute('href', link);
+
+      // Tentativa de abertura automática (alguns navegadores podem bloquear)
+      setTimeout(function(){
+        try { window.open(link, '_blank'); } catch(_){ /* ignore */ }
+      }, 600);
+
+      $('year').textContent = (new Date()).getFullYear();
+    })();
+  </script>
+</body>
+</html>
