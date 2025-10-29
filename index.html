@@ -556,7 +556,7 @@
       document.getElementById('leadOk').classList.remove('hidden');
 
       var ref=uuidRef(); try{ localStorage.setItem('mp_external_ref', ref);}catch(_){}
-      var u=new URL(PAGAMENTO_URL, location.origin);
+      var u=new URL('/pre-pagamento/', location.origin);
       u.searchParams.set('ref', ref);
       u.searchParams.set('nome', nome);
       u.searchParams.set('email', email);
