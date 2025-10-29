@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pagamento não aprovado ❌ | Dieta Pronta Online</title>
+  <meta name="description" content="Falha no pagamento. Página com orientações e opções de tentar novamente ou suporte por WhatsApp." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand: #22c55e; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    .container { max-width: 960px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
+    .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-rose-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <a href="/" class="font-extrabold tracking-tight hover:opacity-80">Dieta Pronta Online</a>
+      </div>
+      <nav class="hidden md:flex gap-6 text-sm text-slate-600">
+        <a href="/" class="hover:text-slate-900">Início</a>
+        <a href="/pre-pagamento/" class="hover:text-slate-900">Plano</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="py-10">
+    <div class="container mx-auto px-4">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <div class="flex items-start gap-4">
+          <div class="h-12 w-12 rounded-2xl bg-rose-100 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-extrabold">Não foi possível aprovar seu pagamento</h1>
+            <p class="mt-2 text-slate-700">Olá, <span id="nomeSpan">cliente</span>. O provedor retornou uma falha. Isso pode acontecer por limite do cartão, dados incorretos ou instabilidade momentânea.</p>
+            <p id="reason" class="text-slate-500 text-sm"></p>
+          </div>
+        </div>
+
+        <div id="resumo" class="mt-6 grid md:grid-cols-3 gap-6">
+          <div class="md:col-span-2 p-5 rounded-2xl border border-slate-200">
+            <p class="text-sm text-slate-500">Seu plano continua reservado</p>
+            <h2 id="planoTitle" class="mt-1 text-xl font-bold">Plano personalizado</h2>
+            <p id="planoDesc" class="mt-2 text-slate-700"></p>
+            <div id="etiquetas" class="mt-4 flex flex-wrap gap-2 text-sm">
+              <span id="etqDieta" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
+              <span id="etqBiotipo" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
+              <span id="etqImc" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
+              <span id="refSpan" class="badge bg-slate-100 text-slate-800 hidden"></span>
+            </div>
+          </div>
+
+          <aside class="p-5 rounded-2xl border border-slate-200">
+            <p class="text-sm text-slate-500">Opções</p>
+            <div class="mt-2 grid gap-3">
+              <a id="btnTentar" href="#" class="text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Tentar novamente</a>
+              <a id="btnPix" href="#" class="text-center rounded-xl px-5 py-3 border border-slate-300 font-semibold hover:bg-white transition">Pagar por Pix</a>
+              <a id="btnWhats" href="#" class="text-center rounded-xl px-5 py-3 bg-emerald-100 text-emerald-900 font-semibold hover:bg-emerald-200 transition">Falar com suporte</a>
+            </div>
+            <p class="mt-3 text-xs text-slate-500">Se o erro persistir, nosso time ajuda você a concluir. Seu acesso é liberado imediatamente após a aprovação.</p>
+          </aside>
+        </div>
+      </div>
+      <div class="mt-6 text-center">
+        <a class="text-sm underline text-slate-600 hover:text-slate-900" href="/">Voltar para a página inicial</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    (function(){
+      function $(id){ return document.getElementById(id); }
+      function qs(k){ try{ return new URLSearchParams(location.search).get(k)||''; }catch(_){ return ''; } }
+
+      var nome  = qs('nome')  || localStorage.getItem('lead_nome')  || '';
+      var email = qs('email') || localStorage.getItem('lead_email') || '';
+      var whats = qs('whats') || localStorage.getItem('lead_whats') || '';
+      var ref   = qs('ref')   || localStorage.getItem('mp_external_ref') || '';
+      var reason= qs('reason')|| '';
+
+      var resultTitle = localStorage.getItem('quiz_result_title') || '';
+      var resultDesc  = localStorage.getItem('quiz_result_desc')  || '';
+      var dietTitle   = localStorage.getItem('quiz_result_diet_title') || '';
+      var bodyName    = localStorage.getItem('quiz_result_body_name')  || '';
+      var imcVal      = localStorage.getItem('quiz_imc_value') || '';
+      var imcLbl      = localStorage.getItem('quiz_imc_label') || '';
+
+      if(nome) { $('nomeSpan').textContent = nome; }
+      if(reason){ $('reason').textContent = 'Detalhe do provedor: ' + reason; }
+
+      if(resultTitle) { $('planoTitle').textContent = resultTitle; }
+      if(resultDesc)  { $('planoDesc').textContent  = resultDesc; }
+      if(dietTitle){ var e=$('etqDieta'); e.textContent='Dieta: '+dietTitle; e.classList.remove('hidden'); }
+      if(bodyName){ var e=$('etqBiotipo'); e.textContent='Biotipo: '+bodyName; e.classList.remove('hidden'); }
+      if(imcVal){ var e=$('etqImc'); e.textContent='IMC: '+imcVal + (imcLbl? ' ('+imcLbl+')':'' ); e.classList.remove('hidden'); }
+      if(ref){ var e=$('refSpan'); e.textContent='Ref: '+ref; e.classList.remove('hidden'); }
+
+      // Links de ação
+      var pay = new URL('/pagamento/', location.origin);
+      if(ref) pay.searchParams.set('ref', ref);
+      if(nome) pay.searchParams.set('nome', nome);
+      if(email) pay.searchParams.set('email', email);
+      if(whats) pay.searchParams.set('whats', whats);
+      $('btnTentar').setAttribute('href', pay.toString());
+      $('btnPix').setAttribute('href', pay.toString());
+
+      var linhas=[
+        'Oi, sou ' + (nome||'cliente') + '.',
+        'Tive um problema ao aprovar o pagamento do meu plano.',
+        ref? 'Ref: '+ref : ''
+      ].filter(Boolean);
+      var linkWhats='https://wa.me/55619998514680?text='+encodeURIComponent(linhas.join('\n'));
+      $('btnWhats').setAttribute('href', linkWhats);
+
+      $('year').textContent = (new Date()).getFullYear();
+    })();
+  </script>
+</body>
+</html>
