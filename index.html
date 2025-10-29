@@ -452,7 +452,9 @@
 
       // Nomes “limpos” de biotipo e dieta (para WhatsApp)
       var bodyName = bodyKeyToName(bt);
-      var dietTitle = prof ? prof.title.replace(/^\\p{Emoji_Presentation}|^\\X?\\s*/u,'').trim() : 'Plano alimentar';
+      // Remove caracteres não alfa-numéricos no começo (ex.: emoji) e espaços
+	var dietTitle = prof ? prof.title.replace(/^[^A-Za-z0-9]+/, '').trim() : 'Plano alimentar';
+
 
       // Salva para uso posterior (WhatsApp/pagamento)
       try{
