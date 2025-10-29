@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pagamento pendente ⏳ | Dieta Pronta Online</title>
+  <meta name="description" content="Pagamento em análise/pendente (ex.: Pix). Página com instruções, status e atalho para WhatsApp." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand: #22c55e; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    .container { max-width: 960px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
+    .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-amber-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 1"/></svg>
+        </div>
+        <a href="/" class="font-extrabold tracking-tight hover:opacity-80">Dieta Pronta Online</a>
+      </div>
+      <nav class="hidden md:flex gap-6 text-sm text-slate-600">
+        <a href="/" class="hover:text-slate-900">Início</a>
+        <a href="/pre-pagamento/" class="hover:text-slate-900">Plano</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="py-10">
+    <div class="container mx-auto px-4">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <div class="flex items-start gap-4">
+          <div class="h-12 w-12 rounded-2xl bg-amber-100 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 1"/></svg>
+          </div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-extrabold">Pagamento pendente</h1>
+            <p class="mt-2 text-slate-700">Recebemos sua confirmação de pagamento e ele está <strong>em análise</strong>. Se foi <strong>Pix</strong>, a liberação costuma acontecer em alguns minutos.</p>
+            <p class="text-slate-600 text-sm">Assim que o provedor aprovar, você será direcionado automaticamente para o acesso.</p>
+          </div>
+        </div>
+
+        <div id="resumo" class="mt-6 grid md:grid-cols-3 gap-6">
+          <div class="md:col-span-2 p-5 rounded-2xl border border-slate-200">
+            <p class="text-sm text-slate-500">Seu plano reservado</p>
+            <h2 id="planoTitle" class="mt-1 text-xl font-bold">Plano personalizado</h2>
+            <p id="planoDesc" class="mt-2 text-slate-700"></p>
+            <div id="etiquetas" class="mt-4 flex flex-wrap gap-2 text-sm">
+              <span id="etqDieta" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
+              <span id="etqBiotipo" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
+              <span id="etqImc" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
+              <span id="refSpan" class="badge bg-slate-100 text-slate-800 hidden"></span>
+              <span id="tempoSpan" class="badge bg-amber-100 text-amber-900">Aprovação costuma sair em poucos minutos</span>
+            </div>
+          </div>
+
+          <aside class="p-5 rounded-2xl border border-slate-200">
+            <p class="text-sm text-slate-500">Enquanto isso</p>
+            <div class="mt-2 grid gap-3">
+              <button id="btnRecarregar" class="text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Verificar status agora</button>
+              <a id="btnWhats" href="#" class="text-center rounded-xl px-5 py-3 bg-emerald-100 text-emerald-900 font-semibold hover:bg-emerald-200 transition">Falar com suporte</a>
+            </div>
+            <p class="mt-3 text-xs text-slate-500">Assim que o pagamento for aprovado, você receberá seu plano imediatamente.</p>
+          </aside>
+        </div>
+      </div>
+      <div class="mt-6 text-center">
+        <a class="text-sm underline text-slate-600 hover:text-slate-900" href="/">Voltar para a página inicial</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    (function(){
+      function $(id){ return document.getElementById(id); }
+      function qs(k){ try{ return new URLSearchParams(location.search).get(k)||''; }catch(_){ return ''; } }
+
+      var nome  = qs('nome')  || localStorage.getItem('lead_nome')  || '';
+      var email = qs('email') || localStorage.getItem('lead_email') || '';
+      var whats = qs('whats') || localStorage.getItem('lead_whats') || '';
+      var ref   = qs('ref')   || localStorage.getItem('mp_external_ref') || '';
+
+      var resultTitle = localStorage.getItem('quiz_result_title') || '';
+      var resultDesc  = localStorage.getItem('quiz_result_desc')  || '';
+      var dietTitle   = localStorage.getItem('quiz_result_diet_title') || '';
+      var bodyName    = localStorage.getItem('quiz_result_body_name')  || '';
+      var imcVal      = localStorage.getItem('quiz_imc_value') || '';
+      var imcLbl      = localStorage.getItem('quiz_imc_label') || '';
+
+      if(nome) { /* nome não exibido em destaque aqui */ }
+      if(resultTitle) { $('planoTitle').textContent = resultTitle; }
+      if(resultDesc)  { $('planoDesc').textContent  = resultDesc; }
+      if(dietTitle){ var e=$('etqDieta'); e.textContent='Dieta: '+dietTitle; e.classList.remove('hidden'); }
+      if(bodyName){ var e=$('etqBiotipo'); e.textContent='Biotipo: '+bodyName; e.classList.remove('hidden'); }
+      if(imcVal){ var e=$('etqImc'); e.textContent='IMC: '+imcVal + (imcLbl? ' ('+imcLbl+')':'' ); e.classList.remove('hidden'); }
+      if(ref){ var e=$('refSpan'); e.textContent='Ref: '+ref; e.classList.remove('hidden'); }
+
+      // Botão suporte
+      var linhas=[
+        'Oi, sou ' + (nome||'cliente') + '.',
+        'Meu pagamento ainda aparece como pendente. Poderiam verificar?',
+        ref? 'Ref: '+ref : ''
+      ].filter(Boolean);
+      var linkWhats='https://wa.me/55619998514680?text='+encodeURIComponent(linhas.join('\n'));
+      $('btnWhats').setAttribute('href', linkWhats);
+
+      // Verificar status agora (recarrega a rota de pagamento que contém o verificador client-side)
+      $('btnRecarregar').addEventListener('click', function(){
+        var pay = new URL('/pagamento/', location.origin);
+        if(ref) pay.searchParams.set('ref', ref);
+        if(nome) pay.searchParams.set('nome', nome);
+        if(email) pay.searchParams.set('email', email);
+        if(whats) pay.searchParams.set('whats', whats);
+        location.href = pay.toString();
+      });
+
+      // Atualização periódica: tenta reabrir /pagamento a cada 90s
+      setInterval(function(){
+        var pay = new URL('/pagamento/', location.origin);
+        if(ref) pay.searchParams.set('ref', ref);
+        location.href = pay.toString();
+      }, 90000);
+
+      $('year').textContent = (new Date()).getFullYear();
+    })();
+  </script>
+</body>
+</html>
