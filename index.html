@@ -165,7 +165,8 @@
 
   <script>
   (function(){
-    var PAGAMENTO_URL = "/pagamento/";
+    /* agora o redirecionamento do lead vai para a PÁGINA DE PRÉ-PAGAMENTO */
+    var PRE_PAG_URL = "/pre-pagamento/";
 
     // Microcopy por marcos
     var MICROCOPY = {
@@ -216,7 +217,6 @@
     };
 
     // 20 perguntas: 17 de múltipla escolha + (altura, peso, biotipo) = 20
-    // Mapearemos A/B/C/D para perfis A-D
     var QUESTIONS = [
       {type:'radio', q:"Qual seu principal objetivo agora?", a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},
       {type:'radio', q:"Seu nível de energia diário é…", a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},
@@ -424,12 +424,17 @@
       return bestKey; // 'A'|'B'|'C'|'D'
     }
 
+    function bodyKeyToName(k){
+      var bt = BODY_TYPES.find(function(x){ return x.key===k; });
+      return bt ? bt.name : 'Equilibrado';
+    }
+
     function finalizeCombo(dietKey){
       var bt = bodyTypeKey || 'EQUI';
       var comboKey = dietKey + '-' + bt; // ex: 'A-MESO'
       var combo = COMBOS[comboKey] || { title:'Plano Personalizado', desc:'Combinação adaptada ao seu contexto atual.' };
 
-      // Monta descrição com IMC emocional
+      // Mensagem IMC (emocional)
       var imcMsg = '';
       if(imcValue!=null){
         var tone = {
@@ -445,11 +450,17 @@
       var title = '🎯 ' + combo.title;
       var desc = (imcMsg? imcMsg: '') + (combo.desc || '') + ' ' + (prof? prof.desc: '');
 
+      // Nomes “limpos” de biotipo e dieta (para WhatsApp)
+      var bodyName = bodyKeyToName(bt);
+      var dietTitle = prof ? prof.title.replace(/^\\p{Emoji_Presentation}|^\\X?\\s*/u,'').trim() : 'Plano alimentar';
+
       // Salva para uso posterior (WhatsApp/pagamento)
       try{
         localStorage.setItem('quiz_result_diet_key', dietKey);
+        localStorage.setItem('quiz_result_diet_title', dietTitle); // ex.: "Low Carb / Cetogênica"
         localStorage.setItem('quiz_result_body_key', bt);
-        localStorage.setItem('quiz_result_title', title);
+        localStorage.setItem('quiz_result_body_name', bodyName);   // ex.: "Mesomorfo"
+        localStorage.setItem('quiz_result_title', title);          // ex.: "🎯 Plano Mesomorfo Low Carb"
         localStorage.setItem('quiz_result_desc', desc);
       }catch(_){}
 
@@ -523,7 +534,7 @@
       card.classList.add('selected');
       // guarda seleção como se fosse resposta (para índice da pergunta body)
       var idxBody = QUESTIONS.findIndex(function(q){return q.type==='body'});
-      if(idxBody>=0) selected[idxBody] = 'D'; // marcador neutro para não enviesar (ou poderíamos usar 'B')
+      if(idxBody>=0) selected[idxBody] = 'D'; // marcador neutro
       saveProgress();
       setTimeout(nextStep, 120);
     });
@@ -541,7 +552,7 @@
     // Voltar
     document.getElementById('btnPrev').addEventListener('click', function(e){ e.preventDefault(); prevStep(); });
 
-    // Lead + redirect
+    // Lead + redirect (AGORA PARA /pre-pagamento/)
     function uuidRef(){ return 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8); }
     window.handleLead = function(e){
       e.preventDefault();
@@ -556,7 +567,7 @@
       document.getElementById('leadOk').classList.remove('hidden');
 
       var ref=uuidRef(); try{ localStorage.setItem('mp_external_ref', ref);}catch(_){}
-      var u=new URL('/pre-pagamento/', location.origin);
+      var u=new URL(PRE_PAG_URL, location.origin);   // <<<<<< redireciona p/ PRÉ-PAGAMENTO
       u.searchParams.set('ref', ref);
       u.searchParams.set('nome', nome);
       u.searchParams.set('email', email);
@@ -565,20 +576,45 @@
       return false;
     }
 
-    // Pós-pagamento (quando volta com status) — mantém do seu fluxo atual
+    // Pós-pagamento (quando volta com status) — WhatsApp com Dieta + Biotipo + IMC
     ;(function detectarStatus(){
       var p=new URLSearchParams(location.search);
       var status=p.get('status');
       var banner=document.getElementById('statusBanner');
       function showBanner(texto,classes){ banner.textContent=texto; banner.className='mb-4 rounded-xl px-4 py-3 text-sm border '+classes; banner.classList.remove('hidden'); }
+
       function abrirWhatsAppComResultado(){
         var nome=document.getElementById('nome')?document.getElementById('nome').value.trim():(localStorage.getItem('lead_nome')||'');
+
+        // Resultado principal
         var result= localStorage.getItem('quiz_result_title') || (document.getElementById('resultTitle')?document.getElementById('resultTitle').textContent:'') || 'Plano de dieta';
         var desc  = localStorage.getItem('quiz_result_desc')  || (document.getElementById('resultDesc')?document.getElementById('resultDesc').textContent:'') || '';
-        var texto = 'Oi, sou ' + (nome||'cliente') + '. Meu resultado no Quiz foi: ' + result + '.' + (desc? '\nResumo: '+desc:'') + '\nQuero receber meu plano completo.';
+
+        // NOVO: Dieta e Biotipo explícitos
+        var dietTitle = localStorage.getItem('quiz_result_diet_title') || '';
+        var bodyName  = localStorage.getItem('quiz_result_body_name')  || '';
+
+        // IMC
+        var imcVal = localStorage.getItem('quiz_imc_value') || '';
+        var imcLbl = localStorage.getItem('quiz_imc_label') || '';
+
+        var linhas = [];
+        linhas.push("Oi, sou " + (nome||"cliente") + ".");
+        linhas.push("Meu resultado no Quiz foi: " + result + ".");
+        if(dietTitle || bodyName){
+          linhas.push("• Biotipo: " + (bodyName||"-") + " • Dieta: " + (dietTitle||"-"));
+        }
+        if(imcVal){
+          linhas.push("• IMC: " + imcVal + (imcLbl? " ("+imcLbl+")":""));
+        }
+        if(desc){ linhas.push("Resumo: " + desc); }
+        linhas.push("Pagamento confirmado. Quero receber meu plano completo.");
+
+        var texto = linhas.join("\n");
         var link = 'https://wa.me/55619998514680?text='+encodeURIComponent(texto);
         window.open(link,'_blank');
       }
+
       if(status==='approved'){ setTimeout(abrirWhatsAppComResultado,300); return; }
       if(status==='failure'){ showBanner('Não foi possível validar seu resultado agora. Você pode tentar novamente em alguns minutos.','bg-rose-50 border-rose-300 text-rose-800'); return; }
       if(status==='pending'){ showBanner('Estamos preparando seu resultado personalizado. Em instantes você poderá acessar.','bg-amber-50 border-amber-300 text-amber-800'); }
