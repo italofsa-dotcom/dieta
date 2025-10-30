@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
+
+	
+	<!-- Start of  Zendesk Widget script -->
+<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=8bd1b71a-ff84-437d-a53b-3af6d91d14a8"> </script>
+<!-- End of  Zendesk Widget script -->
+
+	<!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17661147688"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'AW-17661147688'); </script>
+
+	
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🧠 Descubra qual dieta funciona pro seu tipo de corpo (em 1 minuto!)</title>
-  <meta name="description" content="Quiz interativo com 15 perguntas que identifica o melhor tipo de dieta para o seu perfil. Resultado com recomendações + WhatsApp + pagamento integrado." />
+  <title>🧠 Descubra qual dieta funciona pro seu tipo de corpo</title>
+  <meta name="description" content="Quiz interativo com 20 perguntas para indicar a dieta ideal ao seu biotipo. Inclui cálculo de IMC e resultado personalizado.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,6 +25,7 @@
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
     .hidden { display: none !important; }
+
     /* Box da pergunta (degradê verde) */
     fieldset.step {
       position: relative;
@@ -27,6 +38,7 @@
     }
     fieldset.step:hover { transform: scale(1.01); box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25); }
     fieldset.step legend { font-size: 1.25rem; font-weight: 800; color: #064e3b; margin-bottom: 10px; padding: 0 4px; }
+
     /* Opções (respostas) em branco */
     .choice label {
       background: #ffffff; border: 1.5px solid #e5e7eb; color: #0f172a; border-radius: 12px;
@@ -35,6 +47,14 @@
     }
     .choice label:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(2, 6, 23, 0.10); border-color: #cbd5e1; }
     .choice input:checked + label { border-color: #10b981; box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25); }
+
+    /* Cartões do biotipo */
+    .body-card { background:#fff; border:1.5px solid #e5e7eb; border-radius:14px; padding:14px; text-align:center; cursor:pointer; transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; box-shadow: 0 4px 14px rgba(2, 6, 23, 0.06); }
+    .body-card:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(2, 6, 23, 0.10); border-color:#cbd5e1; }
+    .body-card.selected { border-color:#10b981; box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25); }
+
+    /* Indicador de IMC */
+    .imc-chip { display:inline-block; padding:4px 10px; border-radius:999px; font-size:.85rem; font-weight:700; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -48,7 +68,6 @@
         <span class="font-extrabold tracking-tight">Quiz de Dieta</span>
       </div>
       <nav class="hidden md:flex gap-6 text-sm text-slate-600">
-        <a href="#como-funciona" class="hover:text-slate-900">Como funciona</a>
         <a href="#quiz" class="hover:text-slate-900">Quiz</a>
         <a href="#resultado" class="hover:text-slate-900">Resultado</a>
       </nav>
@@ -56,49 +75,26 @@
     </div>
   </header>
 
-  <!-- Hero -->
+  <!-- Hero curto -->
   <section class="bg-gradient-to-b from-white to-slate-100">
-    <div class="container mx-auto px-4 py-12 grid lg:grid-cols-2 gap-10 items-center">
+    <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
       <div>
-        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">🧠 Descubra qual dieta realmente funciona pro seu tipo de corpo <span class="whitespace-nowrap">(em 1 minuto!)</span></h1>
-        <p class="mt-4 text-lg text-slate-600">Responda 15 perguntas rápidas e receba um plano de dieta recomendado para o seu perfil — com dicas e a opção de receber tudo no WhatsApp. Para destravar o plano completo, há uma taxa simbólica de <strong>R$ 9,90</strong>.</p>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">🧠 Descubra agora qual é a dieta que realmente funciona para seu tipo de corpo!</h1>
+		  <br>
+		  <h2>🍉 Seu corpo é único — Sua dieta também deve ser! Tenha acesso ao plano <strong>COMPELTO</strong> e personalizado que já transformou milhares de pessoas!</h2>
+        <p class="mt-4 text-lg text-slate-600">Através de suas respostas vamos montar um plano inteligente, ajustado ao seu biotipo, rotina e metas. Linguagem simples, sem fórmulas mágicas — só o que realmente ajuda.</p>
         <div class="mt-6 flex gap-3">
           <a href="#quiz" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar agora</a>
-          <a href="#como-funciona" class="rounded-2xl px-6 py-3 border border-slate-300 font-semibold hover:bg-white transition">Como funciona</a>
+          <span class="text-slate-500 self-center">Leva ~2 minutos</span>
         </div>
-        <p class="mt-3 text-sm text-slate-500">⚠️ Conteúdo informativo. Para condições de saúde, procure um profissional.</p>
       </div>
       <div class="relative">
         <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
           <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600&auto=format&fit=crop" alt="Comida saudável" class="w-full h-72 object-cover"/>
           <div class="p-6">
             <h3 class="text-xl font-bold">Resultado personalizado</h3>
-            <p class="mt-1 text-slate-600">Receba a melhor estratégia entre: Low Carb/Cetogênica, Balanceada/Mediterrânea, Proteica/Hiperproteica ou Jejum Intermitente/Flexível.</p>
+            <p class="mt-1 text-slate-600">Você recebe um direcionamento claro combinando <strong>biotipo</strong>, <strong>IMC</strong> e <strong>perfil</strong> para uma estratégia realmente executável.</p>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Como funciona -->
-  <section id="como-funciona" class="py-10">
-    <div class="container mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-extrabold">Como funciona</h2>
-      <div class="mt-6 grid md:grid-cols-3 gap-6">
-        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-soft">
-          <p class="text-sm text-slate-500">1 de 3</p>
-          <h3 class="font-bold mt-1">Responda 15 perguntas</h3>
-          <p class="mt-2 text-slate-600">Leva cerca de 1 minuto. Suas respostas indicam seu perfil metabólico e comportamental.</p>
-        </div>
-        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-soft">
-          <p class="text-sm text-slate-500">2 de 3</p>
-          <h3 class="font-bold mt-1">Veja seu resultado</h3>
-          <p class="mt-2 text-slate-600">Mostramos a dieta recomendada para o seu tipo de corpo, com dicas e macetes práticos.</p>
-        </div>
-        <div class="p-6 rounded-2xl border border-slate-200 bg-white shadow-soft">
-          <p class="text-sm text-slate-500">3 de 3</p>
-          <h3 class="font-bold mt-1">Destrave o plano completo</h3>
-          <p class="mt-2 text-slate-600">Por R$ 9,90 você recebe o plano detalhado no WhatsApp e e-mail.</p>
         </div>
       </div>
     </div>
@@ -111,12 +107,17 @@
         <div id="statusBanner" class="hidden mb-4 rounded-xl px-4 py-3 text-sm border"></div>
 
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-extrabold">Responda às perguntas</h2>
-          <div class="w-44">
+          <div>
+            <h2 class="text-2xl font-extrabold">Responda às perguntas</h2>
+            <p id="microcopy" class="text-slate-600 text-sm mt-1">Começamos entendendo sua rotina. Dica: responda com sinceridade 😉</p>
+          </div>
+          <div class="w-52 text-right">
             <div class="h-2 rounded-full bg-slate-200 overflow-hidden" aria-hidden="true">
               <div id="progress" class="h-2 bg-[var(--brand)] w-0"></div>
             </div>
-            <p id="pct" class="text-xs text-right text-slate-500 mt-1">0%</p>
+            <p class="text-xs text-slate-500 mt-1">
+              <span id="progressCount">0/20</span> • <span id="pct">0%</span>
+            </p>
           </div>
         </div>
 
@@ -148,9 +149,13 @@
           </div>
         </div>
 
+        <div class="mt-4">
+          <button id="btnReview" class="rounded-xl px-4 py-2 border border-slate-300 font-semibold">Rever respostas</button>
+        </div>
+
         <div class="mt-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-200">
           <h3 class="font-bold">Receba seu plano personalizado no WhatsApp</h3>
-          <p class="text-slate-700 mt-1">Preencha seus dados. Após o pagamento de <strong>R$ 9,90</strong>, enviamos o plano completo.</p>
+          <p class="text-slate-700 mt-1">Preencha seus dados para enviar seu resultado.</p>
           <form id="leadForm" class="mt-3 grid md:grid-cols-4 gap-3" onsubmit="return handleLead(event)">
             <input id="nome" type="text" required placeholder="Seu nome" class="rounded-xl border-slate-300" />
             <input id="email" type="email" required placeholder="Seu e-mail" class="rounded-xl border-slate-300"
@@ -159,7 +164,7 @@
             <input id="whats" type="tel" inputmode="tel" required placeholder="(61) 9 9999-9999" class="rounded-xl border-slate-300" />
             <button class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold">Continuar</button>
           </form>
-          <p id="leadOk" class="hidden text-emerald-700 text-sm mt-2">Quase lá! Indo para a página de pagamento…</p>
+          <p id="leadOk" class="hidden text-emerald-700 text-sm mt-2">Quase lá! Preparando sua página…</p>
         </div>
       </div>
     </div>
@@ -168,151 +173,421 @@
   <!-- Footer -->
   <footer class="py-10 text-center text-sm text-slate-500">
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
-    <a href="#" class="underline">Política de Privacidade</a>
   </footer>
 
   <script>
-  (function(){
-    var WHATS_NUMBER = "55619998514680";
-    var PAGAMENTO_URL = "/pagamento/";
 
-    // Perfis
-    var PROFILES = {
-      A:{title:"🥑 Perfil A — Low Carb / Cetogênica",desc:"Seu corpo tende a responder melhor a baixos carboidratos, priorizando proteínas magras e gorduras boas. Controle açúcar e farinhas refinadas.",tips:["Priorize ovos, peixes, carnes magras, abacate e azeite","Troque refrigerantes por água com limão","Monitore sódio e ingestão de fibras"],menu:["Café: omelete com queijo + abacate","Almoço: frango grelhado + salada com azeite","Jantar: salmão + legumes salteados"]},
-      B:{title:"🍚 Perfil B — Balanceada / Mediterrânea",desc:"Seu metabolismo pede equilíbrio entre carboidratos complexos, proteínas e gorduras boas. Foco em alimentos naturais e variedade.",tips:["Monte pratos coloridos e variados","Prefira grãos integrais e frutas","Inclua azeite e oleaginosas com moderação"],menu:["Café: iogurte + granola + frutas","Almoço: arroz integral, feijão, filé de peixe e salada","Jantar: sopa de legumes + frango desfiado"]},
-      C:{title:"🥩 Perfil C — Proteica / Hiperproteica",desc:"Alta ingestão de proteína com carboidratos ajustados favorece definição e manutenção de massa magra.",tips:["Inclua fonte proteica em todas as refeições","Avalie uso de whey/proteína conforme orientação profissional","Hidrate-se e ajuste fibras para o intestino funcionar bem"],menu:["Café: ovos mexidos + queijo branco","Almoço: patinho grelhado + salada + quinoa","Jantar: omelete de claras + legumes"]},
-      D:{title:"🕒 Perfil D — Jejum Intermitente / Flexível",desc:"Você lida bem com janelas de alimentação. Foque em refeições completas e evite exageros nas quebras do jejum.",tips:["Defina janela (ex.: 16/8) com profissional, se possível","Priorize proteínas e fibras na primeira refeição","Beba água, café sem açúcar e chás no jejum"],menu:["Primeira refeição: bowl proteico (iogurte grego + nuts)","Segunda: frango + legumes + arroz integral","Terceira (opcional): sopa de legumes + ovos"]}
+	  
+
+	  
+
+	  
+  (function(){
+    /* agora o redirecionamento do lead vai para a PÁGINA DE PRÉ-PAGAMENTO */
+    var PRE_PAG_URL = "/pre-pagamento/";
+
+    // Microcopy por marcos
+    var MICROCOPY = {
+      0:  "Começamos entendendo sua rotina. Dica: responda com sinceridade 😉",
+      4:  "Ótimo! Já conseguimos captar seu ritmo. Continuando…",
+      8:  "Metade do caminho! Essas próximas ajudam a refinar seu perfil.",
+      12: "Estamos quase lá. Ajustes finos fazem diferença.",
+      16: "Seu plano está praticamente pronto. Últimos detalhes!"
     };
 
-    // Perguntas
-    var QUESTIONS=[
-      {q:"Qual seu principal objetivo agora?",a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},
-      {q:"Seu nível de energia diário é…",a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},
-      {q:"Seu apetite ao longo do dia é…",a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome o tempo todo"]},
-      {q:"Quantas refeições principais por dia?",a:["2 ou menos","3","4 a 5","Mais de 5 pequenas"]},
-      {q:"Fome emocional/ansiosa?",a:["Sim, muito","Às vezes","Raramente","Nunca"]},
-      {q:"Nível de atividade física",a:["Sedentário","Leve","Moderado (3x/sem)","Intenso (5x+)"]},
-      {q:"Seu sono é…",a:["Ruim","Durmo bem mas acordo cansado","Regular","Muito bom"]},
-      {q:"Costuma pular o café da manhã?",a:["Sempre","Às vezes","Raramente","Nunca"]},
-      {q:"Seu estilo de alimentação atual",a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"]},
-      {q:"Vontade de doces",a:["Sempre","Às vezes","Raramente","Quase nunca"]},
-      {q:"Seu tipo de corpo",a:["Ganha peso fácil","Dificuldade para ganhar peso","Oscila rápido","Equilibrado"]},
-      {q:"Reação aos carboidratos",a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"]},
-      {q:"Prefere refeições…",a:["Leves e frequentes","Poucas e completas","Grandes à noite","Equilibradas"]},
-      {q:"Consegue ficar longos períodos sem comer?",a:["Sim, tranquilo","Pouco tempo","Depende do dia","Não consigo"]},
-      {q:"Qual frase te representa?",a:["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"]}
+    // Perfis (dietas)
+    var PROFILES = {
+      A:{title:"🥑 Low Carb / Cetogênica",desc:"Foco em proteínas magras, gorduras boas e carboidratos bem controlados.",tips:["Priorize ovos, peixes, carnes magras, abacate e azeite","Troque refrigerantes por água com limão","Inclua fibras (verduras, legumes) para saciedade"],menu:["Café: omelete com queijo + abacate","Almoço: frango grelhado + salada com azeite","Jantar: salmão + legumes salteados"]},
+      B:{title:"🍚 Balanceada / Mediterrânea",desc:"Equilíbrio entre carboidratos complexos, proteínas e gorduras boas.",tips:["Prato colorido e variado","Grãos integrais, frutas e verduras","Azeite e oleaginosas com moderação"],menu:["Café: iogurte + granola + frutas","Almoço: arroz integral, feijão, peixe e salada","Jantar: sopa de legumes + frango desfiado"]},
+      C:{title:"🥩 Proteica / Hiperproteica",desc:"Alta ingestão de proteína com carboidratos ajustados para definição e manutenção de massa magra.",tips:["Fonte proteica em todas as refeições","Whey/Proteína com orientação profissional","Hidrate-se e ajuste fibras"],menu:["Café: ovos mexidos + queijo branco","Almoço: patinho + salada + quinoa","Jantar: omelete de claras + legumes"]},
+      D:{title:"🕒 Jejum Intermitente / Flexível",desc:"Janelas de alimentação bem definidas, sem exageros nas quebras do jejum.",tips:["Defina janela (ex.: 16/8) com orientação","Proteínas e fibras na primeira refeição","Água, café sem açúcar e chás no jejum"],menu:["1ª refeição: bowl proteico (iogurte grego + nuts)","2ª: frango + legumes + arroz integral","3ª (opcional): sopa de legumes + ovos"]}
+    };
+
+    // 4 biotipos (vetoriais simples em SVG inline)
+    var BODY_TYPES = [
+      { key:'ECTO', name:'Ectomorfo', svg:`<svg viewBox='0 0 64 64' class='mx-auto h-16 w-16'><rect x='28' y='8' width='8' height='12' rx='4' fill='#10b981'/><rect x='26' y='20' width='12' height='18' rx='6' fill='#34d399'/><rect x='24' y='38' width='16' height='20' rx='8' fill='#a7f3d0'/></svg>` },
+      { key:'MESO', name:'Mesomorfo', svg:`<svg viewBox='0 0 64 64' class='mx-auto h-16 w-16'><rect x='28' y='8' width='8' height='12' rx='4' fill='#10b981'/><rect x='22' y='20' width='20' height='18' rx='8' fill='#34d399'/><rect x='20' y='38' width='24' height='20' rx='10' fill='#a7f3d0'/></svg>` },
+      { key:'ENDO', name:'Endomorfo', svg:`<svg viewBox='0 0 64 64' class='mx-auto h-16 w-16'><rect x='28' y='8' width='8' height='12' rx='4' fill='#10b981'/><rect x='18' y='20' width='28' height='18' rx='10' fill='#34d399'/><rect x='14' y='38' width='36' height='20' rx='12' fill='#a7f3d0'/></svg>` },
+      { key:'EQUI', name:'Equilibrado', svg:`<svg viewBox='0 0 64 64' class='mx-auto h-16 w-16'><rect x='28' y='8' width='8' height='12' rx='4' fill='#10b981'/><rect x='24' y='20' width='16' height='18' rx='7' fill='#34d399'/><rect x='22' y='38' width='20' height='20' rx='9' fill='#a7f3d0'/></svg>` }
     ];
 
-    // Estado
-    var selected = new Array(QUESTIONS.length).fill(null);
+    // 16 combinações (Diet x Body)
+    var COMBOS = {
+      'A-ECTO': { title:'Plano Ectomorfo Low Carb', desc:'Estratégia para reduzir gordura sem perder performance; mantém carboidratos de qualidade em treinos.' },
+      'A-MESO': { title:'Plano Mesomorfo Low Carb', desc:'Foco em definição com estabilidade energética; ciclos de carboidrato em dias estratégicos.' },
+      'A-ENDO': { title:'Plano Endomorfo Low Carb', desc:'Controle glicêmico e saciedade como base; prioriza fibras e gorduras boas.' },
+      'A-EQUI': { title:'Plano Equilibrado Low Carb', desc:'Abordagem moderada e flexível; cortes inteligentes de açúcares e farinhas.' },
+
+      'B-ECTO': { title:'Plano Ectomorfo Balanceado', desc:'Mais carboidratos complexos para energia sustentada; foco em densidade nutritiva.' },
+      'B-MESO': { title:'Plano Mesomorfo Balanceado', desc:'Distribuição harmônica de macros; excelente para manutenção e performance.' },
+      'B-ENDO': { title:'Plano Endomorfo Balanceado', desc:'Controle de porções e priorização de integrais; evita picos de fome.' },
+      'B-EQUI': { title:'Plano Equilibrado Mediterrâneo', desc:'Variedade e prazer em comer bem; base em frutas, verduras, azeite e peixes.' },
+
+      'C-ECTO': { title:'Plano Ectomorfo Proteico', desc:'Proteínas em todas as refeições; carboidrato ajustado para ganho limpo.' },
+      'C-MESO': { title:'Plano Mesomorfo Proteico', desc:'Alta saciedade e manutenção de massa; carbo em torno do treino.' },
+      'C-ENDO': { title:'Plano Endomorfo Proteico', desc:'Redução de gordura com preservação muscular; ênfase em fibras e proteína.' },
+      'C-EQUI': { title:'Plano Equilibrado Proteico', desc:'Fácil adesão, alto poder de saciedade; combina com rotina corrida.' },
+
+      'D-ECTO': { title:'Plano Ectomorfo Jejum Flexível', desc:'Janelas mais curtas, atenção à ingestão proteica nas quebras.' },
+      'D-MESO': { title:'Plano Mesomorfo Jejum Flexível', desc:'Controle calórico simples e eficiente; refeições completas nas janelas.' },
+      'D-ENDO': { title:'Plano Endomorfo Jejum Flexível', desc:'Ajuda no controle de apetite; cuidado com quebras ricas em proteína e vegetais.' },
+      'D-EQUI': { title:'Plano Equilibrado Jejum Flexível', desc:'Prático e sustentável; prioriza qualidade nas janelas de alimentação.' }
+    };
+
+    // 20 perguntas: 17 de múltipla escolha + (altura, peso, biotipo) = 20
+    var QUESTIONS = [
+      {type:'radio', q:"Qual seu principal objetivo agora?", a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},
+      {type:'radio', q:"Seu nível de energia diário é…", a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},
+      {type:'radio', q:"Seu apetite ao longo do dia é…", a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome o tempo todo"]},
+      {type:'radio', q:"Quantas refeições principais por dia?", a:["2 ou menos","3","4 a 5","Mais de 5 pequenas"]},
+      {type:'radio', q:"Fome emocional/ansiosa?", a:["Sim, muito","Às vezes","Raramente","Nunca"]},
+      {type:'radio', q:"Nível de atividade física", a:["Sedentário","Leve","Moderado (3x/sem)","Intenso (5x+)"]},
+      {type:'radio', q:"Seu sono é…", a:["Ruim","Durmo bem mas acordo cansado","Regular","Muito bom"]},
+      {type:'radio', q:"Costuma pular o café da manhã?", a:["Sempre","Às vezes","Raramente","Nunca"]},
+      {type:'radio', q:"Seu estilo de alimentação atual", a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"]},
+      {type:'radio', q:"Vontade de doces", a:["Sempre","Às vezes","Raramente","Quase nunca"]},
+      {type:'radio', q:"Seu tipo de corpo (percepção)", a:["Ganha peso fácil","Dificuldade para ganhar peso","Oscila rápido","Equilibrado"]},
+      {type:'radio', q:"Reação aos carboidratos", a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"]},
+      {type:'radio', q:"Prefere refeições…", a:["Leves e frequentes","Poucas e completas","Grandes à noite","Equilibradas"]},
+      {type:'radio', q:"Consegue ficar longos períodos sem comer?", a:["Sim, tranquilo","Pouco tempo","Depende do dia","Não consigo"]},
+      {type:'radio', q:"Nível de organização das refeições", a:["Planejo tudo","Planejo parte","Improviso muito","Quase nunca penso nisso"]},
+
+      // Altura / Peso / Biotipo
+      {type:'input-height', q:"Qual a sua altura? (em centímetros)", placeholder:"Ex.: 173"},
+      {type:'input-weight', q:"Qual o seu peso atual? (em kg)", placeholder:"Ex.: 78"},
+      {type:'body', q:"Agora escolha seu tipo de corpo (biotipo)", a: BODY_TYPES},
+
+      // Mais duas de comportamento para completar 20
+      {type:'radio', q:"Como é sua rotina durante a semana?", a:["Muito corrida","Relativamente organizada","Bastante flexível","Muito sedentária"]},
+      {type:'radio', q:"Qual frase te representa?", a:["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"]}
+    ];
+
+    var selected = new Array(QUESTIONS.length).fill(null); // para radio/body
     var scores = {A:0,B:0,C:0,D:0};
     var current = 0;
+    var heightCm = null, weightKg = null, imcValue = null, imcLabel = '';
+    var bodyTypeKey = null; // 'ECTO' | 'MESO' | 'ENDO' | 'EQUI'
 
     function $(id){ return document.getElementById(id); }
     var form = $("quizForm");
 
-    // Render
+    // Persistência
+    function saveProgress(){
+      try{
+        localStorage.setItem('quiz_selected', JSON.stringify(selected));
+        localStorage.setItem('quiz_current', String(current));
+        localStorage.setItem('quiz_height_cm', heightCm==null? '': String(heightCm));
+        localStorage.setItem('quiz_weight_kg', weightKg==null? '': String(weightKg));
+        localStorage.setItem('quiz_body_key', bodyTypeKey||'');
+        if(imcValue!=null){ localStorage.setItem('quiz_imc_value', String(imcValue)); }
+        if(imcLabel){ localStorage.setItem('quiz_imc_label', imcLabel); }
+      }catch(_){ }
+    }
+    function loadProgress(){
+      try{
+        var s = JSON.parse(localStorage.getItem('quiz_selected')||'[]');
+        if(Array.isArray(s) && s.length===selected.length) selected=s;
+        var c = parseInt(localStorage.getItem('quiz_current')||'0',10);
+        if(!isNaN(c) && c>=0 && c<selected.length) current=c;
+        var h = localStorage.getItem('quiz_height_cm'); if(h) heightCm = parseFloat(h);
+        var w = localStorage.getItem('quiz_weight_kg'); if(w) weightKg = parseFloat(w);
+        var b = localStorage.getItem('quiz_body_key'); if(b) bodyTypeKey=b;
+        var iv= localStorage.getItem('quiz_imc_value'); if(iv) imcValue = parseFloat(iv);
+        var il= localStorage.getItem('quiz_imc_label'); if(il) imcLabel = il;
+      }catch(_){ }
+    }
+
+    function scrollToQuizTop(){
+      var box = document.querySelector('#quiz .p-6');
+      var top = box ? box.getBoundingClientRect().top + window.scrollY - 80 : 0;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+
+    function imcCompute(){
+      if(heightCm && weightKg){
+        var m = heightCm/100; var v = weightKg / (m*m);
+        imcValue = Math.round(v*10)/10;
+        if(v<18.5) imcLabel='abaixo do peso';
+        else if(v<25) imcLabel='faixa saudável';
+        else if(v<30) imcLabel='sobrepeso';
+        else imcLabel='obesidade leve';
+        showImcChip();
+      }
+    }
+
+    function showImcChip(){
+      var banner = $("statusBanner"); if(!banner) return;
+      if(imcValue==null) { banner.classList.add('hidden'); return; }
+      var color='bg-emerald-50 border-emerald-300 text-emerald-800';
+      if(imcLabel==='sobrepeso') color='bg-amber-50 border-amber-300 text-amber-900';
+      if(imcLabel==='obesidade leve') color='bg-rose-50 border-rose-300 text-rose-800';
+      banner.innerHTML = "<span class='imc-chip "+color+"'>IMC "+imcValue+" — "+imcLabel+"</span> " +
+        "<span class='ml-2 text-slate-700'>Perfeito, vamos ajustar tudo pensando no seu contexto. Pequenos passos, grande impacto. 💪</span>";
+      banner.className = "mb-4 rounded-xl px-4 py-3 text-sm border "+color;
+      banner.classList.remove('hidden');
+    }
+
+    function microcopyFor(step){
+      var k = [16,12,8,4,0].find(function(x){return step>=x;});
+      return MICROCOPY[k] || MICROCOPY[0];
+    }
+
     function renderQuestions(){
       var html="";
       for(var i=0;i<QUESTIONS.length;i++){
-        var item=QUESTIONS[i];
-        html+='<fieldset data-step="'+i+'" class="step'+(i===0?'':' hidden')+'">';
-        html+='<legend>'+(i+1)+'. '+ item.q +'</legend>';
-        html+='<div class="mt-3 grid sm:grid-cols-2 gap-3">';
-        for(var j=0;j<item.a.length;j++){
-          var letter=String.fromCharCode(65+j);
-          var id="q"+i+"_"+letter;
-          html+='<div class="choice">';
-          html+='<input class="peer hidden" type="radio" id="'+id+'" name="q'+i+'" value="'+letter+'" required />';
-          html+='<label for="'+id+'" class="block text-[1.05rem]">'+ item.a[j] +'</label>';
-          html+='</div>';
+        var it = QUESTIONS[i];
+        html += '<fieldset data-step="'+i+'" class="step'+(i===0?'':' hidden')+'">';
+        html += '<legend>'+(i+1)+'. '+ it.q +'</legend>';
+        if(it.type==='radio'){
+          html += '<div class="mt-3 grid sm:grid-cols-2 gap-3">';
+          for(var j=0;j<it.a.length;j++){
+            var letter=String.fromCharCode(65+j);
+            var id="q"+i+"_"+letter;
+            html += '<div class="choice">';
+            html += '<input class="peer hidden" type="radio" id="'+id+'" name="q'+i+'" value="'+letter+'" required />';
+            html += '<label for="'+id+'" class="block text-[1.05rem]">'+ it.a[j] +'</label>';
+            html += '</div>';
+          }
+          html += '</div>';
+        } else if(it.type==='input-height'){
+          var v = heightCm!=null? String(heightCm):'';
+          html += '<div class="mt-2">';
+          html += '<input id="heightCm" type="number" min="120" max="230" step="1" value="'+v+'" placeholder="'+(it.placeholder||'Ex.: 170')+'" class="rounded-xl border-slate-300 w-full p-3" />';
+          html += '<p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p>';
+          html += '</div>';
+        } else if(it.type==='input-weight'){
+          var wv = weightKg!=null? String(weightKg):'';
+          html += '<div class="mt-2">';
+          html += '<input id="weightKg" type="number" min="35" max="250" step="0.1" value="'+wv+'" placeholder="'+(it.placeholder||'Ex.: 78')+'" class="rounded-xl border-slate-300 w-full p-3" />';
+          html += '<p class="text-xs text-slate-600 mt-2">Use quilogramas. Ex.: 78.5</p>';
+          html += '</div>';
+        } else if(it.type==='body'){
+          html += '<div class="mt-3 grid sm:grid-cols-2 md:grid-cols-4 gap-3">';
+          for(var b=0;b<BODY_TYPES.length;b++){
+            var bt = BODY_TYPES[b];
+            var sel = (bodyTypeKey===bt.key)? ' selected':'';
+            html += '<div class="body-card'+sel+'" data-body="'+bt.key+'">'+bt.svg+'<div class="mt-2 font-semibold">'+bt.name+'</div></div>';
+          }
+          html += '</div>';
         }
-        html+='</div></fieldset>';
+        html += '</fieldset>';
       }
-      form.innerHTML=html; updateProgress();
+      form.innerHTML = html;
+
+      // Reaplica marcadores de respostas
+      for(var i=0;i<selected.length;i++){
+        var v = selected[i]; if(!v) continue;
+        var input = document.getElementById('q'+i+'_'+v);
+        if(input) input.checked = true;
+      }
+      // Reaplica altura/peso/biotipo se existirem
+      if(heightCm!=null){ var h=$('heightCm'); if(h){ h.value = String(heightCm); } }
+      if(weightKg!=null){ var w=$('weightKg'); if(w){ w.value = String(weightKg); } }
+      if(bodyTypeKey){
+        var cards = form.querySelectorAll('.body-card');
+        cards.forEach(function(c){ if(c.getAttribute('data-body')===bodyTypeKey) c.classList.add('selected'); });
+      }
+      updateProgress();
     }
 
     function recomputeScores(){
       scores.A=scores.B=scores.C=scores.D=0;
-      for(var i=0;i<selected.length;i++){ var v=selected[i]; if(v && scores[v]!=null){ scores[v]++; } }
+      for(var i=0;i<selected.length;i++){
+        var v=selected[i]; if(!v) continue;
+        if(scores[v]!=null) scores[v]++;
+      }
+      // Ajuste por IMC (suave, 1 ponto)
+      if(imcValue!=null){
+        if(imcValue>=25){ // sobrepeso/obesidade leve → LC ou Proteica
+          scores.A++; scores.C++;
+        } else if(imcValue<18.5){ // abaixo do peso → Balanceada/Proteica
+          scores.B++; scores.C++;
+        }
+      }
     }
 
     function updateProgress(){
-      var pct=Math.round((current)/QUESTIONS.length*100);
-      $("progress").style.width=pct+"%";
-      $("pct").textContent=pct+"%";
-      $("btnPrev").disabled=(current===0);
+      var pct = Math.round((current)/QUESTIONS.length*100);
+      $('progress').style.width = pct + '%';
+      $('pct').textContent = pct + '%';
+      $('progressCount').textContent = current + '/' + QUESTIONS.length;
+      $('btnPrev').disabled = (current===0);
+      $('microcopy').textContent = microcopyFor(current);
     }
 
     function gotoStep(n){
-      var cur=form.querySelector('.step[data-step="'+current+'"]');
-      var nxt=form.querySelector('.step[data-step="'+n+'"]');
-      if(cur)cur.classList.add('hidden');
-      if(nxt)nxt.classList.remove('hidden');
-      current=n; updateProgress();
+      var cur = form.querySelector('.step[data-step="'+current+'"]');
+      var nxt = form.querySelector('.step[data-step="'+n+'"]');
+      if(cur) cur.classList.add('hidden');
+      if(nxt) nxt.classList.remove('hidden');
+      current = n;
+      updateProgress();
+      saveProgress();
+      scrollToQuizTop();
     }
 
     function nextStep(){
-      if(current<QUESTIONS.length-1){ gotoStep(current+1); return; }
-      $("quiz").classList.add("hidden"); showResult();
+      if(current < QUESTIONS.length - 1){
+        gotoStep(current + 1);
+        return;
+      }
+      document.getElementById('quiz').classList.add('hidden');
+      showResult();
     }
 
     function prevStep(){ if(current>0) gotoStep(current-1); }
 
-    // >>> Patch: salva resultado no localStorage
-    function showResult(){
-      var bestKey="A",best=-1;
-      for(var k in scores){ if(scores[k]>best){best=scores[k]; bestKey=k;} }
-      var p=PROFILES[bestKey];
-
-      // UI
-      $("resultTitle").textContent=p.title;
-      $("resultDesc").textContent=p.desc;
-      $("tips").innerHTML=p.tips.map(x=>"<li>"+x+"</li>").join("");
-      $("menu").innerHTML=p.menu.map(x=>"<li>"+x+"</li>").join("");
-      $("resultado").classList.remove("hidden");
-      $("progress").style.width="100%"; $("pct").textContent="100%";
-
-      // Salva para uso pós-pagamento
-      try{
-        localStorage.setItem('quiz_result_key',   bestKey);
-        localStorage.setItem('quiz_result_title', p.title);
-        localStorage.setItem('quiz_result_desc',  p.desc);
-      }catch(_){}
+    function bestDietKey(){
+      var bestKey='A', best=-1; for(var k in scores){ if(scores[k]>best){ best=scores[k]; bestKey=k; } }
+      return bestKey; // 'A'|'B'|'C'|'D'
     }
 
-    // Avanço automático
-    document.addEventListener("change", function(e){
-      var t=e.target; if(!t||t.type!=="radio") return;
-      var fs=t.closest("fieldset.step"); if(!fs) return;
-      var idx=parseInt(fs.getAttribute("data-step"),10);
-      selected[idx]=t.value; recomputeScores();
-      setTimeout(nextStep,120);
+    function bodyKeyToName(k){
+      var bt = BODY_TYPES.find(function(x){ return x.key===k; });
+      return bt ? bt.name : 'Equilibrado';
+    }
+
+    function finalizeCombo(dietKey){
+      var bt = bodyTypeKey || 'EQUI';
+      var comboKey = dietKey + '-' + bt; // ex: 'A-MESO'
+      var combo = COMBOS[comboKey] || { title:'Plano Personalizado', desc:'Combinação adaptada ao seu contexto atual.' };
+
+      // Mensagem IMC (emocional)
+      var imcMsg = '';
+      if(imcValue!=null){
+        var tone = {
+          'abaixo do peso': 'Vamos reforçar densidade nutricional sem exageros para recuperar equilíbrio. Você está no caminho certo. ',
+          'faixa saudável': 'Excelente! Vamos preservar seu bem-estar com escolhas inteligentes e sustentáveis. ',
+          'sobrepeso': 'Vamos reduzir gordura com segurança e foco em saciedade e energia constante. ',
+          'obesidade leve': 'Nossa prioridade é conforto, regularidade e progresso consistente — sem radicalismos. '
+        };
+        imcMsg = 'Seu IMC é '+imcValue+' ('+imcLabel+'). ' + (tone[imcLabel]||'');
+      }
+
+      var prof = PROFILES[dietKey];
+      var title = '🎯 ' + combo.title;
+      var desc = (imcMsg? imcMsg: '') + (combo.desc || '') + ' ' + (prof? prof.desc: '');
+
+      // Nomes “limpos” de biotipo e dieta (para WhatsApp)
+      var bodyName = bodyKeyToName(bt);
+      // Remove caracteres não alfa-numéricos no começo (ex.: emoji) e espaços
+	var dietTitle = prof ? prof.title.replace(/^[^A-Za-z0-9]+/, '').trim() : 'Plano alimentar';
+
+
+      // Salva para uso posterior (WhatsApp/pagamento)
+      try{
+        localStorage.setItem('quiz_result_diet_key', dietKey);
+        localStorage.setItem('quiz_result_diet_title', dietTitle); // ex.: "Low Carb / Cetogênica"
+        localStorage.setItem('quiz_result_body_key', bt);
+        localStorage.setItem('quiz_result_body_name', bodyName);   // ex.: "Mesomorfo"
+        localStorage.setItem('quiz_result_title', title);          // ex.: "🎯 Plano Mesomorfo Low Carb"
+        localStorage.setItem('quiz_result_desc', desc);
+      }catch(_){}
+
+      // Render UI
+      document.getElementById('resultTitle').textContent = title;
+      document.getElementById('resultDesc').textContent = desc;
+
+      var tips = (prof? prof.tips: ["Hidrate-se","Priorize alimentos naturais","Evite ultraprocessados"]);
+      document.getElementById('tips').innerHTML = tips.map(x=>'<li>'+x+'</li>').join('');
+
+      var menu = (prof? prof.menu: ["Café: ovo + fruta","Almoço: grelhado + salada","Jantar: sopa de legumes"]);
+      document.getElementById('menu').innerHTML = menu.map(x=>'<li>'+x+'</li>').join('');
+
+      document.getElementById('resultado').classList.remove('hidden');
+      document.getElementById('progress').style.width='100%';
+      document.getElementById('pct').textContent='100%';
+      document.getElementById('progressCount').textContent=QUESTIONS.length + '/' + QUESTIONS.length;
+    }
+
+    function showResult(){
+      recomputeScores();
+      var dietKey = bestDietKey();
+      finalizeCombo(dietKey);
+    }
+
+    // Eventos
+    document.addEventListener('change', function(e){
+      var t = e.target;
+      if(!t) return;
+
+      // Radio padrão
+      if(t.type==='radio' && t.name && t.name.startsWith('q')){
+        var fs = t.closest('fieldset.step'); if(!fs) return;
+        var idx = parseInt(fs.getAttribute('data-step'),10);
+        var letter = t.value; // A/B/C/D
+        selected[idx] = letter; recomputeScores(); saveProgress();
+        setTimeout(nextStep, 120);
+        return;
+      }
+    });
+
+    // Inputs altura/peso
+    document.addEventListener('input', function(e){
+      var t=e.target; if(!t) return;
+      if(t.id==='heightCm'){
+        var v = parseInt(t.value,10); if(!isNaN(v)) heightCm=v; else heightCm=null;
+        imcCompute(); saveProgress();
+      }
+      if(t.id==='weightKg'){
+        var w = parseFloat(t.value); if(!isNaN(w)) weightKg=w; else weightKg=null;
+        imcCompute(); saveProgress();
+      }
+    });
+    document.addEventListener('change', function(e){
+      var t=e.target; if(!t) return;
+      if(t.id==='heightCm' || t.id==='weightKg'){
+        // avança se o campo atual está preenchido e válido
+        var go=false;
+        if(t.id==='heightCm' && heightCm>=120 && heightCm<=230) go=true;
+        if(t.id==='weightKg' && weightKg>=35 && weightKg<=250) go=true;
+        if(go){ recomputeScores(); setTimeout(nextStep,120); }
+      }
+    });
+
+    // Seleção de biotipo
+    form.addEventListener('click', function(e){
+      var card = e.target.closest('.body-card'); if(!card) return;
+      var k = card.getAttribute('data-body');
+      bodyTypeKey = k;
+      form.querySelectorAll('.body-card').forEach(function(c){ c.classList.remove('selected'); });
+      card.classList.add('selected');
+      // guarda seleção como se fosse resposta (para índice da pergunta body)
+      var idxBody = QUESTIONS.findIndex(function(q){return q.type==='body'});
+      if(idxBody>=0) selected[idxBody] = 'D'; // marcador neutro
+      saveProgress();
+      setTimeout(nextStep, 120);
+    });
+
+    // Atalhos 1–4
+    document.addEventListener('keydown', function(e){
+      var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      if(tag==='input' || tag==='textarea' || e.metaKey || e.ctrlKey || e.altKey) return;
+      var map = { '1':'A', '2':'B', '3':'C', '4':'D' };
+      if(!map[e.key]) return;
+      var input = document.getElementById('q'+current+'_'+map[e.key]);
+      if(input){ input.checked=true; input.dispatchEvent(new Event('change', {bubbles:true})); }
     });
 
     // Voltar
-    $("btnPrev").addEventListener("click", function(e){ e.preventDefault(); prevStep(); });
+    document.getElementById('btnPrev').addEventListener('click', function(e){ e.preventDefault(); prevStep(); });
 
-    // Lead + redirect
+    // Lead + redirect (AGORA PARA /pre-pagamento/)
     function uuidRef(){ return 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8); }
-
-    function handleLead(e){
+    window.handleLead = function(e){
       e.preventDefault();
-      var nome=$("nome").value.trim();
-      var email=$("email").value.trim();
-      var whats=$("whats").value.trim();
+      var nome=document.getElementById('nome').value.trim();
+      var email=document.getElementById('email').value.trim();
+      var whats=document.getElementById('whats').value.trim();
       try{
         localStorage.setItem('lead_nome',nome);
         localStorage.setItem('lead_email',email);
         localStorage.setItem('lead_whats',whats);
       }catch(_){}
-      $("leadOk").classList.remove("hidden");
+      document.getElementById('leadOk').classList.remove('hidden');
 
-      // REF novo sempre
-      var ref=uuidRef();
-      try{ localStorage.setItem('mp_external_ref', ref);}catch(_){}
-
-      var u=new URL(PAGAMENTO_URL, location.origin);
+      var ref=uuidRef(); try{ localStorage.setItem('mp_external_ref', ref);}catch(_){}
+      var u=new URL(PRE_PAG_URL, location.origin);   // <<<<<< redireciona p/ PRÉ-PAGAMENTO
       u.searchParams.set('ref', ref);
       u.searchParams.set('nome', nome);
       u.searchParams.set('email', email);
@@ -320,44 +595,67 @@
       location.href=u.toString();
       return false;
     }
-    window.handleLead=handleLead;
 
-    // Pós-pagamento: usa resultado real salvo
-    (function detectarStatus(){
+    // Pós-pagamento (quando volta com status) — WhatsApp com Dieta + Biotipo + IMC
+    ;(function detectarStatus(){
       var p=new URLSearchParams(location.search);
-      var status=p.get("status");
-      var banner=document.getElementById("statusBanner");
+      var status=p.get('status');
+      var banner=document.getElementById('statusBanner');
+      function showBanner(texto,classes){ banner.textContent=texto; banner.className='mb-4 rounded-xl px-4 py-3 text-sm border '+classes; banner.classList.remove('hidden'); }
 
-      function showBanner(texto,classes){
-        banner.textContent=texto;
-        banner.className="mb-4 rounded-xl px-4 py-3 text-sm border "+classes;
-        banner.classList.remove("hidden");
-      }
-
-      // >>> Patch: lê título/descrição salvos
       function abrirWhatsAppComResultado(){
-        var nome=$("nome")?$("nome").value.trim():(localStorage.getItem('lead_nome')||'');
-        var result= localStorage.getItem('quiz_result_title')
-                  || ($("resultTitle")?$("resultTitle").textContent:'')
-                  || 'Plano de dieta';
-        var desc  = localStorage.getItem('quiz_result_desc')
-                  || ($("resultDesc")?$("resultDesc").textContent:'')
-                  || '';
-       // var texto = "Oi, sou " + (nome||"cliente") + ". Meu resultado no Quiz de Dieta foi: " + result + "."
-             //     + (desc ? "\nResumo: " + desc : "")
-        var texto = "\nPagamento confirmado. Quero receber meu plano completo." + ". Meu resultado no Quiz de Dieta foi: " + result + ".";
-          //        + ;
-        var link="https://wa.me/55619998514680?text="+encodeURIComponent(texto);
-        window.open(link,"_blank");
+        var nome=document.getElementById('nome')?document.getElementById('nome').value.trim():(localStorage.getItem('lead_nome')||'');
+
+        // Resultado principal
+        var result= localStorage.getItem('quiz_result_title') || (document.getElementById('resultTitle')?document.getElementById('resultTitle').textContent:'') || 'Plano de dieta';
+        var desc  = localStorage.getItem('quiz_result_desc')  || (document.getElementById('resultDesc')?document.getElementById('resultDesc').textContent:'') || '';
+
+        // NOVO: Dieta e Biotipo explícitos
+        var dietTitle = localStorage.getItem('quiz_result_diet_title') || '';
+        var bodyName  = localStorage.getItem('quiz_result_body_name')  || '';
+
+        // IMC
+        var imcVal = localStorage.getItem('quiz_imc_value') || '';
+        var imcLbl = localStorage.getItem('quiz_imc_label') || '';
+
+        var linhas = [];
+        linhas.push("Oi, sou " + (nome||"cliente") + ".");
+        linhas.push("Meu resultado no Quiz foi: " + result + ".");
+        if(dietTitle || bodyName){
+          linhas.push("• Biotipo: " + (bodyName||"-") + " • Dieta: " + (dietTitle||"-"));
+        }
+        if(imcVal){
+          linhas.push("• IMC: " + imcVal + (imcLbl? " ("+imcLbl+")":""));
+        }
+        if(desc){ linhas.push("Resumo: " + desc); }
+        linhas.push("Pagamento confirmado. Quero receber meu plano completo.");
+
+        var texto = linhas.join("\n");
+        var link = 'https://wa.me/55619998514680?text='+encodeURIComponent(texto);
+        window.open(link,'_blank');
       }
 
-      if(status==="approved"){ setTimeout(abrirWhatsAppComResultado,300); return; }
-      if(status==="failure"){ showBanner("Pagamento não aprovado. Você pode tentar novamente com Pix, outro cartão ou outro método.","bg-rose-50 border-rose-300 text-rose-800"); return; }
-      if(status==="pending"){ showBanner("Pagamento pendente. Se foi Pix, a confirmação costuma sair em alguns minutos. Assim que for aprovado, liberamos seu plano.","bg-amber-50 border-amber-300 text-amber-800"); }
+      if(status==='approved'){ setTimeout(abrirWhatsAppComResultado,300); return; }
+      if(status==='failure'){ showBanner('Não foi possível validar seu resultado agora. Você pode tentar novamente em alguns minutos.','bg-rose-50 border-rose-300 text-rose-800'); return; }
+      if(status==='pending'){ showBanner('Estamos preparando seu resultado personalizado. Em instantes você poderá acessar.','bg-amber-50 border-amber-300 text-amber-800'); }
     })();
 
-    document.getElementById("year").textContent=(new Date()).getFullYear();
+    // Botão rever
+    document.getElementById('btnReview').addEventListener('click', function(e){ e.preventDefault(); document.getElementById('resultado').classList.add('hidden'); document.getElementById('quiz').classList.remove('hidden'); gotoStep(Math.min(current, QUESTIONS.length-1)); });
+
+    // Inicialização
+    document.getElementById('year').textContent=(new Date()).getFullYear();
+    loadProgress();
     renderQuestions();
+    if(current>0){
+      for(var i=0;i<current;i++){
+        var prev = form.querySelector('.step[data-step="'+i+'"]'); if(prev) prev.classList.add('hidden');
+      }
+      var on = form.querySelector('.step[data-step="'+current+'"]'); if(on) on.classList.remove('hidden');
+      updateProgress();
+      scrollToQuizTop();
+      showImcChip();
+    }
   })();
   </script>
 </body>
