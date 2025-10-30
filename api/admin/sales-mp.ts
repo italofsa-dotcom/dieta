@@ -1,4 +1,4 @@
-// /api/admin/sales-mp.ts
+/api/admin/sales-mp.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 const ADMIN_USER = process.env.ADMIN_USER;
