@@ -575,36 +575,27 @@
 
     // Lead + redirect (AGORA PARA /pre-pagamento/)
     function uuidRef(){ return 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8); }
-   window.handleLead = async function(e){
-  e.preventDefault();
-  var nome  = document.getElementById('nome').value.trim();
-  var email = document.getElementById('email').value.trim();
-  var whats = document.getElementById('whats').value.trim();
+    window.handleLead = function(e){
+      e.preventDefault();
+      var nome=document.getElementById('nome').value.trim();
+      var email=document.getElementById('email').value.trim();
+      var whats=document.getElementById('whats').value.trim();
+      try{
+        localStorage.setItem('lead_nome',nome);
+        localStorage.setItem('lead_email',email);
+        localStorage.setItem('lead_whats',whats);
+      }catch(_){}
+      document.getElementById('leadOk').classList.remove('hidden');
 
-  try{
-    localStorage.setItem('lead_nome',  nome);
-    localStorage.setItem('lead_email', email);
-    localStorage.setItem('lead_whats', whats);
-  }catch(_){}
-
-  document.getElementById('leadOk').classList.remove('hidden');
-
-  // Gera/salva ref
-  var ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
-  try{ localStorage.setItem('mp_external_ref', ref);}catch(_){}
-
-  // 🔐 Salva no banco antes de redirecionar
-  await salvarLeadNoServidor({ ref, nome, email, whats });
-
-  // Agora segue para a página de pré-pagamento (ou pagamento direto, se preferir)
-  var u = new URL('/pre-pagamento/', location.origin);
-  u.searchParams.set('ref', ref);
-  u.searchParams.set('nome', nome);
-  u.searchParams.set('email', email);
-  u.searchParams.set('whats', whats);
-  location.href = u.toString();
-  return false;
-}
+      var ref=uuidRef(); try{ localStorage.setItem('mp_external_ref', ref);}catch(_){}
+      var u=new URL(PRE_PAG_URL, location.origin);   // <<<<<< redireciona p/ PRÉ-PAGAMENTO
+      u.searchParams.set('ref', ref);
+      u.searchParams.set('nome', nome);
+      u.searchParams.set('email', email);
+      u.searchParams.set('whats', whats);
+      location.href=u.toString();
+      return false;
+    }
 
     // Pós-pagamento (quando volta com status) — WhatsApp com Dieta + Biotipo + IMC
     ;(function detectarStatus(){
