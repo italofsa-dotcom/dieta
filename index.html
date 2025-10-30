@@ -2,6 +2,8 @@
 <html lang="pt-BR">
 <head>
 
+
+	
 	<!-- Start of  Zendesk Widget script -->
 <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=8bd1b71a-ff84-437d-a53b-3af6d91d14a8"> </script>
 <!-- End of  Zendesk Widget script -->
@@ -174,6 +176,43 @@
   </footer>
 
   <script>
+
+	  
+	var LEAD_ENDPOINT = "http://italomelo.com/server/save_lead.php"; // caminho no seu domínio
+	//var LEAD_TOKEN    = "troque-este-token-seguro-64chars"; // igual ao do config.php
+
+	  async function salvarLeadNoServidor({ref, nome, email, whats}) {
+  // capturar dados extras do resultado:
+  var dietTitle = localStorage.getItem('quiz_result_diet_title') || '';
+  var bodyName  = localStorage.getItem('quiz_result_body_name')  || '';
+  var imcVal    = localStorage.getItem('quiz_imc_value') || '';
+  var imcLbl    = localStorage.getItem('quiz_imc_label') || '';
+
+  var form = new FormData();
+  form.append('token',      LEAD_TOKEN);
+  form.append('ref',        ref || '');
+  form.append('name',       nome || '');
+  form.append('email',      email || '');
+  form.append('phone',      whats || '');
+  form.append('diet_title', dietTitle);
+  form.append('body_type',  bodyName);
+  form.append('imc_value',  imcVal);
+  form.append('imc_label',  imcLbl);
+
+  // Tenta com fetch normal (com timeout curto); se falhar, segue sem travar o usuário
+  try {
+    const ctrl = new AbortController();
+    const id   = setTimeout(()=>ctrl.abort(), 2500); // 2,5s de tolerância
+    const resp = await fetch(LEAD_ENDPOINT, { method:'POST', body: form, signal: ctrl.signal, credentials: 'same-origin' });
+    clearTimeout(id);
+    // opcional: checar resp.ok / logar
+  } catch(e) { /* não bloqueia o fluxo */ }
+}
+
+
+	  
+
+	  
   (function(){
     /* agora o redirecionamento do lead vai para a PÁGINA DE PRÉ-PAGAMENTO */
     var PRE_PAG_URL = "/pre-pagamento/";
@@ -566,27 +605,36 @@
 
     // Lead + redirect (AGORA PARA /pre-pagamento/)
     function uuidRef(){ return 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8); }
-    window.handleLead = function(e){
-      e.preventDefault();
-      var nome=document.getElementById('nome').value.trim();
-      var email=document.getElementById('email').value.trim();
-      var whats=document.getElementById('whats').value.trim();
-      try{
-        localStorage.setItem('lead_nome',nome);
-        localStorage.setItem('lead_email',email);
-        localStorage.setItem('lead_whats',whats);
-      }catch(_){}
-      document.getElementById('leadOk').classList.remove('hidden');
+   window.handleLead = async function(e){
+  e.preventDefault();
+  var nome  = document.getElementById('nome').value.trim();
+  var email = document.getElementById('email').value.trim();
+  var whats = document.getElementById('whats').value.trim();
 
-      var ref=uuidRef(); try{ localStorage.setItem('mp_external_ref', ref);}catch(_){}
-      var u=new URL(PRE_PAG_URL, location.origin);   // <<<<<< redireciona p/ PRÉ-PAGAMENTO
-      u.searchParams.set('ref', ref);
-      u.searchParams.set('nome', nome);
-      u.searchParams.set('email', email);
-      u.searchParams.set('whats', whats);
-      location.href=u.toString();
-      return false;
-    }
+  try{
+    localStorage.setItem('lead_nome',  nome);
+    localStorage.setItem('lead_email', email);
+    localStorage.setItem('lead_whats', whats);
+  }catch(_){}
+
+  document.getElementById('leadOk').classList.remove('hidden');
+
+  // Gera/salva ref
+  var ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+  try{ localStorage.setItem('mp_external_ref', ref);}catch(_){}
+
+  // 🔐 Salva no banco antes de redirecionar
+  await salvarLeadNoServidor({ ref, nome, email, whats });
+
+  // Agora segue para a página de pré-pagamento (ou pagamento direto, se preferir)
+  var u = new URL('/pre-pagamento/', location.origin);
+  u.searchParams.set('ref', ref);
+  u.searchParams.set('nome', nome);
+  u.searchParams.set('email', email);
+  u.searchParams.set('whats', whats);
+  location.href = u.toString();
+  return false;
+}
 
     // Pós-pagamento (quando volta com status) — WhatsApp com Dieta + Biotipo + IMC
     ;(function detectarStatus(){
