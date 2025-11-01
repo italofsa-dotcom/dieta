@@ -8,15 +8,16 @@ const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 async function createLeadAndGetRef(body: any) {
   try {
     const response = await fetch('https://italomelo.com/server/save_lead.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: body.customer_name,
-        email: body.customer_email,
-        phone: body.customer_whatsapp,
-        diet_title: body.titulo,
-      }),
-    });
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    name: body.customer_name,
+    email: body.customer_email,
+    phone: body.customer_whatsapp,
+    diet_title: body.titulo,
+    secret: '2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e' // 🔑 usa o mesmo LEAD_TOKEN do PHP
+  }),
+});
 
     const data = await response.json();
     console.log('[mp-preference] Lead criado no PHP:', data);
