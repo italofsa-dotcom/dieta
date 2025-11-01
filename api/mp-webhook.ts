@@ -1,100 +1,96 @@
-// /api/mp-preference.ts
+// /api/mp-webhook.ts
 declare const process: any;
 
-const MP_API = 'https://api.mercadopago.com';
-const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
-
-// 🔹 Função que cria o lead no servidor PHP e retorna o "ref"
-async function createLeadAndGetRef(body: any) {
-  try {
-    const response = await fetch('https://italomelo.com/server/save_lead.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: body.customer_name,
-        email: body.customer_email,
-        phone: body.customer_whatsapp,
-        diet_title: body.titulo,
-      }),
-    });
-
-    const data = await response.json();
-    console.log('[mp-preference] Lead criado no PHP:', data);
-
-    return data.ref || 'ref-' + Date.now();
-  } catch (err) {
-    console.error('[mp-preference] Erro ao criar lead no PHP:', err);
-    // Garante que ainda gera uma referência se o PHP falhar
-    return 'ref-' + Date.now();
-  }
+async function wait(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 export default async function handler(req: any, res: any) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-  if (!ACCESS_TOKEN) return res.status(500).json({ error: 'MP_ACCESS_TOKEN ausente' });
+  console.log("=== Mercado Pago Webhook Recebido ===");
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
   try {
-    const {
-      valor = 9.9,
-      titulo = 'Plano de Dieta Completo',
-      customer_name = '',
-      customer_email = '',
-      customer_whatsapp = '',
-    } = req.body || {};
+    const body: any = req.body || {};
+    console.log("Body recebido:", body);
 
-    // 🔹 Passo 1: Cria o lead e obtém o ref do banco
-    const ref = await createLeadAndGetRef(req.body);
+    let topic = body.topic || body.type || "sem topic";
+    let id = body.data?.id || body.id || body.resource?.split("/").pop();
 
-    // 🔹 Passo 2: Cria a preferência de pagamento com o MESMO ref
-    const prefBody = {
-      items: [
-        {
-          title: String(titulo),
-          quantity: 1,
-          unit_price: Number(valor),
-          currency_id: 'BRL',
-        },
-      ],
-      back_urls: {
-        success: 'https://dietapronta.online/approved',
-        failure: 'https://dietapronta.online/failure',
-        pending: 'https://dietapronta.online/pending',
-      },
-      auto_return: 'approved',
-      notification_url: 'https://dietapronta.online/api/mp-webhook',
-      external_reference: ref, // ✅ sincronizado com o banco
-      payer: {
-        name: customer_name || undefined,
-        email: customer_email || undefined,
-      },
-    };
+    console.log("Tipo de evento:", topic, "ID:", id);
 
-    const resp = await fetch(`${MP_API}/checkout/preferences`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${ACCESS_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(prefBody),
-    });
-
-    const data = await resp.json();
-
-    if (!resp.ok) {
-      console.error('MP preference error:', data);
-      return res.status(resp.status).json({ error: data });
+    if (!id) {
+      console.log("❌ Nenhum ID encontrado");
+      return res.status(200).json({ ok: true });
     }
 
-    console.log('[mp-preference] Preferência criada com sucesso:', data.id);
+    let paymentData: any = null;
 
-    // 🔹 Retorna tudo pro frontend
-    return res.status(200).json({
-      id: data.id,
-      init_point: data.init_point,
-      external_reference: ref,
+    if (topic === "payment") {
+      const r = await fetch(`https://api.mercadopago.com/v1/payments/${id}`, {
+        headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}` },
+      });
+      if (!r.ok) throw new Error(`Erro ao buscar pagamento: ${r.status}`);
+      paymentData = await r.json();
+    } else if (topic === "merchant_order") {
+      // 🔹 Busca ordem e tenta extrair o pagamento real
+      let attempt = 0;
+      let order: any = null;
+
+      while (attempt < 3) {
+        attempt++;
+        console.log(`Tentativa ${attempt}: buscando merchant_order ${id}`);
+        const r = await fetch(`https://api.mercadopago.com/merchant_orders/${id}`, {
+          headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}` },
+        });
+
+        if (!r.ok) throw new Error(`Erro ao buscar ordem: ${r.status}`);
+        order = await r.json();
+
+        if (order.payments && order.payments.length > 0) break;
+        console.log("⚠️ Nenhum pagamento ainda vinculado, aguardando 5s...");
+        await wait(5000);
+      }
+
+      if (order && order.payments && order.payments.length > 0) {
+        const paymentId = order.payments[0].id;
+        console.log("🔹 ID do pagamento encontrado:", paymentId);
+
+        const p = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+          headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}` },
+        });
+        if (!p.ok) throw new Error(`Erro ao buscar pagamento da ordem: ${p.status}`);
+        paymentData = await p.json();
+      } else {
+        console.log("❌ Nenhum pagamento encontrado dentro da ordem após tentativas");
+      }
+    }
+
+    if (!paymentData) {
+      console.log("❌ Nenhum dado de pagamento obtido");
+      return res.status(200).json({ ok: true });
+    }
+
+    const ref = paymentData.external_reference || "";
+    const status = paymentData.status || "desconhecido";
+
+    console.log(`[mp-webhook] Atualizando status '${status}' para ref '${ref}'`);
+
+    // Envia para o servidor PHP
+    const phpResp = await fetch("https://italomelo.com/server/update_status.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ref, status }),
     });
+
+    const retornoPHP = await phpResp.text();
+    console.log("🔁 Retorno do update_status.php:", retornoPHP);
+
+    return res.status(200).json({ ok: true });
   } catch (err: any) {
-    console.error('[mp-preference] Erro geral:', err);
-    return res.status(500).json({ error: 'Erro interno ao criar preferência' });
+    console.error("🔥 ERRO no webhook:", err);
+    return res.status(200).json({ ok: true });
   }
 }
