@@ -1,5 +1,5 @@
 // /api/mp-webhook.ts
-import fetch from 'node-fetch';
+// import fetch from 'node-fetch';
 
 export default async function handler(req: any, res: any) {
   console.log("=== Mercado Pago Webhook Recebido ===");
