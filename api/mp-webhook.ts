@@ -1,4 +1,12 @@
 // /api/mp-webhook.ts
+import fetch from 'node-fetch';
+
+export default async function handler(req: any, res: any) {
+  console.log("=== Mercado Pago Webhook Recebido ===");
+  console.log("Headers:", req.headers);
+  console.log("Query:", req.query);
+  console.log("Body:", req.body);
+
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import fetch from 'node-fetch';
 
