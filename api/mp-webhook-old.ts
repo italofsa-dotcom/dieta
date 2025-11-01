@@ -1,5 +1,5 @@
 // /api/mp-webhook.ts
-// import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
