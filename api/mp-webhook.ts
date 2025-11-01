@@ -1,74 +1,75 @@
 // /api/mp-webhook.ts
-// Webhook do Mercado Pago integrado ao painel PHP do italomelo.com
-// Recebe notificações de pagamento, busca o status e atualiza o banco via update_status.php
-
-declare const process: any; // evita erro de tipagem no TypeScript
+declare const process: any;
 
 export default async function handler(req: any, res: any) {
-
-  console.log("=== WEBHOOK BODY COMPLETO ===");
-  console.log(JSON.stringify(req.body, null, 2));
-
   console.log("=== Mercado Pago Webhook Recebido ===");
 
-  // Permite apenas POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    // Corpo enviado pelo Mercado Pago
     const body: any = req.body || {};
     console.log("Body recebido:", body);
 
-    // Captura o ID do pagamento (varia conforme o tipo de notificação)
-    const topic = body.type || req.query.topic || "sem topic";
-    const paymentId =
-      body.data?.id || req.query.id || body.resource?.split("/").pop() || null;
+    let topic = body.topic || body.type || "sem topic";
+    let id = body.data?.id || body.id || body.resource?.split("/").pop();
 
-    console.log("Topic:", topic, "PaymentID:", paymentId);
+    console.log("Tipo de evento:", topic, "ID:", id);
 
-    // Se não veio um ID, encerra
-    if (!paymentId) {
-      console.log("❌ Nenhum ID de pagamento recebido");
-      return res.status(200).json({ ok: true, msg: "sem id" });
+    if (!id) {
+      console.log("❌ Nenhum ID encontrado");
+      return res.status(200).json({ ok: true });
     }
 
-    // Busca os detalhes do pagamento no Mercado Pago
-    const paymentResp = await fetch(
-      `https://api.mercadopago.com/v1/payments/${paymentId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}`,
-        },
+    let paymentData: any = null;
+
+    if (topic === "payment") {
+      // 🔹 Busca direta por pagamento
+      const r = await fetch(`https://api.mercadopago.com/v1/payments/${id}`, {
+        headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}` },
+      });
+      if (!r.ok) throw new Error(`Erro ao buscar pagamento: ${r.status}`);
+      paymentData = await r.json();
+    } else if (topic === "merchant_order") {
+      // 🔹 Busca ordem e extrai o pagamento de dentro
+      const r = await fetch(`https://api.mercadopago.com/merchant_orders/${id}`, {
+        headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}` },
+      });
+      if (!r.ok) throw new Error(`Erro ao buscar ordem: ${r.status}`);
+      const order = await r.json();
+      console.log("🧾 Ordem recebida:", order);
+
+      if (order.payments && order.payments.length > 0) {
+        const paymentId = order.payments[0].id;
+        console.log("🔹 ID do pagamento encontrado:", paymentId);
+
+        const p = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+          headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}` },
+        });
+        if (!p.ok) throw new Error(`Erro ao buscar pagamento da ordem: ${p.status}`);
+        paymentData = await p.json();
+      } else {
+        console.log("❌ Nenhum pagamento encontrado dentro da ordem");
       }
-    );
-
-    if (!paymentResp.ok) {
-      console.log("❌ Erro ao buscar pagamento:", paymentResp.status);
-      return res
-        .status(200)
-        .json({ ok: true, msg: "erro ao buscar pagamento" });
     }
 
-    const payment = await paymentResp.json();
-    console.log("✅ Pagamento recebido:", payment);
+    if (!paymentData) {
+      console.log("❌ Nenhum dado de pagamento obtido");
+      return res.status(200).json({ ok: true });
+    }
 
-    const ref = payment.external_reference || "";
-    const status = payment.status || "desconhecido";
+    const ref = paymentData.external_reference || "";
+    const status = paymentData.status || "desconhecido";
 
-    // Log para debug
     console.log(`[mp-webhook] Atualizando status '${status}' para ref '${ref}'`);
 
-    // Envia para o servidor PHP (italomelo.com)
-    const phpResp = await fetch(
-      "https://italomelo.com/server/update_status.php",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ref, status }),
-      }
-    );
+    // Envia para o servidor PHP
+    const phpResp = await fetch("https://italomelo.com/server/update_status.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ref, status }),
+    });
 
     const retornoPHP = await phpResp.text();
     console.log("🔁 Retorno do update_status.php:", retornoPHP);
