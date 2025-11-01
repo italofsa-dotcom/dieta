@@ -14,43 +14,52 @@ async function fetchPayment(id: string) {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  console.log("=== Mercado Pago Webhook Recebido ===");
+  console.log("Headers:", req.headers);
+  console.log("Query:", req.query);
+  console.log("Body:", req.body);
+
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   try {
     const body: any = req.body || {};
-    let topic = (req.query.topic || body.topic || body.type || '').toString();
-    let paymentId =
-      (req.query.id as string) ||
-      (body.data && body.data.id) ||
-      (body.resource && body.resource.split('/').pop()) ||
-      '';
+    const topic = body.type || req.query.topic || "sem topic";
+    const paymentId = body.data?.id || req.query.id || null;
 
-    console.log('[mp-webhook] Recebido:', topic, paymentId);
+    console.log("Topic:", topic, "PaymentID:", paymentId);
 
-    if ((topic === 'payment' || body.type === 'payment') && paymentId) {
-      const payment = await fetchPayment(paymentId);
-
-      const ref = payment.external_reference || '';
-      const status = payment.status; // approved, pending, rejected, etc.
-
-      if (ref && status) {
-        console.log(`[mp-webhook] Atualizando status ${status} para ref ${ref}`);
-
-        // Envia para o servidor PHP
-        await fetch('https://italomelo.com/server/update_status.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ref, status }),
-        });
-      }
-
-      return res.status(200).json({ ok: true });
+    if (!paymentId) {
+      console.log("❌ Nenhum ID de pagamento recebido");
+      return res.status(200).json({ ok: true, msg: "sem id" });
     }
 
-    console.log('[mp-webhook] Notificação ignorada:', JSON.stringify(body).slice(0, 200));
+    const r = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
+      headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}` }
+    });
+
+    if (!r.ok) {
+      console.log("❌ Falha ao buscar pagamento:", r.status);
+      return res.status(200).json({ ok: true, msg: "erro ao buscar pagamento" });
+    }
+
+    const payment = await r.json();
+    console.log("✅ Pagamento recebido:", payment);
+
+    const ref = payment.external_reference || "";
+    const status = payment.status || "desconhecido";
+
+    // envia para o servidor PHP
+    const response = await fetch("https://italomelo.com/server/update_status.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ref, status })
+    });
+
+    console.log("🔁 update_status.php retornou:", await response.text());
+
     return res.status(200).json({ ok: true });
-  } catch (err: any) {
-    console.error('[mp-webhook] erro geral', err);
+  } catch (err) {
+    console.error("🔥 ERRO no webhook:", err);
     return res.status(200).json({ ok: true });
   }
 }
