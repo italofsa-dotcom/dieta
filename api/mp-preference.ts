@@ -15,14 +15,8 @@ const leadPayload = {
   secret: '2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e', // 🔑 mesmo LEAD_TOKEN do config.php
 };
 
-const response = await fetch('https://italomelo.com/server/save_lead.php', {
-  method: 'POST',
-  headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(leadPayload),
-});
+
+    
 
 
     const data = await response.json();
