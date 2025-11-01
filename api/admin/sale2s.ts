@@ -1,5 +1,5 @@
 // /api/admin/sales.ts
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+// import type { VercelRequest, VercelResponse } from '@vercel/node';
 import fs from 'fs';
 import path from 'path';
 const DATA_FILE = path.join(process.cwd(), 'data', 'sales.json');
