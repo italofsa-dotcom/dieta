@@ -1,72 +1,68 @@
 // /api/mp-webhook.ts
-// import fetch from 'node-fetch';
+// Webhook do Mercado Pago integrado ao painel PHP do italomelo.com
 
 export default async function handler(req: any, res: any) {
   console.log("=== Mercado Pago Webhook Recebido ===");
-  console.log("Headers:", req.headers);
-  console.log("Query:", req.query);
-  console.log("Body:", req.body);
 
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import fetch from 'node-fetch';
-
-const MP_API = 'https://api.mercadopago.com';
-const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN; // use seu token real do Mercado Pago
-
-async function fetchPayment(id: string) {
-  const r = await fetch(`${MP_API}/v1/payments/${id}`, {
-    headers: { Authorization: `Bearer ${ACCESS_TOKEN}` }
-  });
-  if (!r.ok) throw new Error('Erro ao buscar pagamento: ' + r.status);
-  return r.json();
-}
-
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  console.log("=== Mercado Pago Webhook Recebido ===");
-  console.log("Headers:", req.headers);
-  console.log("Query:", req.query);
-  console.log("Body:", req.body);
-
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  // Permite apenas POST
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
   try {
+    // Corpo enviado pelo Mercado Pago
     const body: any = req.body || {};
+    console.log("Body recebido:", body);
+
+    // Captura o ID do pagamento
     const topic = body.type || req.query.topic || "sem topic";
-    const paymentId = body.data?.id || req.query.id || null;
+    const paymentId =
+      body.data?.id || req.query.id || body.resource?.split("/").pop() || null;
 
     console.log("Topic:", topic, "PaymentID:", paymentId);
 
+    // Se não veio um ID, encerra
     if (!paymentId) {
       console.log("❌ Nenhum ID de pagamento recebido");
       return res.status(200).json({ ok: true, msg: "sem id" });
     }
 
-    const r = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-      headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}` }
-    });
+    // Busca os detalhes do pagamento no Mercado Pago
+    const paymentResp = await fetch(
+      `https://api.mercadopago.com/v1/payments/${paymentId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}`,
+        },
+      }
+    );
 
-    if (!r.ok) {
-      console.log("❌ Falha ao buscar pagamento:", r.status);
+    if (!paymentResp.ok) {
+      console.log("❌ Erro ao buscar pagamento:", paymentResp.status);
       return res.status(200).json({ ok: true, msg: "erro ao buscar pagamento" });
     }
 
-    const payment = await r.json();
+    const payment = await paymentResp.json();
     console.log("✅ Pagamento recebido:", payment);
 
     const ref = payment.external_reference || "";
     const status = payment.status || "desconhecido";
 
-    // envia para o servidor PHP
-    const response = await fetch("https://italomelo.com/server/update_status.php", {
+    // Log
+    console.log(`[mp-webhook] Atualizando status '${status}' para ref '${ref}'`);
+
+    // Envia para o servidor PHP (italomelo.com)
+    const phpResp = await fetch("https://italomelo.com/server/update_status.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ref, status })
+      body: JSON.stringify({ ref, status }),
     });
 
-    console.log("🔁 update_status.php retornou:", await response.text());
+    const retornoPHP = await phpResp.text();
+    console.log("🔁 Retorno do update_status.php:", retornoPHP);
 
     return res.status(200).json({ ok: true });
-  } catch (err) {
+  } catch (err: any) {
     console.error("🔥 ERRO no webhook:", err);
     return res.status(200).json({ ok: true });
   }
