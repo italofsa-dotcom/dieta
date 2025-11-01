@@ -5,6 +5,10 @@
 declare const process: any; // evita erro de tipagem no TypeScript
 
 export default async function handler(req: any, res: any) {
+
+  console.log("=== WEBHOOK BODY COMPLETO ===");
+  console.log(JSON.stringify(req.body, null, 2));
+
   console.log("=== Mercado Pago Webhook Recebido ===");
 
   // Permite apenas POST
