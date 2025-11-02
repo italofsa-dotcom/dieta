@@ -87,14 +87,17 @@ export default async function handler(req: any, res: any) {
           currency_id: "BRL",
         },
       ],
+      // 🔁 URLs de retorno
       back_urls: {
         success: "https://dietapronta.online/approved",
         failure: "https://dietapronta.online/failure",
         pending: "https://dietapronta.online/pending",
       },
-      auto_return: "approved",
+      auto_return: "approved", // redireciona automaticamente após aprovação
+
       notification_url: "https://dietapronta.online/api/mp-webhook",
-      external_reference: ref,
+      external_reference: ref, // mesmo ref do banco
+
       payer: {
         name: customer_name || "Cliente DietaPronta",
         email:
@@ -102,11 +105,11 @@ export default async function handler(req: any, res: any) {
             ? customer_email
             : `cliente_${ref}@dietapronta.online`,
       },
+
       payment_methods: {
         installments: 1,
         excluded_payment_types: [{ id: "ticket" }],
       },
-      purpose: "wallet_purchase",
     };
 
     const resp = await fetch(`${MP_API}/checkout/preferences`, {
@@ -130,6 +133,7 @@ export default async function handler(req: any, res: any) {
       `[mp-preference] init_point: ${data.init_point} | ref: ${ref} | valor: ${valor} | email: ${customer_email}`
     );
 
+    // 🔹 Retorna os dados ao frontend
     return res.status(200).json({
       id: data.id,
       init_point: data.init_point,
