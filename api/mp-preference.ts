@@ -29,10 +29,12 @@ async function createLeadAndGetRef(body: any) {
       phone: body.customer_whatsapp || "",
       diet_title: body.titulo || "",
       secret:
-        "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e",
+        "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e", // mesmo LEAD_TOKEN do config.php
     };
 
-    logToFile("[mp-preference] Enviando leadPayload: " + JSON.stringify(leadPayload));
+    logToFile(
+      "[mp-preference] Enviando leadPayload: " + JSON.stringify(leadPayload)
+    );
 
     const response = await fetch("https://italomelo.com/server/save_lead.php", {
       method: "POST",
@@ -93,7 +95,7 @@ export default async function handler(req: any, res: any) {
         failure: "https://dietapronta.online/failure",
         pending: "https://dietapronta.online/pending",
       },
-      auto_return: "approved", // redireciona automaticamente após aprovação
+      auto_return: "all", // 🔁 Redireciona sempre (approved, pending, failure)
 
       notification_url: "https://dietapronta.online/api/mp-webhook",
       external_reference: ref, // mesmo ref do banco
@@ -108,7 +110,7 @@ export default async function handler(req: any, res: any) {
 
       payment_methods: {
         installments: 1,
-        excluded_payment_types: [{ id: "ticket" }],
+        excluded_payment_types: [{ id: "ticket" }], // evita boletos, se desejar apenas PIX e cartão
       },
     };
 
