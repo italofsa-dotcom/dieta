@@ -1,19 +1,22 @@
 // /api/mp-webhook.ts
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import fetch from "node-fetch";
 import fs from "fs";
 import path from "path";
 
 const MP_API = "https://api.mercadopago.com";
 const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 
+// Diretórios temporários da Vercel (não persistem entre deploys)
 const DATA_DIR = path.join("/tmp");
 const PROCESSED_FILE = path.join(DATA_DIR, "processed_refs.json");
+const LOG_FILE = path.join(DATA_DIR, "mp_webhook_log.txt");
 
 // === Função auxiliar para log ===
 function log(msg: string) {
   const line = `[${new Date().toISOString()}] ${msg}\n`;
-  try { fs.appendFileSync(path.join(DATA_DIR, "mp_webhook_log.txt"), line); } catch {}
+  try {
+    fs.appendFileSync(LOG_FILE, line);
+  } catch {}
   console.log(line);
 }
 
@@ -26,7 +29,7 @@ async function fetchPayment(id: string) {
   return r.json();
 }
 
-// === Atualiza o status no banco (PHP) ===
+// === Atualiza o status no banco PHP ===
 async function updateLocalStatus(ref: string, status: string) {
   try {
     const resp = await fetch("https://italomelo.com/server/update_status.php", {
@@ -44,7 +47,8 @@ async function updateLocalStatus(ref: string, status: string) {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "GET") return res.status(200).send("ok");
-  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== "POST")
+    return res.status(405).json({ error: "Method not allowed" });
 
   try {
     const body: any = req.body || {};
@@ -58,7 +62,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     log(`[mp-webhook] Recebido: topic=${topic} id=${paymentId}`);
 
     // ================================================
-    // ✅ Ignora notificações não relacionadas a pagamento
+    // ✅ Ignora notificações que não sejam de "payment"
     // ================================================
     if (topic !== "payment" && body.type !== "payment") {
       log(`[mp-webhook] Ignorado tipo não-payment: ${topic}`);
@@ -83,11 +87,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Marca como processado (mantém últimos 500)
     processed.push(paymentId);
     try {
-      fs.writeFileSync(PROCESSED_FILE, JSON.stringify(processed.slice(-500)), "utf8");
+      fs.writeFileSync(
+        PROCESSED_FILE,
+        JSON.stringify(processed.slice(-500)),
+        "utf8"
+      );
     } catch {}
 
     // ================================================
-    // 🔍 Busca detalhes do pagamento
+    // 🔍 Busca detalhes do pagamento no Mercado Pago
     // ================================================
     if (!paymentId) {
       log("[mp-webhook] Nenhum paymentId encontrado no payload.");
@@ -102,14 +110,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const payerEmail = payment.payer?.email || "";
     const method = payment.payment_method_id || "";
 
-    log(`[mp-webhook] Pagamento ${paymentId} -> status=${status}, ref=${ref}, valor=${amount}, email=${payerEmail}, metodo=${method}`);
+    log(
+      `[mp-webhook] Pagamento ${paymentId} -> status=${status}, ref=${ref}, valor=${amount}, email=${payerEmail}, metodo=${method}`
+    );
 
     // ================================================
     // 🔄 Atualiza status no painel PHP
     // ================================================
     if (ref && status) {
       const response = await updateLocalStatus(ref, status);
-      log(`[mp-webhook] Atualizando status '${status}' para ref '${ref}' => ${response}`);
+      log(
+        `[mp-webhook] Atualizando status '${status}' para ref '${ref}' => ${response}`
+      );
     } else {
       log("[mp-webhook] Falha: sem ref ou status válido no pagamento.");
     }
