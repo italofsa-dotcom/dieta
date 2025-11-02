@@ -1,8 +1,8 @@
 // /api/mp-webhook.ts
 declare const process: any;
 
-async function wait(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export default async function handler(req: any, res: any) {
@@ -29,39 +29,55 @@ export default async function handler(req: any, res: any) {
     let paymentData: any = null;
 
     if (topic === "payment") {
+      // 🔹 Busca direta por pagamento
       const r = await fetch(`https://api.mercadopago.com/v1/payments/${id}`, {
-        headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}` },
+        headers: {
+          Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}`,
+        },
       });
       if (!r.ok) throw new Error(`Erro ao buscar pagamento: ${r.status}`);
       paymentData = await r.json();
     } else if (topic === "merchant_order") {
-      // 🔹 Busca ordem e tenta extrair o pagamento real
+      // 🔹 Busca merchant_order e tenta achar o pagamento real dentro
       let attempt = 0;
       let order: any = null;
 
       while (attempt < 3) {
         attempt++;
         console.log(`Tentativa ${attempt}: buscando merchant_order ${id}`);
-        const r = await fetch(`https://api.mercadopago.com/merchant_orders/${id}`, {
-          headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}` },
-        });
 
-        if (!r.ok) throw new Error(`Erro ao buscar ordem: ${r.status}`);
+        const r = await fetch(
+          `https://api.mercadopago.com/merchant_orders/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}`,
+            },
+          }
+        );
+
+        if (!r.ok)
+          throw new Error(`Erro ao buscar ordem: ${r.status}`);
         order = await r.json();
 
         if (order.payments && order.payments.length > 0) break;
         console.log("⚠️ Nenhum pagamento ainda vinculado, aguardando 5s...");
-        await wait(5000);
+        await sleep(5000);
       }
 
       if (order && order.payments && order.payments.length > 0) {
         const paymentId = order.payments[0].id;
         console.log("🔹 ID do pagamento encontrado:", paymentId);
 
-        const p = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
-          headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}` },
-        });
-        if (!p.ok) throw new Error(`Erro ao buscar pagamento da ordem: ${p.status}`);
+        const p = await fetch(
+          `https://api.mercadopago.com/v1/payments/${paymentId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}`,
+            },
+          }
+        );
+        if (!p.ok)
+          throw new Error(`Erro ao buscar pagamento da ordem: ${p.status}`);
         paymentData = await p.json();
       } else {
         console.log("❌ Nenhum pagamento encontrado dentro da ordem após tentativas");
@@ -78,11 +94,17 @@ export default async function handler(req: any, res: any) {
 
     console.log(`[mp-webhook] Atualizando status '${status}' para ref '${ref}'`);
 
-    // Envia para o servidor PHP
+    // ----------------------------------------------
+    // 🧩 Envio compatível com hospedagem PHP (form-data)
+    // ----------------------------------------------
+    const formData = new URLSearchParams();
+    formData.append("ref", ref);
+    formData.append("status", status);
+
     const phpResp = await fetch("https://italomelo.com/server/update_status.php", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ref, status }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData.toString(),
     });
 
     const retornoPHP = await phpResp.text();
