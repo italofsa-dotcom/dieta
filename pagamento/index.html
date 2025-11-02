@@ -80,7 +80,7 @@
   (function(){
     const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
     const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
-    const CHECK_STATUS  = "https://italomelo.com/server/check_status.php"; // ✅ consulta direta ao servidor
+    const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
     const HOME_APPROVED = "https://dietapronta.online/approved";
     const HOME_FAILURE  = "https://dietapronta.online/?status=failure#quiz";
 
@@ -93,36 +93,18 @@
       banner.classList.remove("hidden");
     }
 
-    // ===== Recupera o mesmo ref criado no pré-pagamento =====
-    function getQS(k){ return new URLSearchParams(location.search).get(k) || ''; }
+    function getParam(key){ return new URLSearchParams(location.search).get(key) || ""; }
 
-    let ref = getQS("ref") || "";
+    // Recupera o ref (igual ao banco)
+    let ref = getParam("ref") || "";
     if (!ref) {
       try { ref = localStorage.getItem("mp_external_ref") || ""; } catch(e){}
     }
 
-    // Se mesmo assim não houver, cria fallback (último caso)
-    if (!ref) {
-      ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).substr(2,6);
-      try { localStorage.setItem("mp_external_ref", ref); } catch(e){}
-    }
-
-    // Garante que o ref apareça na URL
-    const u = new URL(location.href);
-    u.searchParams.set("ref", ref);
-    history.replaceState(null, "", u.toString());
-
-    // ===== Dados do lead (nome/email/whats) — da URL ou localStorage =====
-    function getParam(key){ return new URLSearchParams(location.search).get(key) || ""; }
-    let customer_name="", customer_email="", customer_whats="";
-    try {
-      customer_name  = localStorage.getItem("lead_nome")  || "";
-      customer_email = localStorage.getItem("lead_email") || "";
-      customer_whats = localStorage.getItem("lead_whats") || "";
-    } catch(e){}
-    if(!customer_name)  customer_name  = getParam("nome");
-    if(!customer_email) customer_email = getParam("email");
-    if(!customer_whats) customer_whats = getParam("whats");
+    // Dados do cliente
+    let customer_name  = localStorage.getItem("lead_nome")  || getParam("nome")  || "";
+    let customer_email = localStorage.getItem("lead_email") || getParam("email") || "";
+    let customer_whats = localStorage.getItem("lead_whats") || getParam("whats") || "";
 
     const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
 
@@ -136,7 +118,7 @@
       }
     }
 
-    // ===== Cria a preferência com o mesmo ref sincronizado =====
+    // Cria a preferência
     fetch(MP_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type":"application/json" },
@@ -144,49 +126,58 @@
         valor: 9.90,
         titulo: "Plano de Dieta Completo",
         external_reference: ref,
-        customer_name: customer_name || "",
-        customer_email: customer_email || "",
-        customer_whatsapp: customer_whats || ""
+        customer_name,
+        customer_email,
+        customer_whatsapp: customer_whats
       })
     })
-    .then(r => r.text().then(txt => {
-      let data = {};
-      try { data = JSON.parse(txt); } catch {}
-      if(!r.ok) throw new Error("HTTP "+r.status+" "+txt);
-      if(!data.id) throw new Error("Preferência sem id: "+txt);
-      return data;
-    }))
+    .then(r => r.json())
     .then(data => {
       renderCheckout(data.id, data.init_point);
-      showBanner("Aguardando pagamento. Assim que o PIX for aprovado, você será redirecionado automaticamente.", "bg-amber-50 border-amber-300 text-amber-800");
+      showBanner("Aguardando pagamento... Assim que o PIX for aprovado, você será redirecionado automaticamente.", "bg-amber-50 border-amber-300 text-amber-800");
       startPolling();
     })
     .catch(err => {
-      console.error("[mp-preference] erro:", err);
-      showBanner("Não foi possível iniciar o pagamento agora. Tente reabrir esta página ou volte para a página principal.", "bg-rose-50 border-rose-300 text-rose-800");
+      console.error("[mp-preference]", err);
+      showBanner("Erro ao iniciar o pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
     });
 
-    // ===== Verifica status periodicamente =====
     let pollTimer=null;
-    function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 5000); } // ✅ agora a cada 5s
+    function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 5000); }
 
+    // 🔹 NOVA FUNÇÃO DE VERIFICAÇÃO + REDIRECIONAMENTO
     async function checkNow(){
       try {
-        const r = await fetch(CHECK_STATUS + "?ref=" + encodeURIComponent(ref));
-        const data = await r.json();
-        if(data && data.found){
-          if(data.status === "approved"){
-            if(pollTimer) clearInterval(pollTimer);
-            showBanner("Pagamento aprovado! Redirecionando…", "bg-emerald-50 border-emerald-300 text-emerald-800");
-            setTimeout(() => { location.href = HOME_APPROVED; }, 800);
-          } else if(data.status === "rejected" || data.status === "cancelled" || data.status === "canceled"){
-            if(pollTimer) clearInterval(pollTimer);
-            showBanner("Pagamento não aprovado. Você pode tentar novamente.", "bg-rose-50 border-rose-300 text-rose-800");
-            setTimeout(() => { location.href = HOME_FAILURE; }, 1200);
-          }
+        const res = await fetch(CHECK_STATUS + "?ref=" + encodeURIComponent(ref) + "&t=" + Date.now());
+        const data = await res.json();
+
+        if (!data || !data.found) return;
+
+        const status = (data.status || "").toLowerCase();
+        console.log("[status-check]", status, "ref=", ref);
+
+        if (status === "approved") {
+          if (pollTimer) clearInterval(pollTimer);
+          showBanner("✅ Pagamento aprovado! Redirecionando...", "bg-emerald-50 border-emerald-300 text-emerald-800");
+          setTimeout(() => {
+            window.location.href = HOME_APPROVED + "?ref=" + encodeURIComponent(ref);
+          }, 2000);
+        } else if (["rejected", "cancelled", "canceled"].includes(status)) {
+          if (pollTimer) clearInterval(pollTimer);
+          showBanner("Pagamento não aprovado. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
+          setTimeout(() => {
+            window.location.href = HOME_FAILURE;
+          }, 2500);
+        } else if (status === "pending") {
+          showBanner("⏳ Aguardando confirmação do PIX...", "bg-amber-50 border-amber-300 text-amber-800");
         }
-      } catch(e){}
+      } catch (e) {
+        console.error("[status-check] erro", e);
+      }
     }
+
+    // Atualiza quando o usuário volta para a aba
+    window.onfocus = () => checkNow();
 
     $("year").textContent = new Date().getFullYear();
   })();
