@@ -1,118 +1,122 @@
 // /api/mp-webhook.ts
-declare const process: any;
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import fetch from "node-fetch";
+import fs from "fs";
+import path from "path";
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+const MP_API = "https://api.mercadopago.com";
+const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
+
+const DATA_DIR = path.join("/tmp");
+const PROCESSED_FILE = path.join(DATA_DIR, "processed_refs.json");
+
+// === Função auxiliar para log ===
+function log(msg: string) {
+  const line = `[${new Date().toISOString()}] ${msg}\n`;
+  try { fs.appendFileSync(path.join(DATA_DIR, "mp_webhook_log.txt"), line); } catch {}
+  console.log(line);
 }
 
-export default async function handler(req: any, res: any) {
-  console.log("=== Mercado Pago Webhook Recebido ===");
+// === Busca detalhes do pagamento ===
+async function fetchPayment(id: string) {
+  const r = await fetch(`${MP_API}/v1/payments/${id}`, {
+    headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
+  });
+  if (!r.ok) throw new Error("MP fetch payment failed: " + r.status);
+  return r.json();
+}
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+// === Atualiza o status no banco (PHP) ===
+async function updateLocalStatus(ref: string, status: string) {
+  try {
+    const resp = await fetch("https://italomelo.com/server/update_status.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ref, status }),
+    });
+    const text = await resp.text();
+    log(`[update_status.php] ${text}`);
+    return text;
+  } catch (e: any) {
+    log("[update_status.php] erro: " + e.message);
   }
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method === "GET") return res.status(200).send("ok");
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   try {
     const body: any = req.body || {};
-    console.log("Body recebido:", body);
+    const topic = (req.query.topic || body.topic || body.type || "").toString();
+    let paymentId =
+      (req.query.id as string) ||
+      (body.data && body.data.id) ||
+      (body.resource && body.resource.split("/").pop()) ||
+      "";
 
-    let topic = body.topic || body.type || "sem topic";
-    let id = body.data?.id || body.id || body.resource?.split("/").pop();
+    log(`[mp-webhook] Recebido: topic=${topic} id=${paymentId}`);
 
-    console.log("Tipo de evento:", topic, "ID:", id);
+    // ================================================
+    // ✅ Ignora notificações não relacionadas a pagamento
+    // ================================================
+    if (topic !== "payment" && body.type !== "payment") {
+      log(`[mp-webhook] Ignorado tipo não-payment: ${topic}`);
+      return res.status(200).json({ ok: true, ignored: topic });
+    }
 
-    if (!id) {
-      console.log("❌ Nenhum ID encontrado");
+    // ================================================
+    // ✅ Evita processar notificações duplicadas
+    // ================================================
+    let processed: string[] = [];
+    try {
+      if (fs.existsSync(PROCESSED_FILE)) {
+        processed = JSON.parse(fs.readFileSync(PROCESSED_FILE, "utf8"));
+      }
+    } catch {}
+
+    if (processed.includes(paymentId)) {
+      log(`[mp-webhook] Ignorando duplicado ${paymentId}`);
+      return res.status(200).json({ ok: true, duplicate: true });
+    }
+
+    // Marca como processado (mantém últimos 500)
+    processed.push(paymentId);
+    try {
+      fs.writeFileSync(PROCESSED_FILE, JSON.stringify(processed.slice(-500)), "utf8");
+    } catch {}
+
+    // ================================================
+    // 🔍 Busca detalhes do pagamento
+    // ================================================
+    if (!paymentId) {
+      log("[mp-webhook] Nenhum paymentId encontrado no payload.");
       return res.status(200).json({ ok: true });
     }
 
-    let paymentData: any = null;
+    const payment = await fetchPayment(paymentId);
+    const ref = payment.external_reference || "";
+    const status = payment.status; // approved, pending, rejected...
+    const detail = payment.status_detail;
+    const amount = payment.transaction_amount;
+    const payerEmail = payment.payer?.email || "";
+    const method = payment.payment_method_id || "";
 
-    if (topic === "payment") {
-      // 🔹 Busca direta por pagamento
-      const r = await fetch(`https://api.mercadopago.com/v1/payments/${id}`, {
-        headers: {
-          Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}`,
-        },
-      });
-      if (!r.ok) throw new Error(`Erro ao buscar pagamento: ${r.status}`);
-      paymentData = await r.json();
-    } else if (topic === "merchant_order") {
-      // 🔹 Busca merchant_order e tenta achar o pagamento real dentro
-      let attempt = 0;
-      let order: any = null;
+    log(`[mp-webhook] Pagamento ${paymentId} -> status=${status}, ref=${ref}, valor=${amount}, email=${payerEmail}, metodo=${method}`);
 
-      while (attempt < 3) {
-        attempt++;
-        console.log(`Tentativa ${attempt}: buscando merchant_order ${id}`);
-
-        const r = await fetch(
-          `https://api.mercadopago.com/merchant_orders/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}`,
-            },
-          }
-        );
-
-        if (!r.ok)
-          throw new Error(`Erro ao buscar ordem: ${r.status}`);
-        order = await r.json();
-
-        if (order.payments && order.payments.length > 0) break;
-        console.log("⚠️ Nenhum pagamento ainda vinculado, aguardando 5s...");
-        await sleep(5000);
-      }
-
-      if (order && order.payments && order.payments.length > 0) {
-        const paymentId = order.payments[0].id;
-        console.log("🔹 ID do pagamento encontrado:", paymentId);
-
-        const p = await fetch(
-          `https://api.mercadopago.com/v1/payments/${paymentId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN || ""}`,
-            },
-          }
-        );
-        if (!p.ok)
-          throw new Error(`Erro ao buscar pagamento da ordem: ${p.status}`);
-        paymentData = await p.json();
-      } else {
-        console.log("❌ Nenhum pagamento encontrado dentro da ordem após tentativas");
-      }
+    // ================================================
+    // 🔄 Atualiza status no painel PHP
+    // ================================================
+    if (ref && status) {
+      const response = await updateLocalStatus(ref, status);
+      log(`[mp-webhook] Atualizando status '${status}' para ref '${ref}' => ${response}`);
+    } else {
+      log("[mp-webhook] Falha: sem ref ou status válido no pagamento.");
     }
-
-    if (!paymentData) {
-      console.log("❌ Nenhum dado de pagamento obtido");
-      return res.status(200).json({ ok: true });
-    }
-
-    const ref = paymentData.external_reference || "";
-    const status = paymentData.status || "desconhecido";
-
-    console.log(`[mp-webhook] Atualizando status '${status}' para ref '${ref}'`);
-
-    // ----------------------------------------------
-    // 🧩 Envio compatível com hospedagem PHP (form-data)
-    // ----------------------------------------------
-    const formData = new URLSearchParams();
-    formData.append("ref", ref);
-    formData.append("status", status);
-
-    const phpResp = await fetch("https://italomelo.com/server/update_status.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData.toString(),
-    });
-
-    const retornoPHP = await phpResp.text();
-    console.log("🔁 Retorno do update_status.php:", retornoPHP);
 
     return res.status(200).json({ ok: true });
   } catch (err: any) {
-    console.error("🔥 ERRO no webhook:", err);
+    log(`[mp-webhook] Erro geral: ${err.message}`);
     return res.status(200).json({ ok: true });
   }
 }
