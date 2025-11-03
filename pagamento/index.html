@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-
-  <!-- Start of  Zendesk Widget script -->
+<!-- Start of  Zendesk Widget script -->
 <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=8bd1b71a-ff84-437d-a53b-3af6d91d14a8"> </script>
 <!-- End of  Zendesk Widget script -->
+
   
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -113,17 +113,39 @@
 
     const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
 
+    // 🔹 Renderiza e ABRE AUTOMATICAMENTE o checkout
     function renderCheckout(prefId, initPoint){
       mp.checkout({ preference: { id: prefId }, render: { container: "#mp-checkout", label: "Pagar R$ 9,90" } });
+
       if(initPoint){
         const a=document.createElement("a");
-        a.href=initPoint; a.target="_blank"; a.rel="noopener";
-        a.className="text-sm underline"; a.textContent="⚠️ Se o botão não abrir, clique aqui para pagar";
+        a.href=initPoint;
+        a.target="_blank";
+        a.rel="noopener";
+        a.className="text-sm underline block mt-3";
+        a.textContent="⚠️ Caso o pagamento não abra automaticamente, clique aqui.";
         $("fallbackLink").appendChild(a);
+
+        // 🚀 Abre automaticamente o checkout
+        setTimeout(() => {
+          try {
+            const payBtn = document.querySelector("#mp-checkout button, #mp-checkout iframe");
+            if (payBtn) {
+              if (payBtn.click) payBtn.click();
+              else window.location.href = initPoint;
+              console.log("[auto-open] Checkout aberto automaticamente");
+            } else {
+              window.location.href = initPoint;
+            }
+          } catch (e) {
+            console.error("[auto-open] erro ao abrir automaticamente:", e);
+            window.location.href = initPoint;
+          }
+        }, 1000);
       }
     }
 
-    // Cria a preferência
+    // 🔹 Cria a preferência no backend
     fetch(MP_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type":"application/json" },
@@ -150,7 +172,7 @@
     let pollTimer=null;
     function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 5000); }
 
-    // 🔹 NOVA FUNÇÃO DE VERIFICAÇÃO + REDIRECIONAMENTO
+    // 🔹 Verificação do status e redirecionamento
     async function checkNow(){
       try {
         const res = await fetch(CHECK_STATUS + "?ref=" + encodeURIComponent(ref) + "&t=" + Date.now());
