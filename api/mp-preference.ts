@@ -1,6 +1,5 @@
 // /api/mp-preference.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import fetch from 'node-fetch';
 
 // 🔑 Configurações
 const MP_API = 'https://api.mercadopago.com';
@@ -20,6 +19,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // 🔹 Recebe dados do corpo da requisição
+    const rawBody = await req.text();
+    log('RAW recebido', rawBody);
+
+    let bodyData: any = {};
+    try {
+      bodyData = JSON.parse(rawBody || '{}');
+    } catch (err) {
+      log('Erro ao parsear JSON', err);
+      return res.status(400).json({ error: 'JSON inválido no corpo da requisição' });
+    }
+
     const {
       valor = 9.9,
       titulo = 'Plano de Dieta Completo',
@@ -31,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       body_type = '',
       imc_value = '',
       imc_label = ''
-    } = req.body || {};
+    } = bodyData;
 
     // 🔧 Corrigido: usa o mesmo ref que veio do cliente (nunca gera outro)
     const extRef = external_reference && external_reference.trim()
