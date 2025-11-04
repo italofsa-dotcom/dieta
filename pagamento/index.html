@@ -1,103 +1,189 @@
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-  const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
-  const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
-  const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
-  const HOME_APPROVED = "https://dietapronta.online/approved";
-  const HOME_FAILURE  = "https://dietapronta.online/?status=failure#quiz";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Pagamento • Dieta Pronta Online</title>
+  <meta name="description" content="Finalize o pagamento para receber seu plano de dieta completo no WhatsApp.">
+  
+  <!-- Fonts e estilos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  function $(id){ return document.getElementById(id); }
-  function getParam(key){ return new URLSearchParams(location.search).get(key) || ""; }
+  <!-- SDK Mercado Pago -->
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
 
-  // 🔹 Recupera dados básicos
-  const ref = getParam("ref") || localStorage.getItem("mp_external_ref") || "";
-  const customer_name  = localStorage.getItem("lead_nome")  || getParam("nome")  || "";
-  const customer_email = localStorage.getItem("lead_email") || getParam("email") || "";
-  const customer_whats = localStorage.getItem("lead_whats") || getParam("whats") || "";
+  <style>
+    :root { --brand: #22c55e; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }
+    .container { max-width: 980px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
 
-  // 🔹 Recupera tipo de dieta e biotipo
-  const diet_title = getParam("diet_title") || localStorage.getItem("quiz_result_title") || localStorage.getItem("diet_title") || "Plano de Dieta Completo";
-  const body_type  = getParam("body_type")  || localStorage.getItem("quiz_body_type") || localStorage.getItem("body_type") || "";
-  const imc_value  = getParam("imc_value")  || localStorage.getItem("quiz_imc_value")  || "";
-  const imc_label  = getParam("imc_label")  || localStorage.getItem("quiz_imc_label")  || "";
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--brand)]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <a href="/" class="font-extrabold tracking-tight hover:underline">Dieta Pronta Online</a>
+      </div>
+      <a href="/" class="text-sm text-slate-600 hover:underline">Voltar ao site</a>
+    </div>
+  </header>
 
-  if ($("dietLabel")) $("dietLabel").textContent = diet_title + (body_type ? " " + body_type : "");
+  <!-- Conteúdo principal -->
+  <main class="container mx-auto px-4 py-10">
+    <div class="grid lg:grid-cols-3 gap-8 items-start">
+      <!-- Área de pagamento -->
+      <section class="lg:col-span-2">
+        <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+          <h1 class="text-2xl md:text-3xl font-extrabold">Finalize o pagamento</h1>
+          <p class="text-slate-600 mt-2">Valor: <strong>R$ 9,90</strong>. Aceitamos Pix, cartão e boleto.</p>
 
-  // Verifica se MercadoPago está disponível
-  if (typeof MercadoPago === "undefined") {
-    console.error("MercadoPago SDK não carregou.");
-    return;
-  }
+          <div id="statusBanner" class="hidden mt-4 mb-2 rounded-xl px-4 py-3 text-sm border"></div>
+          <div id="mp-checkout" class="mt-4"></div>
+          <div id="fallbackLink" class="mt-3"></div>
 
-  const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+          <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">
+            <strong>Como funciona:</strong> após pagar por <em>Pix</em>, a confirmação costuma ocorrer em poucos minutos. Assim que aprovado, você será redirecionado automaticamente.
+          </div>
+        </div>
+      </section>
 
-  function showBanner(texto, classes){
-    const banner = $("statusBanner");
-    if (!banner) return;
-    banner.textContent = texto;
-    banner.className = "mt-4 mb-2 rounded-xl px-4 py-3 text-sm border " + classes;
-    banner.classList.remove("hidden");
-  }
+      <!-- Resumo -->
+      <aside>
+        <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+          <h2 class="text-lg font-bold">Resumo do pedido</h2>
+          <ul class="mt-3 text-sm text-slate-700 space-y-2">
+            <li class="flex items-center justify-between">
+              <span id="dietLabel">Plano de Dieta Completo</span>
+              <strong>R$ 9,90</strong>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </main>
 
-  function renderCheckout(prefId, initPoint){
-    try {
+  <footer class="py-8 text-center text-xs text-slate-500">
+    © <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.
+  </footer>
+
+  <!-- SCRIPT FINAL -->
+  <script>
+  function initPagamentoPage() {
+    const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
+    const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
+    const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
+    const HOME_APPROVED = "https://dietapronta.online/approved";
+    const HOME_FAILURE  = "https://dietapronta.online/?status=failure#quiz";
+
+    function $(id){ return document.getElementById(id); }
+    function getParam(key){ return new URLSearchParams(location.search).get(key) || ""; }
+
+    // 🔹 Recupera dados do lead
+    const ref = getParam("ref") || localStorage.getItem("mp_external_ref") || "";
+    const customer_name  = localStorage.getItem("lead_nome")  || getParam("nome")  || "";
+    const customer_email = localStorage.getItem("lead_email") || getParam("email") || "";
+    const customer_whats = localStorage.getItem("lead_whats") || getParam("whats") || "";
+
+    // 🔹 Recupera tipo de dieta e biotipo
+    const diet_title = getParam("diet_title") || localStorage.getItem("quiz_result_title") || localStorage.getItem("diet_title") || "Plano de Dieta Completo";
+    const body_type  = getParam("body_type")  || localStorage.getItem("quiz_body_type") || localStorage.getItem("body_type") || "";
+    const imc_value  = getParam("imc_value")  || localStorage.getItem("quiz_imc_value")  || "";
+    const imc_label  = getParam("imc_label")  || localStorage.getItem("quiz_imc_label")  || "";
+
+    if ($("dietLabel")) $("dietLabel").textContent = diet_title + (body_type ? " " + body_type : "");
+
+    const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+
+    function showBanner(texto, classes){
+      const banner = $("statusBanner");
+      if (!banner) return;
+      banner.textContent = texto;
+      banner.className = "mt-4 mb-2 rounded-xl px-4 py-3 text-sm border " + classes;
+      banner.classList.remove("hidden");
+    }
+
+    function renderCheckout(prefId, initPoint){
       mp.checkout({ preference: { id: prefId }, render: { container: "#mp-checkout", label: "Pagar R$ 9,90" } });
       if (initPoint) setTimeout(() => { window.location.href = initPoint; }, 1500);
-    } catch(e){
-      console.error("Erro ao renderizar checkout:", e);
     }
-  }
 
-  // Cria a preferência
-  fetch(MP_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type":"application/json" },
-    body: JSON.stringify({
-      valor: 9.90,
-      titulo: "Plano de Dieta Completo",
-      external_reference: ref,
-      customer_name,
-      customer_email,
-      customer_whatsapp: customer_whats,
-      diet_title,
-      body_type,
-      imc_value,
-      imc_label
+    // 🔹 Cria preferência no backend
+    fetch(MP_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({
+        valor: 9.90,
+        titulo: "Plano de Dieta Completo",
+        external_reference: ref,
+        customer_name,
+        customer_email,
+        customer_whatsapp: customer_whats,
+        diet_title,
+        body_type,
+        imc_value,
+        imc_label
+      })
     })
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (!data || !data.id) throw new Error("Resposta inválida do MP");
-    renderCheckout(data.id, data.init_point);
-    showBanner("Aguardando pagamento... Assim que o PIX for aprovado, você será redirecionado automaticamente.", "bg-amber-50 border-amber-300 text-amber-800");
-    startPolling();
-  })
-  .catch(err => {
-    console.error("[mp-preference] erro:", err);
-    showBanner("Erro ao iniciar o pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
-  });
+    .then(r => r.json())
+    .then(data => {
+      if (!data || !data.id) throw new Error("Resposta inválida do Mercado Pago");
+      renderCheckout(data.id, data.init_point);
+      showBanner("Aguardando pagamento... Assim que o PIX for aprovado, você será redirecionado automaticamente.", "bg-amber-50 border-amber-300 text-amber-800");
+      startPolling();
+    })
+    .catch(err => {
+      console.error("[mp-preference] erro:", err);
+      showBanner("Erro ao iniciar o pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
+    });
 
-  let pollTimer=null;
-  function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 5000); }
+    let pollTimer=null;
+    function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 5000); }
 
-  async function checkNow(){
-    try {
-      const res = await fetch(CHECK_STATUS + "?ref=" + encodeURIComponent(ref) + "&t=" + Date.now());
-      const data = await res.json();
-      if (!data || !data.found) return;
-      const status = (data.status || "").toLowerCase();
-      if (status === "approved") {
-        if (pollTimer) clearInterval(pollTimer);
-        showBanner("✅ Pagamento aprovado! Redirecionando...", "bg-emerald-50 border-emerald-300 text-emerald-800");
-        setTimeout(()=>window.location.href=HOME_APPROVED+"?ref="+encodeURIComponent(ref),2000);
-      } else if (["rejected","cancelled","canceled"].includes(status)) {
-        if (pollTimer) clearInterval(pollTimer);
-        showBanner("Pagamento não aprovado. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
-        setTimeout(()=>window.location.href=HOME_FAILURE,2500);
-      }
-    } catch(e){ console.error("[status-check] erro", e); }
+    async function checkNow(){
+      try {
+        const res = await fetch(CHECK_STATUS + "?ref=" + encodeURIComponent(ref) + "&t=" + Date.now());
+        const data = await res.json();
+        if (!data || !data.found) return;
+        const status = (data.status || "").toLowerCase();
+        if (status === "approved") {
+          if (pollTimer) clearInterval(pollTimer);
+          showBanner("✅ Pagamento aprovado! Redirecionando...", "bg-emerald-50 border-emerald-300 text-emerald-800");
+          setTimeout(()=>window.location.href=HOME_APPROVED+"?ref="+encodeURIComponent(ref),2000);
+        } else if (["rejected","cancelled","canceled"].includes(status)) {
+          if (pollTimer) clearInterval(pollTimer);
+          showBanner("Pagamento não aprovado. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
+          setTimeout(()=>window.location.href=HOME_FAILURE,2500);
+        }
+      } catch(e){ console.error("[status-check] erro", e); }
+    }
+
+    if ($("year")) $("year").textContent = new Date().getFullYear();
   }
 
-  if ($("year")) $("year").textContent = new Date().getFullYear();
-});
-</script>
+  // 🕒 Espera o SDK do Mercado Pago carregar antes de iniciar
+  document.addEventListener("DOMContentLoaded", function(){
+    function waitForMP(){
+      if (typeof MercadoPago !== "undefined") {
+        initPagamentoPage();
+      } else {
+        console.log("⏳ Aguardando SDK MercadoPago...");
+        setTimeout(waitForMP, 400);
+      }
+    }
+    waitForMP();
+  });
+  </script>
+
+</body>
+</html>
