@@ -1,153 +1,161 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Pagamento • Dieta Pronta Online</title>
-  <meta name="description" content="Finalize o pagamento para receber seu plano de dieta completo no WhatsApp.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://sdk.mercadopago.com/js/v2"></script>
-  <style>
-    :root { --brand:#22c55e; }
-    body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;}
-    .container{max-width:980px;}
-    .shadow-soft{box-shadow:0 10px 25px rgba(2,6,23,.08);}
-  </style>
-</head>
-<body class="bg-slate-50 text-slate-900">
-
-<header class="bg-white border-b border-slate-200">
-  <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
-      </div>
-      <a href="/" class="font-extrabold tracking-tight hover:underline">Dieta Pronta Online</a>
-    </div>
-    <a href="/" class="text-sm text-slate-600 hover:underline">Voltar</a>
-  </div>
-</header>
-
-<main class="container mx-auto px-4 py-10">
-  <div class="grid lg:grid-cols-3 gap-8 items-start">
-    <section class="lg:col-span-2">
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
-        <h1 class="text-2xl md:text-3xl font-extrabold">Finalize o pagamento</h1>
-        <p class="text-slate-600 mt-2">Valor: <strong>R$ 9,90</strong> • Pix, cartão ou boleto.</p>
-
-        <div id="statusBanner" class="hidden mt-4 mb-2 rounded-xl px-4 py-3 text-sm border"></div>
-        <div id="mp-checkout" class="mt-4"></div>
-
-        <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">
-          Após pagar por Pix, a confirmação costuma ocorrer em poucos minutos. Assim que for aprovado, você será redirecionado automaticamente.
-        </div>
-      </div>
-    </section>
-
-    <aside>
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
-        <h2 class="text-lg font-bold">Resumo do pedido</h2>
-        <ul class="mt-3 text-sm text-slate-700 space-y-2">
-          <li class="flex items-center justify-between">
-            <span id="dietLabel">Plano de Dieta Completo</span>
-            <strong>R$ 9,90</strong>
-          </li>
-        </ul>
-      </div>
-    </aside>
-  </div>
-</main>
-
-<footer class="py-8 text-center text-xs text-slate-500">
-  © <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.
-</footer>
-
 <script>
-document.addEventListener("DOMContentLoaded",async()=>{
-  const MP_PUBLIC_KEY="APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
-  const MP_ENDPOINT="https://dietapronta.online/api/mp-preference";
-  const CHECK_STATUS="https://italomelo.com/server/check_status.php";
-  const HOME_APPROVED="https://dietapronta.online/approved";
-  const HOME_FAILURE="https://dietapronta.online/?status=failure#quiz";
+(function(){
+  const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
+  const MP_ENDPOINT = "https://dietapronta.online/api/mp-preference";
+  const CHECK_STATUS = "/api/mp-check-status";
+  const HOME_APPROVED = "https://dietapronta.online/approved";
+  const HOME_FAILURE = "https://dietapronta.online/?status=failure#quiz";
 
-  function $(id){return document.getElementById(id);}
-  function getParam(k){return new URLSearchParams(location.search).get(k)||'';}
-
-  const ref=getParam("ref")||localStorage.getItem("mp_external_ref")||"";
-  const nome=localStorage.getItem("lead_nome")||getParam("nome")||"";
-  const email=localStorage.getItem("lead_email")||getParam("email")||"";
-  const whats=localStorage.getItem("lead_whats")||getParam("whats")||"";
-  const diet_title=getParam("diet_title")||localStorage.getItem("diet_title")||"Plano de Dieta Completo";
-  const body_type=getParam("body_type")||localStorage.getItem("body_type")||"";
-
-  if($("dietLabel"))$("dietLabel").textContent=diet_title+(body_type?" "+body_type:"");
-  if($("year"))$("year").textContent=new Date().getFullYear();
-
-  function showBanner(msg,cls){
-    const b=$("statusBanner");
-    b.textContent=msg; b.className="mt-4 mb-2 rounded-xl px-4 py-3 text-sm border "+cls; b.classList.remove("hidden");
+  function $(id){ return document.getElementById(id); }
+  function showBanner(texto, classes){
+    const banner = $("statusBanner");
+    banner.textContent = texto;
+    banner.className = "mt-4 mb-2 rounded-xl px-4 py-3 text-sm border " + classes;
+    banner.classList.remove("hidden");
   }
 
-  const mp=new MercadoPago(MP_PUBLIC_KEY,{locale:"pt-BR"});
-  showBanner("Gerando pagamento...","bg-slate-100 border-slate-300 text-slate-700");
-
-  try{
-    const resp=await fetch(MP_ENDPOINT,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        valor:9.90,
-        titulo:"Plano de Dieta Completo",
-        external_reference:ref,
-        customer_name:nome,
-        customer_email:email,
-        customer_whatsapp:whats,
-        diet_title,
-        body_type
-      })
-    });
-    const data=await resp.json();
-    if(!data || !data.id) throw new Error("Resposta inválida do MP");
-    showBanner("Abrindo caixa de pagamento...","bg-emerald-50 border-emerald-300 text-emerald-800");
-
-    // ✅ abre o BOX automaticamente dentro da página
-    mp.checkout({
-      preference:{ id:data.id },
-      autoOpen:true,
-      render:{ container:"#mp-checkout", label:"Pagar R$ 9,90" }
-    });
-
-    // 🔁 Verificação de status
-    startPolling(ref);
-  }catch(e){
-    console.error(e);
-    showBanner("Erro ao iniciar pagamento.","bg-rose-50 border-rose-300 text-rose-800");
+  // Recupera ref
+  function getQS(k){ return new URLSearchParams(location.search).get(k) || ''; }
+  let ref = getQS("ref") || "";
+  if (!ref) {
+    try { ref = localStorage.getItem("mp_external_ref") || ""; } catch(e){}
   }
+  if (!ref) {
+    ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).substr(2,6);
+    try { localStorage.setItem("mp_external_ref", ref); } catch(e){}
+  }
+  const u = new URL(location.href);
+  u.searchParams.set("ref", ref);
+  history.replaceState(null, "", u.toString());
 
-  function startPolling(ref){
-    let timer=setInterval(async()=>{
-      try{
-        const r=await fetch(CHECK_STATUS+"?ref="+encodeURIComponent(ref)+"&t="+Date.now());
-        const d=await r.json();
-        if(!d||!d.found)return;
-        const s=(d.status||"").toLowerCase();
-        if(s==="approved"){
-          clearInterval(timer);
-          showBanner("✅ Pagamento aprovado! Redirecionando...","bg-emerald-50 border-emerald-300 text-emerald-800");
-          setTimeout(()=>window.location.href=HOME_APPROVED+"?ref="+encodeURIComponent(ref),1500);
-        }else if(["rejected","cancelled"].includes(s)){
-          clearInterval(timer);
-          showBanner("Pagamento não aprovado.","bg-rose-50 border-rose-300 text-rose-800");
-          setTimeout(()=>window.location.href=HOME_FAILURE,1500);
+  // Dados do cliente
+  let customer_name = "", customer_email = "", customer_whats = "";
+  try {
+    customer_name = localStorage.getItem("lead_nome") || getQS("nome") || "";
+    customer_email = localStorage.getItem("lead_email") || getQS("email") || "";
+    customer_whats = localStorage.getItem("lead_whats") || getQS("whats") || "";
+  } catch(e){}
+
+  const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+  let bricksBuilder = null;
+  let pollTimer = null;
+
+  // Cria preferência
+  fetch(MP_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      valor: 9.90,
+      titulo: "Plano de Dieta Completo",
+      external_reference: ref,
+      customer_name: customer_name,
+      customer_email: customer_email,
+      customer_whatsapp: customer_whats
+    })
+  })
+  .then(r => r.json().catch(() => ({})))
+  .then(data => {
+    if (!data.id) throw new Error("Preferência inválida");
+
+    bricksBuilder = mp.bricks();
+
+    // Wallet Brick (Pix, Boleto, Cartão rápido)
+    const walletBrick = bricksBuilder.create("wallet", "walletBrick_container", {
+      initialization: { preferenceId: data.id },
+      customization: {
+        texts: { action: "pay", valueProp: "security" },
+        visual: { buttonBackground: "black", borderRadius: "6px" }
+      },
+      callbacks: {
+        onSubmit: () => {
+          showBanner("Processando pagamento... Aguarde.", "bg-blue-50 border-blue-300 text-blue-800");
+        },
+        onReady: () => {
+          console.log("Wallet Brick carregado");
+        },
+        onError: (error) => {
+          console.error("Wallet error:", error);
+          showBanner("Erro no botão de pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
         }
-      }catch(_){}
-    },7000);
-  }
-});
-</script>
+      }
+    });
 
-</body>
-</html>
+    // Card Payment Brick (campos completos)
+    const cardBrick = bricksBuilder.create("cardPayment", "cardPaymentBrick_container", {
+      initialization: { preferenceId: data.id },
+      customization: {
+        visual: { style: { theme: "default" } },
+        paymentMethods: { maxInstallments: 1 }
+      },
+      callbacks: {
+        onSubmit: (formData) => {
+          showBanner("Processando cartão... Aguarde.", "bg-blue-50 border-blue-300 text-blue-800");
+          return new Promise((resolve, reject) => {
+            fetch("https://dietapronta.online/api/mp-process-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                token: formData.token,
+                issuer_id: formData.issuer_id,
+                payment_method_id: formData.payment_method_id,
+                transaction_amount: 9.90,
+                installments: 1,
+                payer: { email: customer_email },
+                external_reference: ref
+              })
+            })
+            .then(r => r.json())
+            .then(res => {
+              if (res.status === "approved") {
+                triggerApproved();
+                resolve();
+              } else {
+                showBanner("Pagamento não aprovado. Tente outro método.", "bg-rose-50 border-rose-300 text-rose-800");
+                reject(res);
+              }
+            })
+            .catch(err => {
+              showBanner("Erro ao processar cartão. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
+              reject(err);
+            });
+          });
+        }
+      }
+    });
+
+    showBanner("Preencha os dados e clique em Pagar. Pix é instantâneo!", "bg-amber-50 border-amber-300 text-amber-800");
+    startPolling();
+  })
+  .catch(err => {
+    console.error(err);
+    showBanner("Erro ao carregar pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
+  });
+
+  // Função central de aprovação
+  function triggerApproved() {
+    if (pollTimer) clearInterval(pollTimer);
+    showBanner("Pagamento aprovado! Redirecionando para seu plano...", "bg-emerald-50 border-emerald-300 text-emerald-800");
+    setTimeout(() => {
+      location.href = HOME_APPROVED;
+    }, 1500);
+  }
+
+  // Polling reforçado (a cada 5 segundos)
+  function startPolling(){
+    checkNow();
+    pollTimer = setInterval(checkNow, 5000); // Mais rápido!
+  }
+
+  async function checkNow(){
+    try {
+      const r = await fetch(CHECK_STATUS + "?ref=" + encodeURIComponent(ref));
+      const data = await r.json();
+      if (data?.found && data.status === "approved") {
+        triggerApproved();
+      }
+    } catch(e){}
+  }
+
+  $("year").textContent = new Date().getFullYear();
+})();
+</script>
