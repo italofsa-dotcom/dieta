@@ -5,185 +5,166 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Pagamento • Dieta Pronta Online</title>
   <meta name="description" content="Finalize o pagamento para receber seu plano de dieta completo no WhatsApp.">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://sdk.mercadopago.com/js/v2"></script>
+
   <style>
-    :root { --brand: #22c55e; }
-    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }
-    .container { max-width: 980px; }
-    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
+    :root { --brand:#22c55e; }
+    body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;}
+    .container{max-width:980px;}
+    .shadow-soft{box-shadow:0 10px 25px rgba(2,6,23,.08);}
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
-  <header class="bg-white border-b border-slate-200">
-    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--brand)]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/>
-          </svg>
-        </div>
-        <a href="/" class="font-extrabold tracking-tight hover:underline">Dieta Pronta Online</a>
+
+<header class="bg-white border-b border-slate-200">
+  <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[var(--brand)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/>
+        </svg>
       </div>
-      <a href="/" class="text-sm text-slate-600 hover:underline">Voltar ao site</a>
+      <a href="/" class="font-extrabold tracking-tight hover:underline">Dieta Pronta Online</a>
     </div>
-  </header>
+    <a href="/" class="text-sm text-slate-600 hover:underline">Voltar</a>
+  </div>
+</header>
 
-  <main class="container mx-auto px-4 py-10">
-    <div class="grid lg:grid-cols-3 gap-8 items-start">
-      <section class="lg:col-span-2">
-        <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
-          <h1 class="text-2xl md:text-3xl font-extrabold">Finalize o pagamento</h1>
-          <p class="text-slate-600 mt-2">Valor: <strong>R$ 9,90</strong>. Aceitamos Pix, cartão e boleto.</p>
+<main class="container mx-auto px-4 py-10">
+  <div class="grid lg:grid-cols-3 gap-8 items-start">
+    <section class="lg:col-span-2">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <h1 class="text-2xl md:text-3xl font-extrabold">Finalize o pagamento</h1>
+        <p class="text-slate-600 mt-2">Valor: <strong>R$ 9,90</strong> • Pix, cartão ou boleto.</p>
 
-          <div id="statusBanner" class="hidden mt-4 mb-2 rounded-xl px-4 py-3 text-sm border"></div>
+        <div id="statusBanner" class="hidden mt-4 mb-2 rounded-xl px-4 py-3 text-sm border"></div>
+        <div id="mp-checkout" class="mt-4"></div>
 
-          <div id="mp-checkout" class="mt-4"></div>
-          <div id="fallbackLink" class="mt-3"></div>
-
-          <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">
-            <strong>Como funciona:</strong> após pagar por <em>Pix</em>, a confirmação costuma ocorrer em poucos minutos. Assim que aprovado, você será redirecionado e seu WhatsApp abrirá automaticamente para receber o plano.
-          </div>
+        <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">
+          Após pagar por Pix, a confirmação costuma ocorrer em poucos minutos. Assim que for aprovado, você será redirecionado automaticamente.
         </div>
-      </section>
+      </div>
+    </section>
 
-      <aside>
-        <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
-          <h2 class="text-lg font-bold">Resumo do pedido</h2>
-          <ul class="mt-3 text-sm text-slate-700 space-y-2">
-            <li class="flex items-center justify-between">
-              <span>Plano de Dieta Completo</span>
-              <strong>R$ 9,90</strong>
-            </li>
-            <li class="flex items-center justify-between border-t pt-2">
-              <span>Total</span>
-              <strong>R$ 9,90</strong>
-            </li>
-          </ul>
-          <div class="mt-6 text-xs text-slate-500">
-            Pagamento processado com Mercado Pago.  
-            Em caso de dúvidas, volte para a <a href="/" class="underline">página principal</a>.
-          </div>
-        </div>
-      </aside>
-    </div>
-  </main>
+    <aside>
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <h2 class="text-lg font-bold">Resumo do pedido</h2>
+        <ul class="mt-3 text-sm text-slate-700 space-y-2">
+          <li class="flex items-center justify-between">
+            <span id="dietLabel">Plano de Dieta Completo</span>
+            <strong>R$ 9,90</strong>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</main>
 
-  <footer class="py-8 text-center text-xs text-slate-500">
-    © <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.
-  </footer>
+<footer class="py-8 text-center text-xs text-slate-500">
+  © <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.
+</footer>
 
-  <script>
-  (function(){
-    var MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
-    var MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
-    var CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
-    var HOME_APPROVED = "https://dietapronta.online/approved";
-    var HOME_FAILURE  = "https://dietapronta.online/?status=failure#quiz";
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
+  const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
+  const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
+  const HOME_APPROVED = "https://dietapronta.online/approved";
+  const HOME_FAILURE  = "https://dietapronta.online/?status=failure#quiz";
 
-    function $(id){ return document.getElementById(id); }
+  function $(id){return document.getElementById(id);}
+  function getParam(k){return new URLSearchParams(location.search).get(k)||'';}
 
-    function showBanner(texto, classes){
-      var banner = $("statusBanner");
-      banner.textContent = texto;
-      banner.className = "mt-4 mb-2 rounded-xl px-4 py-3 text-sm border " + classes;
-      banner.classList.remove("hidden");
-    }
+  const ref=getParam("ref")||localStorage.getItem("mp_external_ref")||"";
+  const nome=localStorage.getItem("lead_nome")||getParam("nome")||"";
+  const email=localStorage.getItem("lead_email")||getParam("email")||"";
+  const whats=localStorage.getItem("lead_whats")||getParam("whats")||"";
+  const diet_title=getParam("diet_title")||localStorage.getItem("diet_title")||"Plano de Dieta Completo";
+  const body_type=getParam("body_type")||localStorage.getItem("body_type")||"";
 
-    // ===== Recupera o mesmo ref criado no pré-pagamento =====
-    function getQS(k){ return new URLSearchParams(location.search).get(k) || ''; }
+  if($("dietLabel"))$("dietLabel").textContent=diet_title+(body_type?" "+body_type:"");
+  if($("year"))$("year").textContent=new Date().getFullYear();
 
-    var ref = getQS("ref") || "";
-    if (!ref) {
-      try { ref = localStorage.getItem("mp_external_ref") || ""; } catch(e){}
-    }
+  function showBanner(msg,cls){
+    const b=$("statusBanner");
+    b.textContent=msg; b.className="mt-4 mb-2 rounded-xl px-4 py-3 text-sm border "+cls; b.classList.remove("hidden");
+  }
 
-    // Se mesmo assim não houver, cria um fallback (último caso)
-    if (!ref) {
-      ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).substr(2,6);
-      try { localStorage.setItem("mp_external_ref", ref); } catch(e){}
-    }
+  const mp=new MercadoPago(MP_PUBLIC_KEY,{locale:"pt-BR"});
+  showBanner("Gerando pagamento...","bg-slate-100 border-slate-300 text-slate-700");
 
-    // Garante que o ref apareça na URL
-    var u = new URL(location.href);
-    u.searchParams.set("ref", ref);
-    history.replaceState(null, "", u.toString());
-
-    // ===== Dados do lead (nome/email/whats) — da URL ou localStorage =====
-    function getParam(key){ return new URLSearchParams(location.search).get(key) || ""; }
-    var customer_name="", customer_email="", customer_whats="";
-    try {
-      customer_name  = localStorage.getItem("lead_nome")  || "";
-      customer_email = localStorage.getItem("lead_email") || "";
-      customer_whats = localStorage.getItem("lead_whats") || "";
-    } catch(e){}
-    if(!customer_name)  customer_name  = getParam("nome");
-    if(!customer_email) customer_email = getParam("email");
-    if(!customer_whats) customer_whats = getParam("whats");
-
-    var mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
-
-    function renderCheckout(prefId, initPoint){
-      mp.checkout({ preference: { id: prefId }, render: { container: "#mp-checkout", label: "Pagar R$ 9,90" } });
-      if(initPoint){
-        var a=document.createElement("a");
-        a.href=initPoint; a.target="_blank"; a.rel="noopener";
-        a.className="text-sm underline"; a.textContent="⚠️ Se o botão não abrir, clique aqui para pagar";
-        $("fallbackLink").appendChild(a);
-      }
-    }
-
-    // ===== Cria a preferência com o mesmo ref sincronizado =====
-    fetch(MP_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type":"application/json" },
-      body: JSON.stringify({
-        valor: 9.90,
-        titulo: "Plano de Dieta Completo",
-        external_reference: ref,
-        customer_name: customer_name || "",
-        customer_email: customer_email || "",
-        customer_whatsapp: customer_whats || ""
+  try{
+    const resp=await fetch(MP_ENDPOINT,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        valor:9.90,
+        titulo:"Plano de Dieta Completo",
+        external_reference:ref,
+        customer_name:nome,
+        customer_email:email,
+        customer_whatsapp:whats,
+        diet_title,
+        body_type
       })
-    })
-    .then(function(r){ return r.text().then(function(txt){ var data={}; try{data=JSON.parse(txt);}catch{} if(!r.ok) throw new Error("HTTP "+r.status+" "+txt); if(!data.id) throw new Error("Preferência sem id: "+txt); return data; }); })
-    .then(function(data){
-      renderCheckout(data.id, data.init_point);
-      showBanner("Aguardando pagamento. Após pagar por Pix, a confirmação costuma sair em poucos minutos.", "bg-amber-50 border-amber-300 text-amber-800");
-      startPolling();
-    })
-    .catch(function(err){
-      console.error("[mp-preference] erro:", err);
-      showBanner("Não foi possível iniciar o pagamento agora. Tente reabrir esta página ou volte para a página principal.", "bg-rose-50 border-rose-300 text-rose-800");
+    });
+    const data=await resp.json();
+    if(!data || !data.id) throw new Error("Resposta inválida do MP");
+    showBanner("Abrindo caixa de pagamento...","bg-emerald-50 border-emerald-300 text-emerald-800");
+
+    // ✅ abre o BOX automaticamente dentro da página
+    mp.checkout({
+      preference:{ id:data.id },
+      autoOpen:true,
+      render:{ container:"#mp-checkout", label:"Pagar R$ 9,90" }
     });
 
-    // ===== Verifica status periodicamente =====
-    var pollTimer=null;
-    function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 12000); }
+    // 🔁 Verificação automática de status
+    startPolling(ref);
+  }catch(e){
+    console.error(e);
+    showBanner("Erro ao iniciar pagamento.","bg-rose-50 border-rose-300 text-rose-800");
+  }
 
-    async function checkNow(){
+  // 🔁 Polling de status (corrigido e aprimorado)
+  function startPolling(ref) {
+    let attempts = 0;
+    const timer = setInterval(async () => {
+      attempts++;
       try {
-        var r = await fetch(CHECK_STATUS + "?ref=" + encodeURIComponent(ref));
-        var data = await r.json();
-        if(data && data.found){
-          if(data.status === "approved"){
-            if(pollTimer) clearInterval(pollTimer);
-            showBanner("Pagamento aprovado! Redirecionando…", "bg-emerald-50 border-emerald-300 text-emerald-800");
-            setTimeout(function(){ location.href = HOME_APPROVED; }, 800);
-          } else if(data.status === "rejected" || data.status === "cancelled" || data.status === "canceled"){
-            if(pollTimer) clearInterval(pollTimer);
-            showBanner("Pagamento não aprovado. Você pode tentar novamente.", "bg-rose-50 border-rose-300 text-rose-800");
-            setTimeout(function(){ location.href = HOME_FAILURE; }, 1200);
-          }
-        }
-      } catch(e){}
-    }
+        const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
+        const data = await res.json();
+        if (!data || !data.found) return;
 
-    $("year").textContent = new Date().getFullYear();
-  })();
-  </script>
+        const status = (data.status || "").toLowerCase();
+        console.log("📦 Status detectado:", status, "tentativa", attempts);
+
+        if (status === "approved" || status === "in_process") {
+          clearInterval(timer);
+          showBanner("✅ Pagamento aprovado! Redirecionando...", "bg-emerald-50 border-emerald-300 text-emerald-800");
+          setTimeout(() => {
+            window.location.href = HOME_APPROVED + "?ref=" + encodeURIComponent(ref);
+          }, 2000);
+        } else if (["rejected", "cancelled", "canceled"].includes(status)) {
+          clearInterval(timer);
+          showBanner("Pagamento não aprovado. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
+          setTimeout(() => window.location.href = HOME_FAILURE, 2000);
+        }
+      } catch (e) {
+        console.warn("[status-check] erro:", e);
+      }
+
+      // encerra após 3 minutos se nada mudar
+      if (attempts > 36) clearInterval(timer);
+    }, 5000);
+  }
+});
+</script>
+
 </body>
 </html>
