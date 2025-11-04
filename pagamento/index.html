@@ -6,13 +6,10 @@
   <title>Pagamento • Dieta Pronta Online</title>
   <meta name="description" content="Finalize o pagamento para receber seu plano de dieta completo no WhatsApp.">
   
-  <!-- Fonts e Tailwind -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- SDK Mercado Pago (⚡ deve vir ANTES do seu script principal) -->
   <script src="https://sdk.mercadopago.com/js/v2"></script>
 
   <style>
@@ -39,17 +36,16 @@
     </div>
   </header>
 
-  <!-- Conteúdo principal -->
   <main class="container mx-auto px-4 py-10">
     <div class="grid lg:grid-cols-3 gap-8 items-start">
-      <!-- Área de pagamento -->
       <section class="lg:col-span-2">
         <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
           <h1 class="text-2xl md:text-3xl font-extrabold">Finalize o pagamento</h1>
           <p class="text-slate-600 mt-2">Valor: <strong>R$ 9,90</strong>. Aceitamos Pix, cartão e boleto.</p>
 
           <div id="statusBanner" class="hidden mt-4 mb-2 rounded-xl px-4 py-3 text-sm border"></div>
-          <div id="mp-checkout" class="mt-6"></div>
+
+          <div id="mp-checkout" class="mt-4"></div>
 
           <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">
             <strong>Como funciona:</strong> após pagar por <em>Pix</em>, a confirmação ocorre em poucos minutos. Assim que aprovado, você será redirecionado automaticamente.
@@ -57,7 +53,6 @@
         </div>
       </section>
 
-      <!-- Resumo -->
       <aside>
         <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
           <h2 class="text-lg font-bold">Resumo do pedido</h2>
@@ -108,10 +103,11 @@
       banner.classList.remove("hidden");
     }
 
+    // Inicializa Mercado Pago
     const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
     showBanner("Gerando pagamento...", "bg-slate-100 border-slate-300 text-slate-700");
 
-    // 🔹 Cria a preferência e renderiza o box
+    // 🔹 Cria a preferência e redireciona automaticamente
     fetch(MP_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -131,46 +127,14 @@
     .then(r => r.json())
     .then(data => {
       if (!data || !data.id) throw new Error("Erro ao criar preferência");
-      renderWalletBrick(mp, data.id);
-      showBanner("Aguardando pagamento... Assim que for aprovado, você será redirecionado automaticamente.", "bg-amber-50 border-amber-300 text-amber-800");
-      startPolling();
+      showBanner("Abrindo Mercado Pago...", "bg-emerald-50 border-emerald-300 text-emerald-800");
+      // 🔁 Redireciona automaticamente para a página de pagamento
+      window.location.href = data.init_point;
     })
     .catch(err => {
       console.error("Erro Mercado Pago:", err);
       showBanner("Erro ao iniciar pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
     });
-
-    // ✅ Exibe o box (Wallet Brick)
-    function renderWalletBrick(mp, prefId){
-      mp.bricks().create("wallet", "mp-checkout", {
-        initialization: { preferenceId: prefId },
-        customization: {
-          visual: {
-            buttonBackground: "#22c55e",
-            borderRadius: "12px"
-          }
-        }
-      });
-    }
-
-    // 🔁 Polling para detectar aprovação
-    let pollTimer=null;
-    function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 7000); }
-
-    async function checkNow(){
-      try {
-        const res = await fetch(CHECK_STATUS + "?ref=" + encodeURIComponent(ref) + "&t=" + Date.now());
-        const data = await res.json();
-        if (!data || !data.found) return;
-        const status = (data.status || "").toLowerCase();
-        console.log("📦 Status:", status);
-        if (status === "approved") {
-          if (pollTimer) clearInterval(pollTimer);
-          showBanner("✅ Pagamento aprovado! Redirecionando...", "bg-emerald-50 border-emerald-300 text-emerald-800");
-          setTimeout(()=>window.location.href=HOME_APPROVED+"?ref="+encodeURIComponent(ref),2000);
-        }
-      } catch(e){ console.error("[status-check]", e); }
-    }
   });
   </script>
 
