@@ -1,5 +1,5 @@
 <script>
-function initPagamentoPage() {
+document.addEventListener("DOMContentLoaded", function(){
   const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
   const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
   const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
@@ -7,20 +7,79 @@ function initPagamentoPage() {
   const HOME_FAILURE  = "https://dietapronta.online/?status=failure#quiz";
 
   function $(id){ return document.getElementById(id); }
-  function getParam(key){ return new URLSearchParams(location.search).get(key) || ""; }
+  function getParam(k){ return new URLSearchParams(location.search).get(k) || ''; }
 
   const ref = getParam("ref") || localStorage.getItem("mp_external_ref") || "";
   const customer_name  = localStorage.getItem("lead_nome")  || getParam("nome")  || "";
   const customer_email = localStorage.getItem("lead_email") || getParam("email") || "";
   const customer_whats = localStorage.getItem("lead_whats") || getParam("whats") || "";
-  const diet_title = getParam("diet_title") || localStorage.getItem("quiz_result_title") || localStorage.getItem("diet_title") || "Plano de Dieta Completo";
-  const body_type  = getParam("body_type")  || localStorage.getItem("quiz_body_type") || localStorage.getItem("body_type") || "";
-  const imc_value  = getParam("imc_value")  || localStorage.getItem("quiz_imc_value")  || "";
-  const imc_label  = getParam("imc_label")  || localStorage.getItem("quiz_imc_label")  || "";
+  const diet_title = getParam("diet_title") || localStorage.getItem("diet_title") || "Plano de Dieta Completo";
+  const body_type  = getParam("body_type")  || localStorage.getItem("body_type")  || "";
+  const imc_value  = getParam("imc_value")  || localStorage.getItem("imc_value")  || "";
+  const imc_label  = getParam("imc_label")  || localStorage.getItem("imc_label")  || "";
 
   if ($("dietLabel")) $("dietLabel").textContent = diet_title + (body_type ? " " + body_type : "");
 
-  const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+  // Aguarda o SDK carregar
+  function waitForMP(){
+    if (typeof MercadoPago === "undefined") {
+      console.log("⏳ Aguardando SDK MercadoPago...");
+      return setTimeout(waitForMP, 400);
+    }
+    initMP();
+  }
+  waitForMP();
+
+  function initMP(){
+    const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+
+    showBanner("Gerando pagamento...", "bg-slate-100 border-slate-300 text-slate-700");
+
+    // Cria a preferência
+    fetch(MP_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        valor: 9.90,
+        titulo: "Plano de Dieta Completo",
+        external_reference: ref,
+        customer_name,
+        customer_email,
+        customer_whatsapp: customer_whats,
+        diet_title,
+        body_type,
+        imc_value,
+        imc_label
+      })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (!data || !data.id) throw new Error("Resposta inválida do Mercado Pago");
+      renderWalletBrick(mp, data.id);
+      showBanner("Aguardando pagamento... Assim que for aprovado, você será redirecionado automaticamente.", "bg-amber-50 border-amber-300 text-amber-800");
+      startPolling();
+    })
+    .catch(err => {
+      console.error("Erro MP:", err);
+      showBanner("Erro ao iniciar o pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
+    });
+  }
+
+  // ✅ Renderiza o box embutido (Wallet Brick)
+  function renderWalletBrick(mp, prefId){
+    const bricksBuilder = mp.bricks();
+    bricksBuilder.create("wallet", "mp-checkout", {
+      initialization: {
+        preferenceId: prefId,
+      },
+      customization: {
+        visual: {
+          buttonBackground: "#22c55e",
+          borderRadius: "10px"
+        }
+      }
+    });
+  }
 
   function showBanner(texto, classes){
     const banner = $("statusBanner");
@@ -30,46 +89,8 @@ function initPagamentoPage() {
     banner.classList.remove("hidden");
   }
 
-  // ✅ Renderiza o checkout embutido, sem redirecionar
-  function renderCheckout(prefId){
-    mp.checkout({
-      preference: { id: prefId },
-      autoOpen: true,
-      render: { container: "#mp-checkout", label: "Pagar R$ 9,90" }
-    });
-  }
-
-  // Cria a preferência
-  fetch(MP_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type":"application/json" },
-    body: JSON.stringify({
-      valor: 9.90,
-      titulo: "Plano de Dieta Completo",
-      external_reference: ref,
-      customer_name,
-      customer_email,
-      customer_whatsapp: customer_whats,
-      diet_title,
-      body_type,
-      imc_value,
-      imc_label
-    })
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (!data || !data.id) throw new Error("Resposta inválida do MP");
-    renderCheckout(data.id);
-    showBanner("Aguardando pagamento... Assim que o PIX for aprovado, você será redirecionado automaticamente.", "bg-amber-50 border-amber-300 text-amber-800");
-    startPolling();
-  })
-  .catch(err => {
-    console.error("[mp-preference] erro:", err);
-    showBanner("Erro ao iniciar o pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
-  });
-
   // 🔁 Polling de status
-  let pollTimer=null, lastStatus="";
+  let pollTimer=null;
   function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 7000); }
 
   async function checkNow(){
@@ -78,10 +99,7 @@ function initPagamentoPage() {
       const data = await res.json();
       if (!data || !data.found) return;
       const status = (data.status || "").toLowerCase();
-      if (status !== lastStatus) {
-        lastStatus = status;
-        console.log("📦 Status atualizado:", status);
-      }
+      console.log("📦 Status:", status);
       if (status === "approved") {
         if (pollTimer) clearInterval(pollTimer);
         showBanner("✅ Pagamento aprovado! Redirecionando...", "bg-emerald-50 border-emerald-300 text-emerald-800");
@@ -95,18 +113,5 @@ function initPagamentoPage() {
   }
 
   if ($("year")) $("year").textContent = new Date().getFullYear();
-}
-
-// 🕒 Espera o SDK carregar antes de iniciar
-document.addEventListener("DOMContentLoaded", function(){
-  function waitForMP(){
-    if (typeof MercadoPago !== "undefined") {
-      initPagamentoPage();
-    } else {
-      console.log("⏳ Aguardando SDK MercadoPago...");
-      setTimeout(waitForMP, 400);
-    }
-  }
-  waitForMP();
 });
 </script>
