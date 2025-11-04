@@ -12,6 +12,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- SDK Mercado Pago (⚡ deve vir ANTES do seu script principal) -->
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+
   <style>
     :root { --brand: #22c55e; }
     body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }
@@ -46,7 +49,7 @@
           <p class="text-slate-600 mt-2">Valor: <strong>R$ 9,90</strong>. Aceitamos Pix, cartão e boleto.</p>
 
           <div id="statusBanner" class="hidden mt-4 mb-2 rounded-xl px-4 py-3 text-sm border"></div>
-          <div id="mp-checkout" class="mt-4"></div>
+          <div id="mp-checkout" class="mt-6"></div>
 
           <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">
             <strong>Como funciona:</strong> após pagar por <em>Pix</em>, a confirmação ocorre em poucos minutos. Assim que aprovado, você será redirecionado automaticamente.
@@ -73,7 +76,7 @@
     © <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.
   </footer>
 
-  <!-- Script Dinâmico -->
+  <!-- SCRIPT FINAL -->
   <script>
   document.addEventListener("DOMContentLoaded", function(){
     const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
@@ -105,53 +108,41 @@
       banner.classList.remove("hidden");
     }
 
-    // 🔹 Carrega o SDK dinamicamente
-    function loadMPSDK(callback){
-      const script = document.createElement("script");
-      script.src = "https://sdk.mercadopago.com/js/v2";
-      script.onload = callback;
-      script.onerror = () => console.error("❌ Falha ao carregar o SDK do Mercado Pago");
-      document.body.appendChild(script);
-    }
+    const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+    showBanner("Gerando pagamento...", "bg-slate-100 border-slate-300 text-slate-700");
 
-    // 🔹 Inicializa depois que o SDK for carregado
-    function initMP(){
-      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
-      showBanner("Gerando pagamento...", "bg-slate-100 border-slate-300 text-slate-700");
-
-      fetch(MP_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          valor: 9.90,
-          titulo: "Plano de Dieta Completo",
-          external_reference: ref,
-          customer_name,
-          customer_email,
-          customer_whatsapp: customer_whats,
-          diet_title,
-          body_type,
-          imc_value,
-          imc_label
-        })
+    // 🔹 Cria a preferência e renderiza o box
+    fetch(MP_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        valor: 9.90,
+        titulo: "Plano de Dieta Completo",
+        external_reference: ref,
+        customer_name,
+        customer_email,
+        customer_whatsapp: customer_whats,
+        diet_title,
+        body_type,
+        imc_value,
+        imc_label
       })
-      .then(r => r.json())
-      .then(data => {
-        if (!data || !data.id) throw new Error("Erro ao criar preferência do Mercado Pago");
-        renderWalletBrick(mp, data.id);
-        showBanner("Aguardando pagamento... Assim que aprovado, você será redirecionado.", "bg-amber-50 border-amber-300 text-amber-800");
-        startPolling();
-      })
-      .catch(err => {
-        console.error("Erro MP:", err);
-        showBanner("Erro ao iniciar pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
-      });
-    }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (!data || !data.id) throw new Error("Erro ao criar preferência");
+      renderWalletBrick(mp, data.id);
+      showBanner("Aguardando pagamento... Assim que for aprovado, você será redirecionado automaticamente.", "bg-amber-50 border-amber-300 text-amber-800");
+      startPolling();
+    })
+    .catch(err => {
+      console.error("Erro Mercado Pago:", err);
+      showBanner("Erro ao iniciar pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
+    });
 
-    // ✅ Renderiza o box embutido
+    // ✅ Exibe o box (Wallet Brick)
     function renderWalletBrick(mp, prefId){
-      const bricks = mp.bricks();
-      bricks.create("wallet", "mp-checkout", {
+      mp.bricks().create("wallet", "mp-checkout", {
         initialization: { preferenceId: prefId },
         customization: {
           visual: {
@@ -162,7 +153,7 @@
       });
     }
 
-    // 🔁 Polling do status
+    // 🔁 Polling para detectar aprovação
     let pollTimer=null;
     function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 7000); }
 
@@ -180,9 +171,6 @@
         }
       } catch(e){ console.error("[status-check]", e); }
     }
-
-    // 🚀 Inicia
-    loadMPSDK(initMP);
   });
   </script>
 
