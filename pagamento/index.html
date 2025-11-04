@@ -1,5 +1,5 @@
 <script>
-(function(){
+document.addEventListener("DOMContentLoaded", function(){
   const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
   const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
   const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
@@ -9,7 +9,7 @@
   function $(id){ return document.getElementById(id); }
   function getParam(key){ return new URLSearchParams(location.search).get(key) || ""; }
 
-  // 🔹 Recupera dados do lead e da dieta
+  // 🔹 Recupera dados básicos
   const ref = getParam("ref") || localStorage.getItem("mp_external_ref") || "";
   const customer_name  = localStorage.getItem("lead_nome")  || getParam("nome")  || "";
   const customer_email = localStorage.getItem("lead_email") || getParam("email") || "";
@@ -21,13 +21,34 @@
   const imc_value  = getParam("imc_value")  || localStorage.getItem("quiz_imc_value")  || "";
   const imc_label  = getParam("imc_label")  || localStorage.getItem("quiz_imc_label")  || "";
 
-  // Exibe nome e tipo no resumo
   if ($("dietLabel")) $("dietLabel").textContent = diet_title + (body_type ? " " + body_type : "");
 
-  // 🔹 Inicializa SDK do Mercado Pago
+  // Verifica se MercadoPago está disponível
+  if (typeof MercadoPago === "undefined") {
+    console.error("MercadoPago SDK não carregou.");
+    return;
+  }
+
   const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
 
-  // 🔹 Cria preferência no backend
+  function showBanner(texto, classes){
+    const banner = $("statusBanner");
+    if (!banner) return;
+    banner.textContent = texto;
+    banner.className = "mt-4 mb-2 rounded-xl px-4 py-3 text-sm border " + classes;
+    banner.classList.remove("hidden");
+  }
+
+  function renderCheckout(prefId, initPoint){
+    try {
+      mp.checkout({ preference: { id: prefId }, render: { container: "#mp-checkout", label: "Pagar R$ 9,90" } });
+      if (initPoint) setTimeout(() => { window.location.href = initPoint; }, 1500);
+    } catch(e){
+      console.error("Erro ao renderizar checkout:", e);
+    }
+  }
+
+  // Cria a preferência
   fetch(MP_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type":"application/json" },
@@ -38,34 +59,23 @@
       customer_name,
       customer_email,
       customer_whatsapp: customer_whats,
-      diet_title,     // ✅ agora envia dieta
-      body_type,      // ✅ e biotipo
+      diet_title,
+      body_type,
       imc_value,
       imc_label
     })
   })
   .then(r => r.json())
   .then(data => {
+    if (!data || !data.id) throw new Error("Resposta inválida do MP");
     renderCheckout(data.id, data.init_point);
     showBanner("Aguardando pagamento... Assim que o PIX for aprovado, você será redirecionado automaticamente.", "bg-amber-50 border-amber-300 text-amber-800");
     startPolling();
   })
   .catch(err => {
-    console.error("[mp-preference]", err);
+    console.error("[mp-preference] erro:", err);
     showBanner("Erro ao iniciar o pagamento. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
   });
-
-  function renderCheckout(prefId, initPoint){
-    mp.checkout({ preference: { id: prefId }, render: { container: "#mp-checkout", label: "Pagar R$ 9,90" } });
-    setTimeout(() => { window.location.href = initPoint; }, 1200);
-  }
-
-  function showBanner(texto, classes){
-    const banner = $("statusBanner");
-    banner.textContent = texto;
-    banner.className = "mt-4 mb-2 rounded-xl px-4 py-3 text-sm border " + classes;
-    banner.classList.remove("hidden");
-  }
 
   let pollTimer=null;
   function startPolling(){ checkNow(); pollTimer=setInterval(checkNow, 5000); }
@@ -88,6 +98,6 @@
     } catch(e){ console.error("[status-check] erro", e); }
   }
 
-  $("year").textContent = new Date().getFullYear();
-})();
+  if ($("year")) $("year").textContent = new Date().getFullYear();
+});
 </script>
