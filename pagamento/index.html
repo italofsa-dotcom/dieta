@@ -5,13 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Pagamento • Dieta Pronta Online</title>
   <meta name="description" content="Finalize o pagamento para receber seu plano de dieta completo no WhatsApp.">
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://sdk.mercadopago.com/js/v2"></script>
-
   <style>
     :root { --brand:#22c55e; }
     body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif;}
@@ -92,7 +90,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function showBanner(msg,cls){
     const b=$("statusBanner");
-    b.textContent=msg; b.className="mt-4 mb-2 rounded-xl px-4 py-3 text-sm border "+cls; b.classList.remove("hidden");
+    b.textContent=msg;
+    b.className="mt-4 mb-2 rounded-xl px-4 py-3 text-sm border "+cls;
+    b.classList.remove("hidden");
   }
 
   const mp=new MercadoPago(MP_PUBLIC_KEY,{locale:"pt-BR"});
@@ -124,47 +124,55 @@ document.addEventListener("DOMContentLoaded", async () => {
       render:{ container:"#mp-checkout", label:"Pagar R$ 9,90" }
     });
 
-    // 🔁 Verificação automática de status
+    // 🔁 Verificação automática de status (com logs)
     startPolling(ref);
   }catch(e){
-    console.error(e);
+    console.error("Erro ao criar preferência:", e);
     showBanner("Erro ao iniciar pagamento.","bg-rose-50 border-rose-300 text-rose-800");
   }
 
-  // 🔁 Polling de status (corrigido e aprimorado)
-  function startPolling(ref) {
-    let attempts = 0;
-    const timer = setInterval(async () => {
+  function startPolling(ref){
+    let attempts=0;
+    const timer=setInterval(async()=>{
       attempts++;
-      try {
-        const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
-        const data = await res.json();
-        if (!data || !data.found) return;
+      try{
+        const url = `${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`;
+        const res=await fetch(url);
+        const data=await res.json();
+        console.log(`🔍 [${attempts}] Verificando ${url}`, data);
+        if(!data||!data.found)return;
 
-        const status = (data.status || "").toLowerCase();
-        console.log("📦 Status detectado:", status, "tentativa", attempts);
-
-        if (status === "approved" || status === "in_process") {
+        const status=(data.status||"").toLowerCase();
+        if(status==="approved" || status==="in_process"){
           clearInterval(timer);
-          showBanner("✅ Pagamento aprovado! Redirecionando...", "bg-emerald-50 border-emerald-300 text-emerald-800");
-          setTimeout(() => {
-            window.location.href = HOME_APPROVED + "?ref=" + encodeURIComponent(ref);
-          }, 2000);
-        } else if (["rejected", "cancelled", "canceled"].includes(status)) {
+          console.log("✅ Status aprovado detectado, redirecionando...");
+          showBanner("✅ Pagamento aprovado! Redirecionando...","bg-emerald-50 border-emerald-300 text-emerald-800");
+          setTimeout(()=>window.location.href=HOME_APPROVED+"?ref="+encodeURIComponent(ref),2000);
+        } else if(["rejected","cancelled","canceled"].includes(status)){
           clearInterval(timer);
-          showBanner("Pagamento não aprovado. Tente novamente.", "bg-rose-50 border-rose-300 text-rose-800");
-          setTimeout(() => window.location.href = HOME_FAILURE, 2000);
+          showBanner("Pagamento não aprovado. Tente novamente.","bg-rose-50 border-rose-300 text-rose-800");
+          setTimeout(()=>window.location.href=HOME_FAILURE,2000);
         }
-      } catch (e) {
-        console.warn("[status-check] erro:", e);
+      }catch(err){
+        console.warn("[status-check] erro:",err);
       }
 
-      // encerra após 3 minutos se nada mudar
-      if (attempts > 36) clearInterval(timer);
-    }, 5000);
+      // força recheck final após 30s
+      if(attempts===6){
+        console.warn("⚠️ Forçando checagem final...");
+        fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&force=1`).then(r=>r.json()).then(data=>{
+          if(data && data.status==="approved"){
+            clearInterval(timer);
+            console.log("🚀 Redirecionando forçado após confirmação final");
+            window.location.href=HOME_APPROVED+"?ref="+encodeURIComponent(ref);
+          }
+        });
+      }
+      // encerra após 3 minutos
+      if(attempts>36) clearInterval(timer);
+    },5000);
   }
 });
 </script>
-
 </body>
 </html>
