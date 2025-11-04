@@ -1,181 +1,63 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<!-- Start of  Zendesk Widget script -->
-<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=8bd1b71a-ff84-437d-a53b-3af6d91d14a8"> </script>
-<!-- End of  Zendesk Widget script -->
-  
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Seu Plano Personalizado está pronto ✅</title>
-  <meta name="description" content="Pré-pagamento: página de confirmação com gatilhos de conversão, usa IMC e resultado do quiz para personalização.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root { --brand: #22c55e; }
-    body{ font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
-    .container{ max-width: 980px; }
-    .shadow-soft{ box-shadow: 0 10px 25px rgba(2,6,23,.08); }
-    .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
-  </style>
-</head>
-<body class="bg-slate-50 text-slate-900">
-  <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
-    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="h-9 w-9 rounded-2xl bg-emerald-100 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
-        </div>
-        <span class="font-extrabold tracking-tight">Dieta Pronta Online</span>
-      </div>
-      <div class="text-sm text-slate-500 hidden md:block">Plano personalizado pronto para você</div>
-    </div>
-  </header>
+<script>
+(function(){
+  function $(id){ return document.getElementById(id); }
+  function getParam(k){ try{ return new URLSearchParams(location.search).get(k) || ''; }catch(_){ return ''; } }
 
-  <!-- Hero -->
-  <section class="bg-gradient-to-b from-white to-slate-100">
-    <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
-      <div>
-        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Seu plano personalizado está pronto 🎉</h1>
-        <p id="intro" class="mt-4 text-lg text-slate-600">Com base nas suas respostas, montamos um <strong>PLANO COMPLETO</strong> e 100% ajustado ao seu corpo e rotina.</p>
-        <div id="imcInfo" class="mt-4 hidden"></div>
-        <div class="mt-6 flex gap-3">
-          <a id="btnContinuarTop" href="#oferta" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Ver o que você vai receber</a>
-          <span class="text-slate-500 self-center">Leva menos de 1 minuto</span>
-        </div>
-      </div>
-      <div class="relative">
-        <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
-   <!--    <img src="https://images.unsplash.com/photo-1506086679524-493c64fdfaa6?q=80&w=1600&auto=format&fit=crop" alt="Alimentos saudáveis" class="w-full h-72 object-cover"/> -->
-          <img src="https://dietapronta.online/nutricionista.jpg" alt="Alimentos saudáveis" class="w-full h-72 object-cover"/> 
-          <div class="p-6">
-            <h3 class="text-xl font-bold">Plano realmente aplicável</h3>
-            <p class="mt-1 text-slate-600">Nada de fórmulas mágicas: passos simples, combinações inteligentes e foco no que funciona para <span id="nomeSpan">você</span>.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  // Carrega dados básicos do lead
+  var ref   = getParam('ref')   || localStorage.getItem('mp_external_ref') || '';
+  var nome  = getParam('nome')  || localStorage.getItem('lead_nome') || '';
+  var email = getParam('email') || localStorage.getItem('lead_email') || '';
+  var whats = getParam('whats') || localStorage.getItem('lead_whats') || '';
 
-  <!-- Oferta -->
-  <section id="oferta" class="py-10">
-    <div class="container mx-auto px-4">
-      <div class="grid lg:grid-cols-3 gap-6 items-start">
-        <div class="lg:col-span-2 p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
-          <div class="flex items-center gap-2 text-sm text-slate-500"><span class="badge bg-emerald-100 text-emerald-800">Personalizado</span> Plano baseado no seu biotipo e IMC</div>
-          <h2 class="mt-2 text-2xl font-extrabold">O que já está pronto para você</h2>
+  // Carrega resultado do quiz
+  var resultTitle = localStorage.getItem('quiz_result_title') || localStorage.getItem('quiz_diet_title') || '';
+  var resultDesc  = localStorage.getItem('quiz_result_desc') || '';
+  var bodyType    = localStorage.getItem('quiz_body_type') || localStorage.getItem('quiz_biotype') || '';
+  var imcVal      = localStorage.getItem('quiz_imc_value');
+  var imcLabel    = localStorage.getItem('quiz_imc_label') || '';
 
-          <ul class="mt-4 space-y-3 text-slate-700">
-            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Dieta semanal completa</strong> — 3 opções por refeição (café, almoço, lanche, jantar e ceia) ajustadas ao seu perfil.</span></li>
-            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Livro digital com 200+ receitas</strong> — fáceis, econômicas e saborosas.</span></li>
-            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Suplementação recomendada</strong> — alinhada ao seu objetivo e biotipo.</span></li>
-            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Estratégias complementares</strong> — hábitos e ajustes que aceleram o resultado.</span></li>
-            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Explicação do seu metabolismo e tipo de corpo</strong> — entenda como usar isso ao seu favor.</span></li>
-          </ul>
+  // Exibe no texto principal
+  if(nome){ $('nomeSpan').textContent = nome; }
 
-          <div class="mt-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
-            <p id="resumoPlano" class="font-semibold">Seu plano: <span id="planoSpan">Personalizado</span>.</p>
-            <p id="descSpan" class="mt-1 text-slate-800"></p>
-          </div>
+  if(imcVal){
+    var v = parseFloat(imcVal);
+    var tone = {
+      'abaixo do peso': 'Vamos reforçar densidade nutricional sem exageros.',
+      'faixa saudável': 'Excelente! Vamos preservar seu bem-estar.',
+      'sobrepeso': 'Vamos reduzir gordura com segurança.',
+      'obesidade leve': 'Nossa prioridade é conforto e progresso consistente.'
+    };
+    $('imcInfo').innerHTML = "<span class='badge bg-emerald-100 text-emerald-800'>IMC "+v+" — "+imcLabel+"</span> <span class='ml-2 text-slate-700'>"+(tone[imcLabel]||'Plano ajustado para você.')+"</span>";
+    $('imcInfo').classList.remove('hidden');
+  }
 
-          <div class="mt-6 grid md:grid-cols-2 gap-4">
-            <div class="p-4 rounded-xl border border-slate-200">
-              <p class="text-sm text-slate-500">Por que funciona</p>
-              <p class="mt-1">Combina <strong>dieta ideal</strong> + <strong>biotipo</strong> + <strong>IMC</strong> com passos práticos e sustentáveis.</p>
-            </div>
-            <div class="p-4 rounded-xl border border-slate-200">
-              <p class="text-sm text-slate-500">Sem promessas irreais</p>
-              <p class="mt-1">Foco em constância, saciedade e saúde — sem radicalismos. Pequenos passos, grande impacto.</p>
-            </div>
-          </div>
-        </div>
+  if(resultTitle){ $('planoSpan').textContent = resultTitle.replace(/^🎯\s*/,''); }
+  if(resultDesc){ $('descSpan').textContent = resultDesc; }
 
-        <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
-          <div class="text-sm text-slate-500">Continue</div>
-          <h3 class="text-xl font-extrabold mt-1">Liberar acesso agora</h3>
-          <p class="mt-2 text-slate-700">Cobramos apenas <strong>R$ 9,90</strong> para manter o projeto vivo e continuar ajudando mais pessoas.</p>
-          <div class="mt-3 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Suporte por WhatsApp</div>
+  // 🔹 Monta URL para /pagamento com dados completos
+  var payUrl = new URL('/pagamento/', location.origin);
+  if(ref)   payUrl.searchParams.set('ref', ref);
+  if(nome)  payUrl.searchParams.set('nome', nome);
+  if(email) payUrl.searchParams.set('email', email);
+  if(whats) payUrl.searchParams.set('whats', whats);
 
-          <a id="btnPagamento" href="/pagamento/" class="mt-5 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Quero meu plano agora</a>
+  // Tipo de dieta + biotipo + IMC
+  if(resultTitle) payUrl.searchParams.set('diet_title', resultTitle);
+  if(bodyType)    payUrl.searchParams.set('body_type', bodyType);
+  if(imcVal)      payUrl.searchParams.set('imc_value', imcVal);
+  if(imcLabel)    payUrl.searchParams.set('imc_label', imcLabel);
 
-          <div class="mt-4 text-xs text-slate-500">Ao continuar, você confirma que leu e concorda com nossos termos. Conteúdo informativo; para condições de saúde, procure um profissional.</div>
-        </aside>
-      </div>
+  // 🔹 Salva no localStorage para o pagamento
+  try {
+    if(resultTitle) localStorage.setItem('diet_title', resultTitle);
+    if(bodyType)    localStorage.setItem('body_type', bodyType);
+    if(imcVal)      localStorage.setItem('imc_value', imcVal);
+    if(imcLabel)    localStorage.setItem('imc_label', imcLabel);
+  } catch(e){}
 
-      <!-- Prova social / Garantia -->
-      <div class="mt-10 grid md:grid-cols-3 gap-6">
-        <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-soft">
-          <p class="font-bold">+20.000 ajustes validados</p>
-          <p class="text-slate-600 mt-1">Aprendizado contínuo a partir de perfis reais como o seu.</p>
-        </div>
-        <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-soft">
-          <p class="font-bold">Suporte gentil</p>
-          <p class="text-slate-600 mt-1">Se tiver dúvidas, falamos com você pelo WhatsApp.</p>
-        </div>
-        <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-soft">
-          <p class="font-bold">Acesso imediato</p>
-          <p class="text-slate-600 mt-1">Você começa hoje. Sem espera.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+  $('btnPagamento').setAttribute('href', payUrl.toString());
+  $('btnContinuarTop').setAttribute('href', '#oferta');
 
-  <footer class="py-10 text-center text-sm text-slate-500">
-    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
-  </footer>
-
-  <script>
-    (function(){
-      function $(id){ return document.getElementById(id); }
-      function getParam(k){ try{ return new URLSearchParams(location.search).get(k) || ''; }catch(_){ return ''; } }
-
-      // Carrega dados do lead (URL > localStorage)
-      var ref   = getParam('ref')   || localStorage.getItem('mp_external_ref') || '';
-      var nome  = getParam('nome')  || localStorage.getItem('lead_nome') || '';
-      var email = getParam('email') || localStorage.getItem('lead_email') || '';
-      var whats = getParam('whats') || localStorage.getItem('lead_whats') || '';
-
-      // Carrega resultado do quiz
-      var resultTitle = localStorage.getItem('quiz_result_title') || '';
-      var resultDesc  = localStorage.getItem('quiz_result_desc')  || '';
-      var imcVal      = localStorage.getItem('quiz_imc_value');
-      var imcLabel    = localStorage.getItem('quiz_imc_label') || '';
-
-      // Nome no hero
-      if(nome){ $('nomeSpan').textContent = nome; }
-
-      // IMC emocional
-      if(imcVal){
-        var v = parseFloat(imcVal);
-        var tone = {
-          'abaixo do peso': 'Vamos reforçar densidade nutricional sem exageros para recuperar equilíbrio. Você está no caminho certo. ',
-          'faixa saudável': 'Excelente! Vamos preservar seu bem-estar com escolhas inteligentes e sustentáveis. ',
-          'sobrepeso': 'Vamos reduzir gordura com segurança e foco em saciedade e energia constante. ',
-          'obesidade leve': 'Nossa prioridade é conforto, regularidade e progresso consistente — sem radicalismos. '
-        };
-        $('imcInfo').innerHTML = "<span class='badge bg-emerald-100 text-emerald-800'>IMC "+v+" — "+imcLabel+"</span> <span class='ml-2 text-slate-700'>"+(tone[imcLabel]||'Vamos ajustar seu plano com carinho para o seu momento.')+"</span>";
-        $('imcInfo').classList.remove('hidden');
-      }
-
-      // Resumo do plano
-      if(resultTitle){ $('planoSpan').textContent = resultTitle.replace(/^🎯\s*/,''); }
-      if(resultDesc){ $('descSpan').textContent = resultDesc; }
-
-      // Monta URL para /pagamento preservando ref/nome/email/whats
-      var payUrl = new URL('/pagamento/', location.origin);
-      if(ref)   payUrl.searchParams.set('ref', ref);
-      if(nome)  payUrl.searchParams.set('nome', nome);
-      if(email) payUrl.searchParams.set('email', email);
-      if(whats) payUrl.searchParams.set('whats', whats);
-      $('btnPagamento').setAttribute('href', payUrl.toString());
-      $('btnContinuarTop').setAttribute('href', '#oferta');
-
-      // Ano rodapé
-      $('year').textContent = (new Date()).getFullYear();
-    })();
-  </script>
-</body>
-</html>
+  $('year').textContent = (new Date()).getFullYear();
+})();
+</script>
