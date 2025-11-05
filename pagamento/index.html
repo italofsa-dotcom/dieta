@@ -77,8 +77,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function $(id){return document.getElementById(id);}
   function getParam(k){return new URLSearchParams(location.search).get(k)||'';}
+  function uuidRef(){return 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);}
 
-  const ref=getParam("ref")||localStorage.getItem("mp_external_ref")||"";
+  // 🔧 Mantém o mesmo ref que veio da página anterior (não gera outro)
+  let ref = getParam("ref") || localStorage.getItem("mp_external_ref") || "";
+  if (!ref) {
+    ref = uuidRef();
+    try { localStorage.setItem("mp_external_ref", ref); } catch(e){}
+    const u = new URL(location.href);
+    u.searchParams.set("ref", ref);
+    history.replaceState(null, "", u.toString());
+  }
+
   const nome=localStorage.getItem("lead_nome")||getParam("nome")||"";
   const email=localStorage.getItem("lead_email")||getParam("email")||"";
   const whats=localStorage.getItem("lead_whats")||getParam("whats")||"";
@@ -115,16 +125,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     const data=await resp.json();
     if(!data || !data.id) throw new Error("Resposta inválida do MP");
+
     showBanner("Abrindo caixa de pagamento...","bg-emerald-50 border-emerald-300 text-emerald-800");
 
-    // ✅ abre o BOX automaticamente dentro da página
+    // ✅ Abre automaticamente o box do Mercado Pago
     mp.checkout({
       preference:{ id:data.id },
       autoOpen:true,
       render:{ container:"#mp-checkout", label:"Pagar R$ 9,90" }
     });
 
-    // 🔁 Verificação automática de status (com logs)
+    // 🔁 Inicia a verificação automática de status
     startPolling(ref);
   }catch(e){
     console.error("Erro ao criar preferência:", e);
@@ -156,19 +167,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }catch(err){
         console.warn("[status-check] erro:",err);
       }
-
-      // força recheck final após 30s
-      if(attempts===6){
-        console.warn("⚠️ Forçando checagem final...");
-        fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&force=1`).then(r=>r.json()).then(data=>{
-          if(data && data.status==="approved"){
-            clearInterval(timer);
-            console.log("🚀 Redirecionando forçado após confirmação final");
-            window.location.href=HOME_APPROVED+"?ref="+encodeURIComponent(ref);
-          }
-        });
-      }
-      // encerra após 3 minutos
       if(attempts>36) clearInterval(timer);
     },5000);
   }
