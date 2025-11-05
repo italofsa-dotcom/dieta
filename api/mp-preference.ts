@@ -5,30 +5,23 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 const MP_API = 'https://api.mercadopago.com';
 const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 
-// 🔧 Função auxiliar para registrar logs no console do Vercel
 function log(tag: string, data: any) {
   console.log(`[mp-preference] ${tag}:`, typeof data === 'object' ? JSON.stringify(data) : data);
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST')
+  if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-  if (!ACCESS_TOKEN)
+  if (!ACCESS_TOKEN) {
     return res.status(500).json({ error: 'MP_ACCESS_TOKEN ausente' });
+  }
 
   try {
-    // 🔹 Recebe dados do corpo da requisição
-    const rawBody = await req.text();
-    log('RAW recebido', rawBody);
-
-    let bodyData: any = {};
-    try {
-      bodyData = JSON.parse(rawBody || '{}');
-    } catch (err) {
-      log('Erro ao parsear JSON', err);
-      return res.status(400).json({ error: 'JSON inválido no corpo da requisição' });
-    }
+    // ✅ Em funções Node da Vercel, o body já vem pronto
+    const bodyData: any = req.body || {};
+    log('Body recebido', bodyData);
 
     const {
       valor = 9.9,
@@ -43,7 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       imc_label = ''
     } = bodyData;
 
-    // 🔧 Corrigido: usa o mesmo ref que veio do cliente (nunca gera outro)
+    // ✅ Usa o mesmo ref que veio do frontend
     const extRef = external_reference && external_reference.trim()
       ? external_reference.trim()
       : null;
@@ -72,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
       auto_return: 'approved',
       notification_url: 'https://dietapronta.online/api/mp-webhook',
-      external_reference: extRef, // ✅ mesmo ref do frontend
+      external_reference: extRef,
       payer: {
         name: customer_name || undefined,
         email: customer_email || undefined
@@ -97,19 +90,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     const data = await resp.json();
+    log('Resposta MP', data);
+
     if (!resp.ok) {
       log('Erro Mercado Pago', data);
       return res.status(resp.status).json({ error: data });
     }
 
-    // 🔹 Log completo da preferência criada
+    // ✅ Log sucesso
     log('Preferência criada com sucesso', {
       id: data.id,
-      init_point: data.init_point,
       external_reference: extRef
     });
 
-    // 🔹 Retorna os dados para o frontend
     return res.status(200).json({
       id: data.id,
       init_point: data.init_point,
