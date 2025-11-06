@@ -31,7 +31,7 @@
       transition: all 0.3s ease;
       animation: gradientMove 3s linear infinite;
       background-size: 200% 200%;
-      margin-top: 1rem;
+      margin-bottom: 1rem;
     }
     @keyframes gradientMove {
       0% { background-position: 0% 50%; }
@@ -120,22 +120,36 @@
         </div>
 
         <!-- Box de Pagamento -->
-        <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft text-center">
-          <div class="text-sm text-slate-500">Continue</div>
-          <h3 class="text-xl font-extrabold mt-1">Liberar acesso agora</h3>
-          <p class="mt-2 text-slate-700">Cobramos apenas <strong>R$ 9,90</strong> para manter o projeto vivo e continuar ajudando mais pessoas.</p>
-          <div class="mt-3 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Suporte por WhatsApp</div>
-
-          <!-- Countdown -->
-          <div id="countdownBox" class="mt-5">
+        <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft text-center relative">
+          
+          <!-- Countdown no topo -->
+          <div id="countdownBox" class="mx-auto">
             ⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span>
           </div>
 
-          <a id="btnPagamento" href="/pagamento/" class="mt-6 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Quero meu plano agora</a>
+          <div class="text-sm text-slate-500 mt-4">Continue</div>
+          <h3 class="text-xl font-extrabold mt-1">Liberar acesso agora</h3>
+
+          <!-- Preço com destaque -->
+          <h4 class="text-2xl font-extrabold mt-3 text-emerald-600">
+            <span class="text-amber-600 text-sm uppercase font-semibold block mb-1">🔥 Somente hoje</span>
+            De <span class="text-red-500 line-through">R$ 249,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 19,90</span>
+          </h4>
+
+          <p class="mt-3 text-slate-700 text-sm leading-relaxed">
+            Estamos oferecendo este valor especial porque <strong>uma vez por ano</strong> escolhemos abrir vagas com um preço simbólico, 
+            permitindo que mais pessoas possam transformar sua saúde e alcançar seus objetivos com um plano realmente acessível.
+          </p>
+
+          <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Suporte por WhatsApp</div>
+
+          <a id="btnPagamento" href="/pagamento/" class="mt-6 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+            Quero meu plano agora
+          </a>
 
           <!-- Prova Social -->
           <div id="buyersCount" class="mt-4 text-amber-600 font-semibold text-lg">
-            🔥 <span id="buyersNumber">32</span> pessoas compraram nas últimas 24h!
+            🔥 <span id="buyersNumber">37</span> pessoas compraram nas últimas 24h!
           </div>
 
           <div class="mt-4 text-xs text-slate-500">Ao continuar, você confirma que leu e concorda com nossos termos.</div>
@@ -223,7 +237,7 @@
 
     // === Pessoas comprando ===
     const buyersEl = $('buyersNumber');
-    let buyers = 28 + Math.floor(Math.random() * 6);
+    let buyers = 30 + Math.floor(Math.random() * 8);
     buyersEl.textContent = buyers;
     setInterval(() => {
       const change = Math.random() < 0.5 ? -1 : 1;
