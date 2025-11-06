@@ -14,13 +14,37 @@
     body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans',sans-serif; }
     .container{ max-width:980px; }
     .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
-    #countdownBox.pulse {
-      animation: pulse 1s infinite;
+
+    /* === Countdown Impactante === */
+    #countdownBox {
+      background: linear-gradient(90deg, #dc2626, #ef4444, #dc2626);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.8rem;
+      padding: 1rem 2.5rem;
+      border-radius: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 0 20px rgba(220,38,38,0.4);
+      transition: all 0.3s ease;
+      animation: gradientMove 3s linear infinite;
     }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    #countdownBox.pulse {
+      animation: pulse 1s infinite, gradientMove 3s linear infinite;
+    }
+
     @keyframes pulse {
-      0% { background-color: #fef2f2; color: #b91c1c; }
-      50% { background-color: #fee2e2; color: #dc2626; }
-      100% { background-color: #fef2f2; color: #b91c1c; }
+      0% { transform: scale(1); box-shadow: 0 0 20px rgba(220,38,38,0.5); }
+      50% { transform: scale(1.05); box-shadow: 0 0 35px rgba(220,38,38,0.8); }
+      100% { transform: scale(1); box-shadow: 0 0 20px rgba(220,38,38,0.5); }
     }
   </style>
 </head>
@@ -48,8 +72,8 @@
       </p>
 
       <!-- Countdown -->
-      <div id="countdownBox" class="mt-6 inline-block bg-emerald-100 text-emerald-800 font-bold px-6 py-3 rounded-xl text-lg shadow-soft border border-emerald-200">
-        ⏰ Oferta expira em: <span id="countdown">05:00</span>
+      <div id="countdownBox" class="mt-8">
+        ⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span>
       </div>
     </div>
   </section>
@@ -58,7 +82,7 @@
   <section id="oferta" class="py-10">
     <div class="container mx-auto px-4 grid lg:grid-cols-2 gap-8 items-center">
       <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
-        <img id="upsellImage" src="https://dietapronta.online/images/receitas.jpg" 
+        <img id="upsellImage" src="https://dietapronta.online/images/receitas.jpg"
              alt="Receitas saudáveis" class="w-full h-72 object-cover"
              onerror="this.src='https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200&auto=format&fit=crop';"/>
         <div class="p-6">
@@ -115,22 +139,12 @@
   <script>
   document.addEventListener("DOMContentLoaded", function(){
     function $(id){ return document.getElementById(id); }
-    const ref   = localStorage.getItem('mp_external_ref') || '';
-    const nome  = localStorage.getItem('lead_nome') || '';
-    const email = localStorage.getItem('lead_email') || '';
-    const whats = localStorage.getItem('lead_whats') || '';
 
-    // Gera URL do pagamento
     const payUrl = new URL('/pagamento/', location.origin);
     payUrl.searchParams.set('produto', 'receitas200');
     payUrl.searchParams.set('valor', '9.90');
-    if(ref) payUrl.searchParams.set('ref', ref);
-    if(nome) payUrl.searchParams.set('nome', nome);
-    if(email) payUrl.searchParams.set('email', email);
-    if(whats) payUrl.searchParams.set('whats', whats);
     $('btnPagamento').setAttribute('href', payUrl.toString());
-
-    if($('year')) $('year').textContent = (new Date()).getFullYear();
+    $('year').textContent = (new Date()).getFullYear();
 
     // === Countdown ===
     let timeLeft = 5 * 60; // 5 minutos
@@ -142,13 +156,14 @@
       const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
       const sec = String(timeLeft % 60).padStart(2, '0');
       countdownEl.textContent = `${min}:${sec}`;
-      
-      // Alerta visual nos últimos 30 segundos
-      if (timeLeft <= 30) countdownBox.classList.add("pulse");
+
+      // Efeito pulsante nos últimos 60s
+      if (timeLeft <= 60) countdownBox.classList.add("pulse");
 
       if (timeLeft <= 0) {
         clearInterval(timer);
         countdownEl.textContent = "00:00";
+        countdownBox.textContent = "⏰ Oferta Expirada!";
         btnPagamento.textContent = "⏰ Oferta Expirada";
         btnPagamento.classList.add("bg-gray-400", "cursor-not-allowed", "hover:bg-gray-400");
         btnPagamento.removeAttribute("href");
