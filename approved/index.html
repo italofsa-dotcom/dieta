@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pagamento Aprovado 🎉 | Dieta Pronta Online</title>
+  <meta name="description" content="Confirmação de pagamento aprovado para o plano personalizado da Dieta Pronta Online.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand: #22c55e; }
+    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans',sans-serif; }
+    .container{ max-width:980px; }
+    .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
+    .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-emerald-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <span class="font-extrabold tracking-tight">Dieta Pronta Online</span>
+      </div>
+      <div class="text-sm text-slate-500 hidden md:block">Pagamento confirmado</div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-100 text-center">
+    <div class="container mx-auto px-4 py-14">
+      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">🎉 Parabéns, <span id="nomeSpan">sua jornada começou com o pé direito!</span></h1>
+      <p class="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
+        Seu pagamento foi <strong>aprovado com sucesso!</strong>  
+        Agora você tem acesso ao seu <strong>Plano Alimentar Personalizado</strong>, criado com base no seu corpo e nas suas respostas do quiz. 🥗
+      </p>
+    </div>
+  </section>
+
+  <!-- Resumo do Plano -->
+  <section class="py-10">
+    <div class="container mx-auto px-4">
+      <div class="p-6 bg-white rounded-2xl shadow-soft border border-slate-200">
+        <h2 class="text-2xl font-extrabold mb-3 text-emerald-700">📋 Resumo do seu plano</h2>
+        <div class="grid md:grid-cols-2 gap-6 text-slate-700">
+          <div>
+            <p><strong>Nome:</strong> <span id="infoNome">-</span></p>
+            <p><strong>Dieta Recomendada:</strong> <span id="infoDieta">-</span></p>
+            <p><strong>Biotipo:</strong> <span id="infoBodyType">-</span></p>
+          </div>
+          <div>
+            <p><strong>IMC:</strong> <span id="infoIMC">-</span> <small id="infoIMCLabel" class="text-slate-500"></small></p>
+            <p><strong>Plano:</strong> <span id="infoPlano">Personalizado</span></p>
+          </div>
+        </div>
+        <div id="descSpan" class="mt-4 text-slate-600 text-sm italic"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Acesso ao Plano -->
+  <section class="py-10">
+    <div class="container mx-auto px-4 max-w-2xl">
+      <div class="rounded-2xl bg-white border border-slate-200 shadow-soft p-6 text-center">
+        <h2 class="text-2xl font-extrabold mb-3">🥗 Seu Plano Alimentar Personalizado</h2>
+        <p class="text-slate-700 mb-4">
+          Clique abaixo para receber seu plano diretamente no WhatsApp com base no seu resultado.
+        </p>
+        <a id="btnPlano" href="#" class="block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+          Receber meu plano no WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agradecimento -->
+  <section class="py-10 text-center">
+    <div class="container mx-auto px-4">
+      <h3 class="text-xl font-bold text-emerald-600">💚 Obrigado por confiar em nós!</h3>
+      <p class="mt-2 text-slate-700 max-w-xl mx-auto">
+        Nossa equipe vai te enviar seu plano personalizado em breve.  
+        Fique de olho no seu WhatsApp — é por lá que você receberá tudo!
+      </p>
+    </div>
+  </section>
+
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Script -->
+  <script>
+  document.addEventListener("DOMContentLoaded", function(){
+    const nome = localStorage.getItem('lead_nome') || '';
+    const dietTitle = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || '';
+    const bodyType = localStorage.getItem('body_type') || localStorage.getItem('quiz_body_type') || '';
+    const imcValue = localStorage.getItem('imc_value') || '';
+    const imcLabel = localStorage.getItem('imc_label') || '';
+    const desc = localStorage.getItem('quiz_result_desc') || '';
+    const whatsapp = "5561999999999"; // ✅ Substitua pelo seu número (formato 55 + DDD + número)
+
+    // Atualiza textos
+    if(nome) document.getElementById('nomeSpan').textContent = nome + "!";
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('infoNome').textContent = nome || '-';
+    document.getElementById('infoDieta').textContent = dietTitle || 'Personalizada';
+    document.getElementById('infoBodyType').textContent = bodyType || '---';
+    document.getElementById('infoIMC').textContent = imcValue || '---';
+    document.getElementById('infoIMCLabel').textContent = imcLabel ? "(" + imcLabel + ")" : '';
+    document.getElementById('descSpan').textContent = desc;
+
+    // Mensagem de WhatsApp
+    const msg = encodeURIComponent(
+      `Olá! 😊\nMeu nome é ${nome} e acabei de finalizar minha compra da *Dieta Pronta Online!*\n\n📋 *Plano:* ${dietTitle || "Personalizado"} (${bodyType || "biotipo não informado"})\n📊 *IMC:* ${imcValue || "-"} ${imcLabel ? "(" + imcLabel + ")" : ""}\n\nPoderia me enviar meu plano personalizado, por favor?`
+    );
+    const linkZap = `https://wa.me/${whatsapp}?text=${msg}`;
+    document.getElementById('btnPlano').setAttribute('href', linkZap);
+  });
+  </script>
+</body>
+</html>
