@@ -17,40 +17,38 @@
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2,6,23,.08); }
 
-    /* === Countdown Verde-Esmeralda === */
+    /* === Countdown Dourado === */
     #countdownBox {
-      background: linear-gradient(90deg, #059669, #10b981, #059669);
+      background: linear-gradient(90deg, #fbbf24, #f59e0b, #facc15);
       color: #fff;
       font-weight: 800;
-      font-size: 1.8rem;
+      font-size: 1.9rem;
       padding: 1rem 2.5rem;
       border-radius: 1rem;
       display: inline-flex;
       align-items: center;
       gap: 0.6rem;
-      box-shadow: 0 0 25px rgba(16,185,129,0.4);
+      box-shadow: 0 0 30px rgba(245,158,11,0.5);
       transition: all 0.3s ease;
       animation: gradientMove 3s linear infinite;
       background-size: 200% 200%;
     }
-
     @keyframes gradientMove {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-
     #countdownBox.pulse {
       animation: pulse 1s infinite, gradientMove 3s linear infinite;
     }
-
     @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 25px rgba(16,185,129,0.5); }
-      50% { transform: scale(1.05); box-shadow: 0 0 45px rgba(16,185,129,0.8); }
-      100% { transform: scale(1); box-shadow: 0 0 25px rgba(16,185,129,0.5); }
+      0% { transform: scale(1); box-shadow: 0 0 25px rgba(245,158,11,0.5); }
+      50% { transform: scale(1.05); box-shadow: 0 0 45px rgba(245,158,11,0.8); }
+      100% { transform: scale(1); box-shadow: 0 0 25px rgba(245,158,11,0.5); }
     }
   </style>
 </head>
+
 <body class="bg-slate-50 text-slate-900">
 
   <!-- Header -->
@@ -77,6 +75,11 @@
       <!-- Countdown -->
       <div id="countdownBox" class="mt-8">
         ⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span>
+      </div>
+
+      <!-- Pessoas comprando -->
+      <div class="mt-4 text-amber-600 font-semibold text-lg" id="buyersCount">
+        🔥 <span id="buyersNumber">27</span> pessoas aproveitaram essa oferta nas últimas 24h!
       </div>
     </div>
   </section>
@@ -106,8 +109,8 @@
         <div class="text-sm text-slate-500">Oferta Limitada</div>
 
         <!-- PREÇO COM DESTAQUE -->
-        <h3 class="text-2xl font-extrabold mt-1 text-emerald-600">
-          De <span class="text-red-500 line-through">R$ 149,90</span> por apenas <span class="text-emerald-600">R$ 9,90!</span>
+        <h3 class="text-3xl font-extrabold mt-1 text-emerald-600">
+          De <span class="text-red-500 line-through">R$ 149,90</span> por apenas <span class="text-emerald-600 text-4xl">R$ 9,90!</span>
         </h3>
 
         <p class="mt-3 text-slate-700">
@@ -115,7 +118,7 @@
           Se sair dela, o desconto será encerrado!
         </p>
 
-        <div class="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900">
+        <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-900">
           <strong>⚠️ Atenção:</strong> essa condição especial aparece <u>somente uma vez</u>.  
           Aproveite enquanto o cronômetro estiver ativo!
         </div>
@@ -140,7 +143,7 @@
 
     <!-- Prova social -->
     <div class="container mx-auto mt-16 px-4 text-center">
-      <p class="text-sm uppercase text-emerald-600 font-semibold tracking-wide">Mais de 12.000 pessoas já aproveitaram</p>
+      <p class="text-sm uppercase text-amber-600 font-semibold tracking-wide">Mais de 12.000 pessoas já aproveitaram</p>
       <h4 class="text-2xl font-extrabold mt-2">Resultados reais, receitas reais 💚</h4>
       <p class="mt-2 text-slate-600 max-w-2xl mx-auto">
         Esse pacote foi criado com base no feedback dos nossos pacientes — pessoas comuns que conquistaram resultados incríveis sem abrir mão do prazer de comer bem.
@@ -157,10 +160,7 @@
   document.addEventListener("DOMContentLoaded", function(){
     function $(id){ return document.getElementById(id); }
 
-    const payUrl = new URL('/pagamento/', location.origin);
-    payUrl.searchParams.set('produto', 'receitas200');
-    payUrl.searchParams.set('valor', '9.90');
-    $('btnPagamento').setAttribute('href', payUrl.toString());
+    // === Atualiza ano ===
     $('year').textContent = (new Date()).getFullYear();
 
     // === Countdown ===
@@ -173,10 +173,7 @@
       const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
       const sec = String(timeLeft % 60).padStart(2, '0');
       countdownEl.textContent = `${min}:${sec}`;
-
-      // Efeito pulsante nos últimos 60s
       if (timeLeft <= 60) countdownBox.classList.add("pulse");
-
       if (timeLeft <= 0) {
         clearInterval(timer);
         countdownEl.textContent = "00:00";
@@ -187,6 +184,16 @@
       }
       timeLeft--;
     }, 1000);
+
+    // === Pessoas comprando (prova social dinâmica) ===
+    const buyersEl = $('buyersNumber');
+    let buyers = 24 + Math.floor(Math.random() * 8);
+    buyersEl.textContent = buyers;
+    setInterval(() => {
+      const change = Math.random() < 0.5 ? -1 : 1;
+      buyers = Math.max(20, buyers + change);
+      buyersEl.textContent = buyers;
+    }, 7000);
   });
   </script>
 </body>
