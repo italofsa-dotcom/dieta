@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pagamento Aprovado 🎉 | Dieta Pronta Online</title>
+  <meta name="description" content="Confirmação de pagamento aprovado para o plano personalizado e o pacote de 200 receitas exclusivas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand: #22c55e; }
+    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans',sans-serif; }
+    .container{ max-width:980px; }
+    .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-emerald-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+        </div>
+        <span class="font-extrabold tracking-tight">Dieta Pronta Online</span>
+      </div>
+      <div class="text-sm text-slate-500 hidden md:block">Pagamento confirmado</div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-100 text-center">
+    <div class="container mx-auto px-4 py-14">
+      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">🎉 Parabéns, <span id="nomeSpan">sua jornada começou com o pé direito!</span></h1>
+      <p class="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
+        Seu pagamento foi <strong>aprovado com sucesso</strong>!  
+        Você agora tem acesso completo ao seu <strong>plano personalizado</strong> e também ao <strong>pacote de 200 receitas exclusivas</strong> 🍽️
+      </p>
+    </div>
+  </section>
+
+  <!-- Conteúdo -->
+  <section class="py-10">
+    <div class="container mx-auto px-4 grid lg:grid-cols-2 gap-8 items-start">
+      
+      <div class="rounded-2xl bg-white border border-slate-200 shadow-soft p-6">
+        <h2 class="text-2xl font-extrabold mb-3">🥗 Seu Plano Personalizado</h2>
+        <p class="text-slate-700 mb-4">
+          Acesse agora mesmo seu plano feito sob medida para o seu biotipo, rotina e objetivo.
+        </p>
+        <a href="https://dietapronta.online/plano" class="block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Acessar meu plano</a>
+      </div>
+
+      <div class="rounded-2xl bg-white border border-slate-200 shadow-soft p-6">
+        <h2 class="text-2xl font-extrabold mb-3">📘 Ebook de 200 Receitas</h2>
+        <p class="text-slate-700 mb-4">
+          Baixe agora o seu ebook completo e comece a preparar refeições deliciosas e saudáveis.
+        </p>
+        <a href="https://dietapronta.online/receitas" class="block text-center rounded-xl px-5 py-3 bg-amber-500 text-white font-semibold hover:bg-amber-600 transition">Baixar Ebook de Receitas</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Agradecimento -->
+  <section class="py-10 text-center">
+    <div class="container mx-auto px-4">
+      <h3 class="text-xl font-bold text-emerald-600">💚 Obrigado por confiar em nós!</h3>
+      <p class="mt-2 text-slate-700 max-w-xl mx-auto">
+        Nossa equipe está preparando tudo com carinho.  
+        Em instantes, você também receberá um e-mail com todas as informações e links de acesso.
+      </p>
+    </div>
+  </section>
+
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function(){
+    const nome = localStorage.getItem('lead_nome') || '';
+    if(nome) document.getElementById('nomeSpan').textContent = nome + "!";
+    document.getElementById('year').textContent = new Date().getFullYear();
+  });
+  </script>
+</body>
+</html>
