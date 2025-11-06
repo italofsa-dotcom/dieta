@@ -37,7 +37,7 @@
       <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">🎉 Parabéns, <span id="nomeSpan">sua jornada começou com o pé direito!</span></h1>
       <p class="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
         Seu pagamento foi <strong>aprovado com sucesso</strong>!  
-        Você agora tem acesso completo ao seu <strong>plano personalizado</strong> e também ao <strong>pacote de 200 receitas exclusivas</strong> 🍽️
+        Agora você tem acesso completo ao seu <strong>plano personalizado</strong> e também ao <strong>pacote de 200 receitas exclusivas</strong> 🍽️
       </p>
     </div>
   </section>
@@ -49,17 +49,21 @@
       <div class="rounded-2xl bg-white border border-slate-200 shadow-soft p-6">
         <h2 class="text-2xl font-extrabold mb-3">🥗 Seu Plano Personalizado</h2>
         <p class="text-slate-700 mb-4">
-          Acesse agora mesmo seu plano feito sob medida para o seu biotipo, rotina e objetivo.
+          Acesse agora seu plano feito sob medida para o seu corpo, rotina e objetivo.
         </p>
-        <a href="https://dietapronta.online/plano" class="block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Acessar meu plano</a>
+        <a id="btnPlano" href="#" class="block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+          Acessar meu plano
+        </a>
       </div>
 
       <div class="rounded-2xl bg-white border border-slate-200 shadow-soft p-6">
         <h2 class="text-2xl font-extrabold mb-3">📘 Ebook de 200 Receitas</h2>
         <p class="text-slate-700 mb-4">
-          Baixe agora o seu ebook completo e comece a preparar refeições deliciosas e saudáveis.
+          Baixe seu ebook completo e comece a preparar refeições saudáveis e deliciosas.
         </p>
-        <a href="https://dietapronta.online/receitas" class="block text-center rounded-xl px-5 py-3 bg-amber-500 text-white font-semibold hover:bg-amber-600 transition">Baixar Ebook de Receitas</a>
+        <a id="btnEbook" href="#" class="block text-center rounded-xl px-5 py-3 bg-amber-500 text-white font-semibold hover:bg-amber-600 transition">
+          Baixar Ebook de Receitas
+        </a>
       </div>
 
     </div>
@@ -71,7 +75,7 @@
       <h3 class="text-xl font-bold text-emerald-600">💚 Obrigado por confiar em nós!</h3>
       <p class="mt-2 text-slate-700 max-w-xl mx-auto">
         Nossa equipe está preparando tudo com carinho.  
-        Em instantes, você também receberá um e-mail com todas as informações e links de acesso.
+        Você também receberá um e-mail com todos os detalhes e links de acesso.
       </p>
     </div>
   </section>
@@ -83,8 +87,24 @@
   <script>
   document.addEventListener("DOMContentLoaded", function(){
     const nome = localStorage.getItem('lead_nome') || '';
+    const dietTitle = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || '';
+    const bodyType = localStorage.getItem('body_type') || localStorage.getItem('quiz_body_type') || '';
+    const whatsapp = "5561999999999"; // ✅ Substitua pelo seu número do WhatsApp no formato internacional (55 + DDD + número)
+    
     if(nome) document.getElementById('nomeSpan').textContent = nome + "!";
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Monta mensagem personalizada
+    const msg = encodeURIComponent(
+      `Olá! 😊\nMeu nome é ${nome} e acabei de finalizar minha compra da Dieta Pronta Online!\n\n📋 Plano: ${dietTitle || "Personalizado"} (${bodyType || "biotipo não informado"})\n🍽️ Também adquiri o pacote com 200 receitas exclusivas!\n\nPoderia me enviar meus materiais, por favor?`
+    );
+
+    // Define link do WhatsApp
+    const linkZap = `https://wa.me/${whatsapp}?text=${msg}`;
+    
+    // Aplica nos dois botões
+    document.getElementById('btnPlano').setAttribute('href', linkZap);
+    document.getElementById('btnEbook').setAttribute('href', linkZap);
   });
   </script>
 </body>
