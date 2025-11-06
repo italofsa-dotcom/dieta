@@ -11,9 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root { --brand: #22c55e; }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
-    }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2,6,23,.08); }
 
@@ -72,8 +70,13 @@
         E pra te ajudar a ter <strong>resultados ainda mais rápidos e deliciosos</strong>, preparamos uma oportunidade <strong>única e exclusiva</strong> — disponível apenas agora!
       </p>
 
+      <!-- NOVA FRASE DE DESTAQUE -->
+      <h2 class="mt-8 text-2xl md:text-3xl font-extrabold text-amber-600 max-w-2xl mx-auto leading-snug">
+        ✨ Receba agora <span class="text-emerald-600">200 receitas exclusivas</span> que vão te ajudar a alcançar seu objetivo mais rápido! 💪
+      </h2>
+
       <!-- Countdown -->
-      <div id="countdownBox" class="mt-8">
+      <div id="countdownBox" class="mt-6">
         ⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span>
       </div>
 
@@ -160,11 +163,10 @@
   document.addEventListener("DOMContentLoaded", function(){
     function $(id){ return document.getElementById(id); }
 
-    // === Atualiza ano ===
     $('year').textContent = (new Date()).getFullYear();
 
-    // === Countdown ===
-    let timeLeft = 5 * 60; // 5 minutos
+    // Countdown
+    let timeLeft = 5 * 60;
     const countdownEl = $('countdown');
     const countdownBox = $('countdownBox');
     const btnPagamento = $('btnPagamento');
@@ -185,7 +187,7 @@
       timeLeft--;
     }, 1000);
 
-    // === Pessoas comprando (prova social dinâmica) ===
+    // Pessoas comprando (dinâmico)
     const buyersEl = $('buyersNumber');
     let buyers = 24 + Math.floor(Math.random() * 8);
     buyersEl.textContent = buyers;
