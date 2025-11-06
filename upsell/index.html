@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Oferta Especial – 200 Receitas Exclusivas 🍽️</title>
+  <meta name="description" content="Upsell: 200 receitas exclusivas com desconto único e limitado. Oferta válida apenas após pagamento aprovado.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand: #22c55e; }
+    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans',sans-serif; }
+    .container{ max-width:980px; }
+    .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
+    .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-emerald-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+        </div>
+        <span class="font-extrabold tracking-tight">Dieta Pronta Online</span>
+      </div>
+      <div class="text-sm text-slate-500 hidden md:block">Oferta exclusiva para novos clientes</div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-100">
+    <div class="container mx-auto px-4 py-10 text-center">
+      <h1 class="text-3xl md:text-5xl font-extrabold leading-tight text-emerald-600">🎉 Parabéns! Seu pagamento foi aprovado!</h1>
+      <p class="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
+        E pra te ajudar a ter **resultados ainda mais rápidos e deliciosos**, preparamos uma oportunidade <strong>única e exclusiva</strong> — disponível apenas agora!
+      </p>
+    </div>
+  </section>
+
+  <!-- Oferta -->
+  <section id="oferta" class="py-10">
+    <div class="container mx-auto px-4 grid lg:grid-cols-2 gap-8 items-center">
+      <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
+        <img src="https://dietapronta.online/receitas.jpg" alt="Receitas saudáveis" class="w-full h-72 object-cover"/>
+        <div class="p-6">
+          <h2 class="text-2xl font-extrabold">200 Receitas Exclusivas 🍽️</h2>
+          <p class="mt-3 text-slate-700">
+            Receitas simples, práticas e deliciosas criadas por nossa equipe de especialistas para **acelerar seus resultados** e tornar sua dieta mais fácil de seguir.
+          </p>
+          <ul class="mt-4 space-y-2 text-slate-700">
+            <li>✅ Café da manhã energizante</li>
+            <li>✅ Almoços e jantares equilibrados</li>
+            <li>✅ Lanches rápidos e saudáveis</li>
+            <li>✅ Sobremesas fit irresistíveis</li>
+          </ul>
+        </div>
+      </div>
+
+      <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <div class="text-sm text-slate-500">Oferta Limitada</div>
+        <h3 class="text-2xl font-extrabold mt-1 text-emerald-600">De R$ 149,90 por apenas R$ 9,90!</h3>
+        <p class="mt-3 text-slate-700">
+          Você nunca mais verá essa oferta novamente. Essa é a sua chance de transformar sua alimentação com praticidade e sabor — gastando menos que um café! ☕
+        </p>
+        <div class="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900">
+          <strong>⚠️ Atenção:</strong> essa condição especial aparece <u>somente uma vez</u>.  
+          Se sair desta página, ela desaparecerá para sempre!
+        </div>
+
+        <a id="btnPagamento" href="/pagamento/?produto=receitas200&valor=9.90" 
+           class="mt-6 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold text-lg hover:bg-emerald-600 transition">
+           Quero minhas 200 receitas por R$ 9,90 ➜
+        </a>
+
+        <div class="mt-4 text-xs text-slate-500 text-center">
+          Acesso imediato • Conteúdo digital • Garantia de satisfação
+        </div>
+      </aside>
+    </div>
+
+    <!-- Prova social -->
+    <div class="container mx-auto mt-16 px-4 text-center">
+      <p class="text-sm uppercase text-emerald-600 font-semibold tracking-wide">Mais de 12.000 pessoas já aproveitaram</p>
+      <h4 class="text-2xl font-extrabold mt-2">Resultados reais, receitas reais 💚</h4>
+      <p class="mt-2 text-slate-600 max-w-2xl mx-auto">
+        Esse pacote foi criado com base no feedback dos nossos pacientes — pessoas comuns que conquistaram resultados incríveis sem abrir mão do prazer de comer bem.
+      </p>
+    </div>
+  </section>
+
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- SCRIPT FINAL -->
+  <script>
+  document.addEventListener("DOMContentLoaded", function(){
+    function $(id){ return document.getElementById(id); }
+    const ref   = localStorage.getItem('mp_external_ref') || '';
+    const nome  = localStorage.getItem('lead_nome') || '';
+    const email = localStorage.getItem('lead_email') || '';
+    const whats = localStorage.getItem('lead_whats') || '';
+
+    // Gera URL de pagamento para upsell
+    const payUrl = new URL('/pagamento/', location.origin);
+    payUrl.searchParams.set('produto', 'receitas200');
+    payUrl.searchParams.set('valor', '9.90');
+    if(ref) payUrl.searchParams.set('ref', ref);
+    if(nome) payUrl.searchParams.set('nome', nome);
+    if(email) payUrl.searchParams.set('email', email);
+    if(whats) payUrl.searchParams.set('whats', whats);
+
+    if($('btnPagamento')) $('btnPagamento').setAttribute('href', payUrl.toString());
+    if($('year')) $('year').textContent = (new Date()).getFullYear();
+  });
+  </script>
+</body>
+</html>
