@@ -11,13 +11,15 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root { --brand: #22c55e; }
-    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans',sans-serif; }
-    .container{ max-width:980px; }
-    .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+    }
+    .container { max-width: 980px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2,6,23,.08); }
 
-    /* === Countdown Impactante === */
+    /* === Countdown Verde-Esmeralda === */
     #countdownBox {
-      background: linear-gradient(90deg, #dc2626, #ef4444, #dc2626);
+      background: linear-gradient(90deg, #059669, #10b981, #059669);
       color: #fff;
       font-weight: 800;
       font-size: 1.8rem;
@@ -26,9 +28,10 @@
       display: inline-flex;
       align-items: center;
       gap: 0.6rem;
-      box-shadow: 0 0 20px rgba(220,38,38,0.4);
+      box-shadow: 0 0 25px rgba(16,185,129,0.4);
       transition: all 0.3s ease;
       animation: gradientMove 3s linear infinite;
+      background-size: 200% 200%;
     }
 
     @keyframes gradientMove {
@@ -42,9 +45,9 @@
     }
 
     @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 20px rgba(220,38,38,0.5); }
-      50% { transform: scale(1.05); box-shadow: 0 0 35px rgba(220,38,38,0.8); }
-      100% { transform: scale(1); box-shadow: 0 0 20px rgba(220,38,38,0.5); }
+      0% { transform: scale(1); box-shadow: 0 0 25px rgba(16,185,129,0.5); }
+      50% { transform: scale(1.05); box-shadow: 0 0 45px rgba(16,185,129,0.8); }
+      100% { transform: scale(1); box-shadow: 0 0 25px rgba(16,185,129,0.5); }
     }
   </style>
 </head>
@@ -101,7 +104,12 @@
 
       <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
         <div class="text-sm text-slate-500">Oferta Limitada</div>
-        <h3 class="text-2xl font-extrabold mt-1 text-emerald-600">De R$ 149,90 por apenas R$ 9,90!</h3>
+
+        <!-- PREÇO COM DESTAQUE -->
+        <h3 class="text-2xl font-extrabold mt-1 text-emerald-600">
+          De <span class="text-red-500 line-through">R$ 149,90</span> por apenas <span class="text-emerald-600">R$ 9,90!</span>
+        </h3>
+
         <p class="mt-3 text-slate-700">
           Essa é uma oferta única — disponível apenas nesta página.  
           Se sair dela, o desconto será encerrado!
@@ -128,6 +136,15 @@
           Acesso imediato • Conteúdo digital • Garantia de satisfação
         </div>
       </aside>
+    </div>
+
+    <!-- Prova social -->
+    <div class="container mx-auto mt-16 px-4 text-center">
+      <p class="text-sm uppercase text-emerald-600 font-semibold tracking-wide">Mais de 12.000 pessoas já aproveitaram</p>
+      <h4 class="text-2xl font-extrabold mt-2">Resultados reais, receitas reais 💚</h4>
+      <p class="mt-2 text-slate-600 max-w-2xl mx-auto">
+        Esse pacote foi criado com base no feedback dos nossos pacientes — pessoas comuns que conquistaram resultados incríveis sem abrir mão do prazer de comer bem.
+      </p>
     </div>
   </section>
 
