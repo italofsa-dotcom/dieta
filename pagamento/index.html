@@ -44,7 +44,7 @@
         <div id="mp-checkout" class="mt-4"></div>
 
         <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm">
-          Após pagar por Pix, a confirmação costuma ocorrer em poucos minutos. Assim que for aprovado, você será redirecionado automaticamente.
+          Após pagar por Pix, a confirmação costuma ocorrer em poucos minutos. Assim que for aprovado, você será redirecionado automaticamente para uma oferta exclusiva.
         </div>
       </div>
     </section>
@@ -72,14 +72,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
   const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
   const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
-  const HOME_APPROVED = "https://dietapronta.online/approved";
+  const HOME_UPSELL   = "https://dietapronta.online/upsell/?ref="; // ✅ novo destino
   const HOME_FAILURE  = "https://dietapronta.online/?status=failure#quiz";
 
   function $(id){return document.getElementById(id);}
   function getParam(k){return new URLSearchParams(location.search).get(k)||'';}
   function uuidRef(){return 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);}
 
-  // 🔧 Mantém o mesmo ref que veio da página anterior (não gera outro)
+  // Mantém o mesmo ref do lead
   let ref = getParam("ref") || localStorage.getItem("mp_external_ref") || "";
   if (!ref) {
     ref = uuidRef();
@@ -128,14 +128,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     showBanner("Abrindo caixa de pagamento...","bg-emerald-50 border-emerald-300 text-emerald-800");
 
-    // ✅ Abre automaticamente o box do Mercado Pago
+    // Abre automaticamente o box do Mercado Pago
     mp.checkout({
       preference:{ id:data.id },
       autoOpen:true,
       render:{ container:"#mp-checkout", label:"Pagar R$ 9,90" }
     });
 
-    // 🔁 Inicia a verificação automática de status
+    // Inicia polling de status
     startPolling(ref);
   }catch(e){
     console.error("Erro ao criar preferência:", e);
@@ -147,19 +147,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const timer=setInterval(async()=>{
       attempts++;
       try{
-        const url = `${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`;
+        const url=`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`;
         const res=await fetch(url);
         const data=await res.json();
-        console.log(`🔍 [${attempts}] Verificando ${url}`, data);
+        console.log(`🔍 [${attempts}] Verificando ${url}`,data);
         if(!data||!data.found)return;
 
         const status=(data.status||"").toLowerCase();
-        if(status==="approved" || status==="in_process"){
+        if(status==="approved"||status==="in_process"){
           clearInterval(timer);
-          console.log("✅ Status aprovado detectado, redirecionando...");
+          console.log("✅ Pagamento aprovado, redirecionando para upsell...");
           showBanner("✅ Pagamento aprovado! Redirecionando...","bg-emerald-50 border-emerald-300 text-emerald-800");
-          setTimeout(()=>window.location.href=HOME_APPROVED+"?ref="+encodeURIComponent(ref),2000);
-        } else if(["rejected","cancelled","canceled"].includes(status)){
+          setTimeout(()=>window.location.href=HOME_UPSELL+encodeURIComponent(ref),2000);
+        }else if(["rejected","cancelled","canceled"].includes(status)){
           clearInterval(timer);
           showBanner("Pagamento não aprovado. Tente novamente.","bg-rose-50 border-rose-300 text-rose-800");
           setTimeout(()=>window.location.href=HOME_FAILURE,2000);
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }catch(err){
         console.warn("[status-check] erro:",err);
       }
-      if(attempts>36) clearInterval(timer);
+      if(attempts>36)clearInterval(timer);
     },5000);
   }
 });
