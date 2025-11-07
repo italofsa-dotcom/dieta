@@ -9,17 +9,46 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://sdk.mercadopago.com/js/v2"></script>
   <style>
-    :root { --brand:#22c55e; }
-    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif; }
-    .container{ max-width:980px; }
-    .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
+    :root { --brand: #22c55e; }
+    body{ font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    .container{ max-width: 980px; }
+    .shadow-soft{ box-shadow: 0 10px 25px rgba(2,6,23,.08); }
     .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
+
+    /* === Countdown Dourado === */
+    #countdownBox {
+      background: linear-gradient(90deg, #fbbf24, #f59e0b, #facc15);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.4rem;
+      padding: 0.6rem 1.8rem;
+      border-radius: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 0 25px rgba(245,158,11,0.5);
+      transition: all 0.3s ease;
+      animation: gradientMove 3s linear infinite;
+      background-size: 200% 200%;
+      margin-bottom: 1rem;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    #countdownBox.pulse {
+      animation: pulse 1s infinite, gradientMove 3s linear infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 25px rgba(245,158,11,0.5); }
+      50% { transform: scale(1.05); box-shadow: 0 0 45px rgba(245,158,11,0.8); }
+      100% { transform: scale(1); box-shadow: 0 0 25px rgba(245,158,11,0.5); }
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
-
   <!-- Header -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -38,40 +67,94 @@
     <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
       <div>
         <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Seu plano personalizado está pronto 🎉</h1>
-        <p id="intro" class="mt-4 text-lg text-slate-600">
-          Com base nas suas respostas, montamos um <strong>PLANO COMPLETO</strong> e 100% ajustado ao seu corpo e rotina.
-        </p>
+        <p id="intro" class="mt-4 text-lg text-slate-600">Com base nas suas respostas, montamos um <strong>PLANO COMPLETO</strong> e 100% ajustado ao seu corpo e rotina.</p>
         <div id="imcInfo" class="mt-4 hidden"></div>
-
-        <div class="mt-6 flex flex-col gap-3">
-          <div id="mp-checkout"></div>
-          <a id="btnPagamento" href="#" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition text-center">
-            Quero meu plano agora por R$ 9,90 ➜
-          </a>
-          <span class="text-slate-500 text-sm text-center">Leva menos de 1 minuto</span>
+        <div class="mt-6 flex gap-3">
+          <a id="btnContinuarTop" href="#oferta" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Ver o que você vai receber</a>
+          <span class="text-slate-500 self-center">Leva menos de 1 minuto</span>
         </div>
       </div>
-
       <div class="relative">
         <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
-          <img src="https://dietapronta.online/nutricionista.jpg" alt="Alimentos saudáveis" class="w-full h-72 object-cover"/>
+          <img src="https://dietapronta.online/nutri2.jpg" alt="Alimentos saudáveis" class="w-full h-72 object-cover"/> 
           <div class="p-6">
             <h3 class="text-xl font-bold">Plano realmente aplicável</h3>
-            <p class="mt-1 text-slate-600">Nada de fórmulas mágicas: passos simples e foco no que funciona para <span id="nomeSpan">você</span>.</p>
+            <p class="mt-1 text-slate-600">Nada de fórmulas mágicas: passos simples, combinações inteligentes e foco no que funciona para <span id="nomeSpan">você</span>.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Conteúdo adicional (mantido) -->
+  <!-- Oferta -->
   <section id="oferta" class="py-10">
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="text-2xl font-extrabold mb-4">O que você vai receber</h2>
-      <p class="text-slate-600 max-w-2xl mx-auto">
-        Dieta semanal completa, receitas, estratégias, suplementação e explicações do seu biotipo.  
-        Tudo preparado sob medida para você atingir seus objetivos.
-      </p>
+    <div class="container mx-auto px-4">
+      <div class="grid lg:grid-cols-3 gap-6 items-start">
+        <div class="lg:col-span-2 p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+          <div class="flex items-center gap-2 text-sm text-slate-500"><span class="badge bg-emerald-100 text-emerald-800">Personalizado</span> Plano baseado no seu biotipo e IMC</div>
+          <h2 class="mt-2 text-2xl font-extrabold">O que já está pronto para você</h2>
+
+          <ul class="mt-4 space-y-3 text-slate-700">
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Dieta semanal completa</strong> — 3 opções por refeição (café, almoço, lanche, jantar e ceia) ajustadas ao seu perfil.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Livro digital com 200+ receitas</strong> — fáceis, econômicas e saborosas.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Suplementação recomendada</strong> — alinhada ao seu objetivo e biotipo.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Estratégias complementares</strong> — hábitos e ajustes que aceleram o resultado.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Explicação do seu metabolismo e tipo de corpo</strong> — entenda como usar isso ao seu favor.</span></li>
+          </ul>
+
+          <div class="mt-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
+            <p id="resumoPlano" class="font-semibold">Seu plano: <span id="planoSpan">Personalizado</span>.</p>
+            <p id="descSpan" class="mt-1 text-slate-800"></p>
+          </div>
+
+          <div class="mt-6 grid md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl border border-slate-200">
+              <p class="text-sm text-slate-500">Por que funciona</p>
+              <p class="mt-1">Combina <strong>dieta ideal</strong> + <strong>biotipo</strong> + <strong>IMC</strong> com passos práticos e sustentáveis.</p>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200">
+              <p class="text-sm text-slate-500">Sem promessas irreais</p>
+              <p class="mt-1">Foco em constância, saciedade e saúde — sem radicalismos. Pequenos passos, grande impacto.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Box de Pagamento -->
+        <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft text-center relative">
+          
+          <!-- Countdown no topo -->
+          <div id="countdownBox" class="mx-auto">
+            ⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span>
+          </div>
+
+          <div class="text-sm text-slate-500 mt-4">Continue</div>
+          <h3 class="text-xl font-extrabold mt-1">Liberar acesso agora</h3>
+
+          <!-- Preço com destaque -->
+          <h4 class="text-2xl font-extrabold mt-3 text-emerald-600">
+            <span class="text-amber-600 text-sm uppercase font-semibold block mb-1">🔥 Somente hoje</span>
+            De <span class="text-red-500 line-through">R$ 249,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 19,90</span>
+          </h4>
+
+          <p class="mt-3 text-slate-700 text-sm leading-relaxed">
+            Estamos oferecendo este valor especial porque <strong>uma vez por ano</strong> escolhemos abrir vagas com um preço simbólico, 
+            permitindo que mais pessoas possam transformar sua saúde e alcançar seus objetivos com um plano realmente acessível.
+          </p>
+
+          <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Suporte por WhatsApp</div>
+
+          <a id="btnPagamento" href="/pagamento/" class="mt-6 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+            Quero meu plano agora
+          </a>
+
+          <!-- Prova Social -->
+          <div id="buyersCount" class="mt-4 text-amber-600 font-semibold text-lg">
+            🔥 <span id="buyersNumber">37</span> pessoas compraram nas últimas 24h!
+          </div>
+
+          <div class="mt-4 text-xs text-slate-500">Ao continuar, você confirma que leu e concorda com nossos termos.</div>
+        </aside>
+      </div>
     </div>
   </section>
 
@@ -83,84 +166,84 @@
   <script>
   document.addEventListener("DOMContentLoaded", function(){
     function $(id){ return document.getElementById(id); }
-    const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
-    const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
-    const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
-    const HOME_UPSELL   = "https://dietapronta.online/upsell/?ref=";
+    function getParam(k){ try{ return new URLSearchParams(location.search).get(k) || ''; }catch(_){ return ''; } }
 
-    const nome  = localStorage.getItem('lead_nome') || '';
-    const email = localStorage.getItem('lead_email') || '';
-    const whats = localStorage.getItem('lead_whats') || '';
-    const diet_title = localStorage.getItem('diet_title') || 'Plano de Dieta Completo';
-    const body_type  = localStorage.getItem('body_type') || '';
+    const ref   = getParam('ref')   || localStorage.getItem('mp_external_ref') || '';
+    const nome  = getParam('nome')  || localStorage.getItem('lead_nome') || '';
+    const email = getParam('email') || localStorage.getItem('lead_email') || '';
+    const whats = getParam('whats') || localStorage.getItem('lead_whats') || '';
 
-    const ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
-    try { localStorage.setItem('mp_external_ref', ref); } catch(e){}
+    const resultTitle = localStorage.getItem('quiz_result_title') || localStorage.getItem('quiz_diet_title') || '';
+    const resultDesc  = localStorage.getItem('quiz_result_desc') || '';
+    const bodyType    = localStorage.getItem('quiz_body_type') || localStorage.getItem('quiz_biotype') || '';
+    const imcVal      = localStorage.getItem('quiz_imc_value');
+    const imcLabel    = localStorage.getItem('quiz_imc_label') || '';
 
-    if($('year')) $('year').textContent = new Date().getFullYear();
-    if(nome) $('nomeSpan').textContent = nome;
-
-    $('btnPagamento').addEventListener('click', async (ev) => {
-      ev.preventDefault();
-      $('btnPagamento').disabled = true;
-      $('btnPagamento').textContent = "Gerando pagamento...";
-
-      try {
-        const resp = await fetch(MP_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            valor: 9.90,
-            titulo: diet_title,
-            external_reference: ref,
-            customer_name: nome,
-            customer_email: email,
-            customer_whatsapp: whats,
-            body_type
-          })
-        });
-        const data = await resp.json();
-        if(!data || !data.id) throw new Error("Falha ao criar preferência.");
-
-        const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
-        mp.checkout({
-          preference: { id: data.id },
-          autoOpen: true,
-          render: { container: "#mp-checkout", label: "Pagar R$ 9,90" }
-        });
-
-        $('btnPagamento').textContent = "Abrindo pagamento...";
-        startPolling(ref);
-      } catch(e) {
-        console.error("Erro ao gerar pagamento:", e);
-        $('btnPagamento').textContent = "Erro, tente novamente";
-      }
-      $('btnPagamento').disabled = false;
-    });
-
-    function startPolling(ref){
-      let tries=0;
-      const timer=setInterval(async()=>{
-        tries++;
-        try{
-          const res=await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
-          const data=await res.json();
-          console.log("[check_status]", data);
-          if(data && data.found && data.status){
-            const st=data.status.toLowerCase();
-            if(st==="approved"){
-              clearInterval(timer);
-              $('btnPagamento').textContent="✅ Pagamento aprovado! Redirecionando...";
-              setTimeout(()=>{ window.location.href = HOME_UPSELL + encodeURIComponent(ref); },2000);
-            } else if(["rejected","cancelled","canceled"].includes(st)){
-              clearInterval(timer);
-              $('btnPagamento').textContent="Pagamento não aprovado.";
-            }
-          }
-        }catch(e){console.warn("poll err",e);}
-        if(tries>40)clearInterval(timer);
-      },5000);
+    if($('nomeSpan') && nome){ $('nomeSpan').textContent = nome; }
+    if($('imcInfo') && imcVal){
+      const v = parseFloat(imcVal);
+      const tone = {
+        'abaixo do peso': 'Vamos reforçar densidade nutricional sem exageros.',
+        'faixa saudável': 'Excelente! Vamos preservar seu bem-estar.',
+        'sobrepeso': 'Vamos reduzir gordura com segurança.',
+        'obesidade leve': 'Nossa prioridade é conforto e progresso consistente.'
+      };
+      $('imcInfo').innerHTML = "<span class='badge bg-emerald-100 text-emerald-800'>IMC "+v+" — "+imcLabel+"</span> <span class='ml-2 text-slate-700'>"+(tone[imcLabel]||'Plano ajustado para você.')+"</span>";
+      $('imcInfo').classList.remove('hidden');
     }
+
+    if($('planoSpan') && resultTitle){ $('planoSpan').textContent = resultTitle.replace(/^🎯\s*/,''); }
+    if($('descSpan') && resultDesc){ $('descSpan').textContent = resultDesc; }
+
+    const payUrl = new URL('/pagamento/', location.origin);
+    if(ref)   payUrl.searchParams.set('ref', ref);
+    if(nome)  payUrl.searchParams.set('nome', nome);
+    if(email) payUrl.searchParams.set('email', email);
+    if(whats) payUrl.searchParams.set('whats', whats);
+
+    if(resultTitle) payUrl.searchParams.set('diet_title', resultTitle);
+    if(bodyType)    payUrl.searchParams.set('body_type', bodyType);
+    if(imcVal)      payUrl.searchParams.set('imc_value', imcVal);
+    if(imcLabel)    payUrl.searchParams.set('imc_label', imcLabel);
+
+    try {
+      if(resultTitle) localStorage.setItem('diet_title', resultTitle);
+      if(bodyType)    localStorage.setItem('body_type', bodyType);
+      if(imcVal)      localStorage.setItem('imc_value', imcVal);
+      if(imcLabel)    localStorage.setItem('imc_label', imcLabel);
+    } catch(e){ console.warn("localStorage erro", e); }
+
+    if($('btnPagamento')) $('btnPagamento').setAttribute('href', payUrl.toString());
+    if($('btnContinuarTop')) $('btnContinuarTop').setAttribute('href', '#oferta');
+    if($('year')) $('year').textContent = (new Date()).getFullYear();
+
+    // === Countdown ===
+    let timeLeft = 5 * 60;
+    const countdownEl = $('countdown');
+    const countdownBox = $('countdownBox');
+    const timer = setInterval(() => {
+      const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+      const sec = String(timeLeft % 60).padStart(2, '0');
+      countdownEl.textContent = `${min}:${sec}`;
+      if (timeLeft <= 60) countdownBox.classList.add("pulse");
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        countdownEl.textContent = "00:00";
+        countdownBox.textContent = "⏰ Oferta expirada!";
+        if($('btnPagamento')) $('btnPagamento').classList.add("bg-gray-400","cursor-not-allowed","hover:bg-gray-400");
+      }
+      timeLeft--;
+    }, 1000);
+
+    // === Pessoas comprando ===
+    const buyersEl = $('buyersNumber');
+    let buyers = 30 + Math.floor(Math.random() * 8);
+    buyersEl.textContent = buyers;
+    setInterval(() => {
+      const change = Math.random() < 0.5 ? -1 : 1;
+      buyers = Math.max(20, buyers + change);
+      buyersEl.textContent = buyers;
+    }, 7000);
   });
   </script>
 </body>
