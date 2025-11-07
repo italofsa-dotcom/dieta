@@ -21,7 +21,29 @@
     #countdownBox.pulse{animation:pulse 1s infinite,gradientMove 3s linear infinite}
     @keyframes pulse{0%{transform:scale(1);box-shadow:0 0 25px rgba(245,158,11,.5)}50%{transform:scale(1.05);box-shadow:0 0 45px rgba(245,158,11,.8)}100%{transform:scale(1);box-shadow:0 0 25px rgba(245,158,11,.5)}}
 
-    /* Galeria fixa */
+    /* === Botão Dourado com brilho === */
+    #btnResultados {
+      background: linear-gradient(90deg, #fbbf24, #facc15, #fbbf24);
+      background-size: 200% 200%;
+      color: white;
+      font-weight: 600;
+      padding: 0.8rem 2rem;
+      border-radius: 0.8rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(251,191,36,0.4);
+      animation: shimmer 4s linear infinite;
+    }
+    #btnResultados:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(251,191,36,0.6);
+    }
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* === Galeria fixa === */
     .galeria img{
       transition:transform .4s ease, box-shadow .4s ease;
       border-radius:1rem;
@@ -92,9 +114,9 @@
             <p id="descSpan" class="mt-1 text-slate-800"></p>
           </div>
 
-          <!-- Botão dourado -->
+          <!-- Botão dourado com brilho -->
           <div class="text-center mt-6">
-            <button class="rounded-xl px-6 py-3 bg-[var(--gold)] text-white font-semibold hover:bg-yellow-500 transition shadow-md">
+            <button id="btnResultados">
               📸 Veja os resultados de nossos pacientes
             </button>
           </div>
@@ -118,7 +140,6 @@
 
           <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Suporte por WhatsApp</div>
 
-          <!-- container do box -->
           <div id="mp-checkout" class="mt-6"></div>
 
           <a id="btnPagamento" href="#" class="mt-4 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
@@ -153,7 +174,6 @@
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- SCRIPT FINAL (mantido igual) -->
   <script>
   document.addEventListener("DOMContentLoaded",function(){
     const MP_PUBLIC_KEY="APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
@@ -220,6 +240,17 @@
         }catch(e){console.warn(e);}
         if(tries>40)clearInterval(timer);
       },5000);
+    }
+
+    // === Rolagem suave até a galeria ===
+    const btnResultados=document.getElementById('btnResultados');
+    if(btnResultados){
+      btnResultados.addEventListener('click',()=>{
+        const galeria=document.querySelector('.galeria');
+        if(galeria){
+          galeria.scrollIntoView({behavior:'smooth',block:'start'});
+        }
+      });
     }
   });
   </script>
