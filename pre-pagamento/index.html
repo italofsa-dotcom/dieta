@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Seu Plano Personalizado está pronto ✅</title>
-  <meta name="description" content="Finalize seu plano personalizado e tenha acesso imediato.">
+  <meta name="description" content="Pré-pagamento: página de confirmação com gatilhos de conversão, usa IMC e resultado do quiz para personalização.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,133 +15,153 @@
     body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif; }
     .container{ max-width:980px; }
     .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
+    .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
 
-<header class="bg-white border-b border-slate-200 sticky top-0 z-40">
-  <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="h-9 w-9 rounded-2xl bg-emerald-100 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-emerald-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+        </div>
+        <span class="font-extrabold tracking-tight">Dieta Pronta Online</span>
       </div>
-      <span class="font-extrabold tracking-tight">Dieta Pronta Online</span>
+      <div class="text-sm text-slate-500 hidden md:block">Plano personalizado pronto para você</div>
     </div>
-    <div class="text-sm text-slate-500 hidden md:block">Plano personalizado pronto para você</div>
-  </div>
-</header>
+  </header>
 
-<section class="bg-gradient-to-b from-white to-slate-100">
-  <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
-    <div>
-      <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Seu plano personalizado está pronto 🎉</h1>
-      <p class="mt-4 text-lg text-slate-600">Com base nas suas respostas, montamos um <strong>plano completo</strong> ajustado ao seu corpo e rotina.</p>
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-100">
+    <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Seu plano personalizado está pronto 🎉</h1>
+        <p id="intro" class="mt-4 text-lg text-slate-600">
+          Com base nas suas respostas, montamos um <strong>PLANO COMPLETO</strong> e 100% ajustado ao seu corpo e rotina.
+        </p>
+        <div id="imcInfo" class="mt-4 hidden"></div>
 
-      <div class="mt-6 flex flex-col gap-3">
-        <div id="mp-checkout"></div>
-        <button id="btnPagamento" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition w-full md:w-auto">
-          Quero meu plano agora por R$ 9,90 ➜
-        </button>
-        <span class="text-slate-500 text-sm text-center md:text-left">Leva menos de 1 minuto</span>
+        <div class="mt-6 flex flex-col gap-3">
+          <div id="mp-checkout"></div>
+          <a id="btnPagamento" href="#" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition text-center">
+            Quero meu plano agora por R$ 9,90 ➜
+          </a>
+          <span class="text-slate-500 text-sm text-center">Leva menos de 1 minuto</span>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
+          <img src="https://dietapronta.online/nutricionista.jpg" alt="Alimentos saudáveis" class="w-full h-72 object-cover"/>
+          <div class="p-6">
+            <h3 class="text-xl font-bold">Plano realmente aplicável</h3>
+            <p class="mt-1 text-slate-600">Nada de fórmulas mágicas: passos simples e foco no que funciona para <span id="nomeSpan">você</span>.</p>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
-      <img src="https://dietapronta.online/nutricionista.jpg" alt="Plano de dieta" class="w-full h-72 object-cover"/>
-      <div class="p-6">
-        <h3 class="text-xl font-bold">Plano realmente aplicável</h3>
-        <p class="mt-1 text-slate-600">Nada de fórmulas mágicas: passos simples e foco no que funciona <span id="nomeSpan">pra você</span>.</p>
-      </div>
+  </section>
+
+  <!-- Conteúdo adicional (mantido) -->
+  <section id="oferta" class="py-10">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-2xl font-extrabold mb-4">O que você vai receber</h2>
+      <p class="text-slate-600 max-w-2xl mx-auto">
+        Dieta semanal completa, receitas, estratégias, suplementação e explicações do seu biotipo.  
+        Tudo preparado sob medida para você atingir seus objetivos.
+      </p>
     </div>
-  </div>
-</section>
+  </section>
 
-<footer class="py-10 text-center text-sm text-slate-500">
-  <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
-</footer>
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
 
-<!-- SCRIPT FINAL -->
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-  function $(id){ return document.getElementById(id); }
-  const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
-  const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
-  const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
-  const HOME_UPSELL   = "https://dietapronta.online/upsell/?ref=";
+  <!-- SCRIPT FINAL -->
+  <script>
+  document.addEventListener("DOMContentLoaded", function(){
+    function $(id){ return document.getElementById(id); }
+    const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
+    const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
+    const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
+    const HOME_UPSELL   = "https://dietapronta.online/upsell/?ref=";
 
-  const nome  = localStorage.getItem('lead_nome') || '';
-  const email = localStorage.getItem('lead_email') || '';
-  const whats = localStorage.getItem('lead_whats') || '';
-  const diet_title = localStorage.getItem('diet_title') || 'Plano de Dieta Completo';
-  const body_type  = localStorage.getItem('body_type') || '';
+    const nome  = localStorage.getItem('lead_nome') || '';
+    const email = localStorage.getItem('lead_email') || '';
+    const whats = localStorage.getItem('lead_whats') || '';
+    const diet_title = localStorage.getItem('diet_title') || 'Plano de Dieta Completo';
+    const body_type  = localStorage.getItem('body_type') || '';
 
-  const ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
-  try { localStorage.setItem('mp_external_ref', ref); } catch(e){}
+    const ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+    try { localStorage.setItem('mp_external_ref', ref); } catch(e){}
 
-  if($("year")) $("year").textContent = new Date().getFullYear();
-  if(nome) $("nomeSpan").textContent = nome;
+    if($('year')) $('year').textContent = new Date().getFullYear();
+    if(nome) $('nomeSpan').textContent = nome;
 
-  $("btnPagamento").addEventListener("click", async () => {
-    $("btnPagamento").disabled = true;
-    $("btnPagamento").textContent = "Gerando pagamento...";
+    $('btnPagamento').addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      $('btnPagamento').disabled = true;
+      $('btnPagamento').textContent = "Gerando pagamento...";
 
-    try {
-      const resp = await fetch(MP_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          valor: 9.90,
-          titulo: diet_title,
-          external_reference: ref,
-          customer_name: nome,
-          customer_email: email,
-          customer_whatsapp: whats,
-          body_type
-        })
-      });
-      const data = await resp.json();
-      if(!data || !data.id) throw new Error("Falha ao criar preferência.");
+      try {
+        const resp = await fetch(MP_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            valor: 9.90,
+            titulo: diet_title,
+            external_reference: ref,
+            customer_name: nome,
+            customer_email: email,
+            customer_whatsapp: whats,
+            body_type
+          })
+        });
+        const data = await resp.json();
+        if(!data || !data.id) throw new Error("Falha ao criar preferência.");
 
-      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
-      mp.checkout({
-        preference: { id: data.id },
-        autoOpen: true,
-        render: { container: "#mp-checkout", label: "Pagar R$ 9,90" }
-      });
+        const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+        mp.checkout({
+          preference: { id: data.id },
+          autoOpen: true,
+          render: { container: "#mp-checkout", label: "Pagar R$ 9,90" }
+        });
 
-      $("btnPagamento").textContent = "Abrindo pagamento...";
-      startPolling(ref);
-    } catch(e) {
-      console.error("Erro ao gerar pagamento:", e);
-      $("btnPagamento").textContent = "Erro, tente novamente";
-    }
+        $('btnPagamento').textContent = "Abrindo pagamento...";
+        startPolling(ref);
+      } catch(e) {
+        console.error("Erro ao gerar pagamento:", e);
+        $('btnPagamento').textContent = "Erro, tente novamente";
+      }
+      $('btnPagamento').disabled = false;
+    });
 
-    $("btnPagamento").disabled = false;
-  });
-
-  function startPolling(ref){
-    let tries=0;
-    const timer=setInterval(async()=>{
-      tries++;
-      try{
-        const res=await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
-        const data=await res.json();
-        console.log("[check_status]", data);
-        if(data && data.found && data.status){
-          const status=data.status.toLowerCase();
-          if(status==="approved"){
-            clearInterval(timer);
-            $("btnPagamento").textContent="✅ Pagamento aprovado! Redirecionando...";
-            setTimeout(()=>{ window.location.href = HOME_UPSELL + encodeURIComponent(ref); },2000);
-          } else if(["rejected","cancelled","canceled"].includes(status)){
-            clearInterval(timer);
-            $("btnPagamento").textContent="Pagamento não aprovado.";
+    function startPolling(ref){
+      let tries=0;
+      const timer=setInterval(async()=>{
+        tries++;
+        try{
+          const res=await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
+          const data=await res.json();
+          console.log("[check_status]", data);
+          if(data && data.found && data.status){
+            const st=data.status.toLowerCase();
+            if(st==="approved"){
+              clearInterval(timer);
+              $('btnPagamento').textContent="✅ Pagamento aprovado! Redirecionando...";
+              setTimeout(()=>{ window.location.href = HOME_UPSELL + encodeURIComponent(ref); },2000);
+            } else if(["rejected","cancelled","canceled"].includes(st)){
+              clearInterval(timer);
+              $('btnPagamento').textContent="Pagamento não aprovado.";
+            }
           }
-        }
-      }catch(e){console.warn("poll err",e);}
-      if(tries>40)clearInterval(timer);
-    },5000);
-  }
-});
-</script>
+        }catch(e){console.warn("poll err",e);}
+        if(tries>40)clearInterval(timer);
+      },5000);
+    }
+  });
+  </script>
 </body>
 </html>
