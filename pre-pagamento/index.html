@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Seu Plano Personalizado está pronto ✅</title>
-  <meta name="description" content="Pré-pagamento: página de confirmação com gatilhos de conversão, usa IMC e resultado do quiz para personalização.">
+  <meta name="description" content="Pré-pagamento com checkout direto na página.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -42,77 +42,50 @@
     <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
       <div>
         <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Seu plano personalizado está pronto 🎉</h1>
-        <p id="intro" class="mt-4 text-lg text-slate-600">Com base nas suas respostas, montamos um <strong>PLANO COMPLETO</strong> e 100% ajustado ao seu corpo e rotina.</p>
+        <p class="mt-4 text-lg text-slate-600">Com base nas suas respostas, montamos um <strong>PLANO COMPLETO</strong> e 100% ajustado ao seu corpo e rotina.</p>
         <div id="imcInfo" class="mt-4 hidden"></div>
-        <div class="mt-6 flex gap-3">
-          <a id="btnContinuarTop" href="#oferta" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Ver o que você vai receber</a>
-          <span class="text-slate-500 self-center">Leva menos de 1 minuto</span>
-        </div>
       </div>
-      <div class="relative">
-        <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
-          <img src="https://dietapronta.online/nutri3.jpg" alt="Alimentos saudáveis" class="w-full h-72 object-cover"/> 
-          <div class="p-6">
-            <h3 class="text-xl font-bold">Plano realmente aplicável</h3>
-            <p class="mt-1 text-slate-600">Nada de fórmulas mágicas: passos simples, combinações inteligentes e foco no que funciona para <span id="nomeSpan">você</span>.</p>
-          </div>
+      <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
+        <img src="https://dietapronta.online/nutri2.jpg" alt="Alimentos saudáveis" class="w-full h-72 object-cover"/> 
+        <div class="p-6">
+          <h3 class="text-xl font-bold">Plano realmente aplicável</h3>
+          <p class="mt-1 text-slate-600">Nada de fórmulas mágicas: passos simples e foco no que funciona para <span id="nomeSpan">você</span>.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Oferta -->
+  <!-- === BOX DE PAGAMENTO FULL-WIDTH === -->
+  <section class="bg-white border-y border-slate-200 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <div id="countdownBox" class="mx-auto mb-6">⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span></div>
+      <h2 class="text-3xl font-extrabold text-emerald-600 mb-2">Liberar Acesso Agora</h2>
+      <p class="text-slate-600 mb-6">Cobramos apenas <strong>R$ 19,90</strong> para liberar seu plano completo e personalizado imediatamente.</p>
+      <div id="mp-checkout" class="max-w-md mx-auto"></div>
+      <a id="btnPagamento" href="#" class="mt-6 inline-block rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Pagar R$ 19,90 agora</a>
+      <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Suporte por WhatsApp</div>
+    </div>
+  </section>
+
+  <!-- Conteúdo do plano (descrição) -->
   <section id="oferta" class="py-10">
     <div class="container mx-auto px-4">
-      <div class="grid lg:grid-cols-3 gap-6 items-start">
-        <div class="lg:col-span-2 p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
-          <div class="flex items-center gap-2 text-sm text-slate-500"><span class="badge bg-emerald-100 text-emerald-800">Personalizado</span> Plano baseado no seu biotipo e IMC</div>
-          <h2 class="mt-2 text-2xl font-extrabold">O que já está pronto para você</h2>
-
-          <ul class="mt-4 space-y-3 text-slate-700">
-            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Dieta semanal completa</strong> — 3 opções por refeição ajustadas ao seu perfil.</span></li>
-            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Livro digital com 200+ receitas</strong> — fáceis, econômicas e saborosas.</span></li>
-            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Suplementação recomendada</strong> — alinhada ao seu objetivo e biotipo.</span></li>
-            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Estratégias complementares</strong> — hábitos e ajustes que aceleram o resultado.</span></li>
-            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Explicação do seu metabolismo e tipo de corpo</strong> — entenda como usar isso ao seu favor.</span></li>
-          </ul>
-
-          <div class="mt-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
-            <p id="resumoPlano" class="font-semibold">Seu plano: <span id="planoSpan">Personalizado</span>.</p>
-            <p id="descSpan" class="mt-1 text-slate-800"></p>
-          </div>
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <div class="flex items-center gap-2 text-sm text-slate-500">
+          <span class="badge bg-emerald-100 text-emerald-800">Personalizado</span> Plano baseado no seu biotipo e IMC
         </div>
-
-        <!-- BOX DE PAGAMENTO -->
-        <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft text-center relative">
-          <div id="countdownBox" class="mx-auto">⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span></div>
-
-          <div class="text-sm text-slate-500 mt-4">Continue</div>
-          <h3 class="text-xl font-extrabold mt-1">Liberar acesso agora</h3>
-
-          <h4 class="text-2xl font-extrabold mt-3 text-emerald-600">
-            <span class="text-amber-600 text-sm uppercase font-semibold block mb-1">🔥 Somente hoje</span>
-            De <span class="text-red-500 line-through">R$ 249,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 19,90</span>
-          </h4>
-
-          <p class="mt-3 text-slate-700 text-sm leading-relaxed">
-            Estamos oferecendo este valor especial porque <strong>uma vez por ano</strong> abrimos vagas com preço simbólico.
-          </p>
-
-          <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Suporte por WhatsApp</div>
-
-          <!-- container do box -->
-          <div id="mp-checkout" class="mt-6"></div>
-
-          <a id="btnPagamento" href="#" class="mt-4 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
-            Quero meu plano agora
-          </a>
-
-          <div id="buyersCount" class="mt-4 text-amber-600 font-semibold text-lg">
-            🔥 <span id="buyersNumber">37</span> pessoas compraram nas últimas 24h!
-          </div>
-          <div class="mt-4 text-xs text-slate-500">Ao continuar, você confirma que leu e concorda com nossos termos.</div>
-        </aside>
+        <h2 class="mt-2 text-2xl font-extrabold">O que você vai receber</h2>
+        <ul class="mt-4 space-y-3 text-slate-700">
+          <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Dieta semanal completa</strong> — 3 opções por refeição ajustadas ao seu perfil.</span></li>
+          <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Livro digital com 200+ receitas</strong> — fáceis, econômicas e saborosas.</span></li>
+          <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Suplementação recomendada</strong> — alinhada ao seu objetivo e biotipo.</span></li>
+          <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Estratégias complementares</strong> — hábitos e ajustes que aceleram o resultado.</span></li>
+          <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Explicação do seu metabolismo e tipo de corpo</strong> — entenda como usar isso ao seu favor.</span></li>
+        </ul>
+        <div class="mt-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-center">
+          <p id="resumoPlano" class="font-semibold">Seu plano: <span id="planoSpan">Personalizado</span>.</p>
+          <p id="descSpan" class="mt-1 text-slate-800"></p>
+        </div>
       </div>
     </div>
   </section>
@@ -121,7 +94,6 @@
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- SCRIPT FINAL -->
   <script>
   document.addEventListener("DOMContentLoaded",function(){
     const MP_PUBLIC_KEY="APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
@@ -130,7 +102,6 @@
     const HOME_UPSELL="https://dietapronta.online/upsell/?ref=";
     const $=id=>document.getElementById(id);
 
-    // Dados do lead
     const nome=localStorage.getItem('lead_nome')||'';
     const email=localStorage.getItem('lead_email')||'';
     const whats=localStorage.getItem('lead_whats')||'';
@@ -141,26 +112,10 @@
 
     if($('year'))$('year').textContent=new Date().getFullYear();
 
-    // === Countdown ===
-    let timeLeft=5*60;
-    const countdownEl=$('countdown');
-    const countdownBox=$('countdownBox');
-    setInterval(()=>{
-      const m=String(Math.floor(timeLeft/60)).padStart(2,'0');
-      const s=String(timeLeft%60).padStart(2,'0');
-      countdownEl.textContent=`${m}:${s}`;
-      if(timeLeft<=60)countdownBox.classList.add("pulse");
-      if(timeLeft<=0){countdownEl.textContent="00:00";}
-      timeLeft--;
-    },1000);
+    // Countdown
+    let t=5*60;const cE=$('countdown'),cB=$('countdownBox');
+    setInterval(()=>{const m=String(Math.floor(t/60)).padStart(2,'0');const s=String(t%60).padStart(2,'0');cE.textContent=`${m}:${s}`;if(t<=60)cB.classList.add('pulse');if(t<=0)cE.textContent='00:00';t--;},1000);
 
-    // === Pessoas comprando ===
-    const buyersEl=$('buyersNumber');
-    let buyers=30+Math.floor(Math.random()*8);
-    buyersEl.textContent=buyers;
-    setInterval(()=>{const c=Math.random()<0.5?-1:1;buyers=Math.max(20,buyers+c);buyersEl.textContent=buyers;},7000);
-
-    // === Pagamento ===
     $('btnPagamento').addEventListener('click',async(ev)=>{
       ev.preventDefault();
       const btn=$('btnPagamento');
@@ -200,15 +155,15 @@
         try{
           const res=await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
           const data=await res.json();
-          if(data&&data.found){
-            const st=(data.status||"").toLowerCase();
+          if(data&&data.found&&data.status){
+            const st=data.status.toLowerCase();
             if(st==="approved"){
               clearInterval(timer);
               btn.textContent="✅ Pagamento aprovado! Redirecionando...";
               setTimeout(()=>window.location.href=HOME_UPSELL+encodeURIComponent(ref),2000);
             }
           }
-        }catch(e){console.warn(e);}
+        }catch(e){}
         if(tries>40)clearInterval(timer);
       },5000);
     }
