@@ -9,13 +9,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
   <style>
     :root { --brand: #22c55e; }
     body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2,6,23,.08); }
 
-    /* === Countdown Dourado === */
     #countdownBox {
       background: linear-gradient(90deg, #fbbf24, #f59e0b, #facc15);
       color: #fff;
@@ -70,30 +70,26 @@
         E pra te ajudar a ter <strong>resultados ainda mais rápidos e deliciosos</strong>, preparamos uma oportunidade <strong>única e exclusiva</strong> — disponível apenas agora!
       </p>
 
-      <!-- Frase de destaque -->
       <h2 class="mt-8 text-2xl md:text-3xl font-extrabold text-amber-600 max-w-2xl mx-auto leading-snug">
         ✨ Receba agora <span class="text-emerald-600">200 receitas exclusivas</span> que vão te ajudar a alcançar seu objetivo mais rápido! 💪
       </h2>
 
-      <!-- Countdown -->
       <div id="countdownBox" class="mt-6">
         ⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span>
       </div>
 
-      <!-- Pessoas comprando -->
       <div class="mt-4 text-amber-600 font-semibold text-lg" id="buyersCount">
         🔥 <span id="buyersNumber">27</span> pessoas aproveitaram essa oferta nas últimas 24h!
       </div>
     </div>
   </section>
 
-  <!-- BLOCO FULL-WIDTH DE OFERTA -->
+  <!-- Bloco principal -->
   <section class="bg-white border-t border-b border-slate-200 py-10">
     <div class="max-w-5xl mx-auto px-4 text-center">
       <div class="max-w-2xl mx-auto">
         <div class="text-sm text-slate-500">Oferta Limitada</div>
 
-        <!-- PREÇO COM DESTAQUE -->
         <h3 class="text-4xl font-extrabold mt-2 text-emerald-600">
           De <span class="text-red-500 line-through">R$ 149,90</span> por apenas <span class="text-emerald-600 text-5xl">R$ 9,90!</span>
         </h3>
@@ -121,6 +117,8 @@
           </a>
         </div>
 
+        <div id="mp-checkout" class="mt-6"></div>
+
         <div class="mt-5 text-xs text-slate-500 text-center">
           Acesso imediato • Conteúdo digital • Garantia de satisfação
         </div>
@@ -128,7 +126,7 @@
     </div>
   </section>
 
-  <!-- BLOCO DE INFORMAÇÕES E IMAGEM -->
+  <!-- Informações -->
   <section id="oferta" class="py-14">
     <div class="container mx-auto px-4 grid lg:grid-cols-2 gap-10 items-center">
       <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
@@ -157,40 +155,29 @@
   <!-- Script -->
   <script>
   document.addEventListener("DOMContentLoaded", function(){
+    const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
+    const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference-upsell";
+    const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
+    const HOME_SUCCESS  = "https://dietapronta.online/approved-upsell";
+
     function $(id){ return document.getElementById(id); }
     $('year').textContent = (new Date()).getFullYear();
-
-    // === Cria nova referência exclusiva para o UPSELL ===
-    const refUpsell = 'ref-upsell-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
-    try { localStorage.setItem('mp_external_ref_upsell', refUpsell); } catch(e){}
-
-    // Atualiza link do botão de pagamento
-    const btnPagamento = $('btnPagamento');
-    if (btnPagamento) {
-      const baseUrl = "https://dietapronta.online/pagamento/";
-      const params = new URLSearchParams({
-        ref: refUpsell,
-        produto: "receitas200",
-        valor: "9.90"
-      });
-      btnPagamento.href = baseUrl + "?" + params.toString();
-    }
 
     // Countdown
     let timeLeft = 5 * 60;
     const countdownEl = $('countdown');
     const countdownBox = $('countdownBox');
-    const timer = setInterval(() => {
+    const btnPagamento = $('btnPagamento');
+    setInterval(() => {
       const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
       const sec = String(timeLeft % 60).padStart(2, '0');
       countdownEl.textContent = `${min}:${sec}`;
       if (timeLeft <= 60) countdownBox.classList.add("pulse");
       if (timeLeft <= 0) {
-        clearInterval(timer);
         countdownEl.textContent = "00:00";
         countdownBox.textContent = "⏰ Oferta Expirada!";
         btnPagamento.textContent = "⏰ Oferta Expirada";
-        btnPagamento.classList.add("bg-gray-400","cursor-not-allowed","hover:bg-gray-400");
+        btnPagamento.classList.add("bg-gray-400", "cursor-not-allowed", "hover:bg-gray-400");
         btnPagamento.removeAttribute("href");
       }
       timeLeft--;
@@ -205,6 +192,69 @@
       buyers = Math.max(20, buyers + change);
       buyersEl.textContent = buyers;
     }, 7000);
+
+    // === Pagamento Mercado Pago ===
+    const nome = localStorage.getItem('lead_nome') || '';
+    const email = localStorage.getItem('lead_email') || '';
+    const whats = localStorage.getItem('lead_whats') || '';
+    const ref = 'ref-upsell-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+    try { localStorage.setItem('mp_external_ref_upsell', ref); } catch(e){}
+
+    $('btnPagamento').addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      const btn = $('btnPagamento');
+      btn.disabled = true;
+      btn.textContent = "Gerando pagamento...";
+
+      try {
+        const r = await fetch(MP_ENDPOINT, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            valor: 9.90,
+            titulo: "200 Receitas Saudáveis",
+            external_reference: ref,
+            customer_name: nome,
+            customer_email: email,
+            customer_whatsapp: whats
+          })
+        });
+
+        const data = await r.json();
+        if (!data || !data.id) throw new Error("Falha ao criar preferência.");
+
+        const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+        mp.checkout({
+          preference: { id: data.id },
+          autoOpen: true,
+          render: { container: "#mp-checkout", label: "Pagar R$ 9,90" }
+        });
+
+        btn.textContent = "Abrindo pagamento...";
+        startPolling(ref, btn);
+      } catch (e) {
+        console.error(e);
+        btn.textContent = "Erro, tente novamente";
+      }
+      btn.disabled = false;
+    });
+
+    function startPolling(ref, btn) {
+      let tries = 0;
+      const timer = setInterval(async () => {
+        tries++;
+        try {
+          const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
+          const data = await res.json();
+          if (data && data.found && data.status?.toLowerCase() === "approved") {
+            clearInterval(timer);
+            btn.textContent = "✅ Pagamento aprovado! Redirecionando...";
+            setTimeout(() => window.location.href = HOME_SUCCESS, 2000);
+          }
+        } catch (e) { console.warn(e); }
+        if (tries > 40) clearInterval(timer);
+      }, 5000);
+    }
   });
   </script>
 </body>
