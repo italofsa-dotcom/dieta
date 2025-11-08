@@ -183,18 +183,27 @@ document.addEventListener("DOMContentLoaded", function() {
   const $ = id => document.getElementById(id);
 
   // === Personalização dinâmica ===
-  const nome    = localStorage.getItem('lead_nome') || '';
-  const imc     = localStorage.getItem('quiz_imc_value') || '';
-  const biotipo = localStorage.getItem('quiz_result_body_name') || '';
-  const personalizacao = document.getElementById('personalizacao');
-  if (personalizacao) {
-    personalizacao.innerHTML = `
-      ${nome ? `<strong>${nome}</strong>,` : ''}
-      de acordo com seu <strong>IMC ${imc || '—'}</strong> e seu 
-      <strong>biotipo ${biotipo || '—'}</strong>, 
-      criamos o plano ideal para você alcançar excelentes resultados! 💪
-    `;
-  }
+const nome = localStorage.getItem('lead_nome') || '';
+const imc = localStorage.getItem('quiz_imc_value') || '';
+const biotipo = localStorage.getItem('quiz_result_body_name') || '';
+
+const personalizacao = document.getElementById('personalizacao');
+const titulo = document.querySelector('h1'); // captura o título principal
+
+if (personalizacao) {
+  personalizacao.innerHTML = `
+    ${nome ? `<strong>${nome}</strong>,` : ''}
+    de acordo com seu <strong>IMC ${imc || '—'}</strong> e seu 
+    <strong>biotipo ${biotipo || '—'}</strong>, 
+    criamos o plano ideal para você alcançar excelentes resultados! 💪
+  `;
+}
+
+// === Altera o título principal dinamicamente ===
+if (titulo) {
+  titulo.innerHTML = `${nome ? nome + ',' : ''} sua dieta personalizada está pronta 🎉`;
+}
+
 
   // === Contagem regressiva ===
   if ($('countdown')) {
