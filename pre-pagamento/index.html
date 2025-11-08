@@ -145,6 +145,11 @@
           <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Suporte por WhatsApp</div>
           <div id="mp-checkout" class="mt-6"></div>
           <a id="btnPagamento" href="#" class="mt-4 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Quero meu plano agora</a>
+         
+          <div id="buyersCount" class="mt-4 text-amber-600 font-semibold text-lg">
+  🔥 <span id="buyersNumber">37</span> pessoas compraram nas últimas 24h!
+          </div>
+
         </aside>
       </div>
     </div>
@@ -270,6 +275,19 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelector('.galeria')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
+
+
+    // === Pessoas comprando (contador dinâmico) ===
+const buyersEl = document.getElementById('buyersNumber');
+if (buyersEl) {
+  let buyers = 30 + Math.floor(Math.random() * 8);
+  buyersEl.textContent = buyers;
+  setInterval(() => {
+    const change = Math.random() < 0.5 ? -1 : 1;
+    buyers = Math.max(20, buyers + change);
+    buyersEl.textContent = buyers;
+  }, 7000);
+}
 </script>
 
 </body>
