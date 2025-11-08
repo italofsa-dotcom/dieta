@@ -267,4 +267,49 @@ document.addEventListener("DOMContentLoaded", function() {
     const timer = setInterval(async () => {
       tries++;
       try {
-        const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(localRef)}&t
+        const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(localRef)}&t=${Date.now()}`);
+        const data = await res.json();
+        console.log("[Polling]", data);
+
+        if (data && data.found) {
+          const st = (data.status || "").toLowerCase();
+          if (st === "approved") {
+            clearInterval(timer);
+            btn.textContent = "✅ Pagamento aprovado! Redirecionando...";
+            setTimeout(() => {
+              window.location.href = HOME_UPSELL + encodeURIComponent(localRef);
+            }, 2000);
+          } else if (["rejected", "cancelled", "canceled"].includes(st)) {
+            clearInterval(timer);
+            btn.textContent = "❌ Pagamento não aprovado. Tente novamente.";
+          }
+        }
+      } catch (e) {
+        console.warn("[Polling erro]", e);
+      }
+
+      if (tries > 36) clearInterval(timer);
+    }, 5000);
+  }
+
+  // === Rolagem suave até a galeria ===
+  document.getElementById('btnResultados')?.addEventListener('click', () => {
+    document.querySelector('.galeria')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// === Pessoas comprando (contador dinâmico) ===
+const buyersEl = document.getElementById('buyersNumber');
+if (buyersEl) {
+  let buyers = 30 + Math.floor(Math.random() * 8);
+  buyersEl.textContent = buyers;
+  setInterval(() => {
+    const change = Math.random() < 0.5 ? -1 : 1;
+    buyers = Math.max(20, buyers + change);
+    buyersEl.textContent = buyers;
+  }, 7000);
+}
+</script>
+
+</body>
+</html>
