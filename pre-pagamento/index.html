@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Seu Plano Personalizado está pronto ✅</title>
-  <meta name="description" content="Pré-pagamento: página personalizada com base no seu nome, IMC e biotipo.">
+  <meta name="description" content="Pré-pagamento: página de confirmação com personalização automática de nome, IMC e biotipo.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -69,15 +69,34 @@
     </div>
   </header>
 
-  <!-- Hero Personalizado -->
+  <!-- Hero com Personalização -->
   <section class="bg-gradient-to-b from-white to-slate-100">
-    <div class="container mx-auto px-4 py-10 text-center">
-      <h1 id="tituloPersonalizado" class="text-3xl md:text-5xl font-extrabold leading-tight text-emerald-700">
-        Seu plano personalizado está pronto 🎉
-      </h1>
-      <p id="subPersonalizado" class="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
-        Montamos um <strong>plano 100% ajustado ao seu corpo e rotina</strong>, garantindo resultados reais e sustentáveis.
-      </p>
+    <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <div id="personalizacao" class="mb-4 text-emerald-700 font-semibold leading-relaxed text-lg"></div>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Seu plano personalizado está pronto 🎉</h1>
+        <p id="intro" class="mt-4 text-lg text-slate-600">
+          Com base nas suas respostas, montamos um <strong>PLANO COMPLETO</strong> e 100% ajustado ao seu corpo e rotina.
+        </p>
+        <div id="imcInfo" class="mt-4 hidden"></div>
+        <div class="mt-6 flex gap-3">
+          <a id="btnContinuarTop" href="#oferta" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+            Ver o que você vai receber
+          </a>
+          <span class="text-slate-500 self-center">Leva menos de 1 minuto</span>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
+          <img src="https://dietapronta.online/nutri2.jpg" alt="Alimentos saudáveis" class="w-full h-72 object-cover"/> 
+          <div class="p-6">
+            <h3 class="text-xl font-bold">Plano realmente aplicável</h3>
+            <p class="mt-1 text-slate-600">
+              Nada de fórmulas mágicas: passos simples, combinações inteligentes e foco no que funciona para <span id="nomeSpan">você</span>.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -86,7 +105,9 @@
     <div class="container mx-auto px-4">
       <div class="grid lg:grid-cols-3 gap-6 items-start">
         <div class="lg:col-span-2 p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
-          <div class="flex items-center gap-2 text-sm text-slate-500"><span class="badge bg-emerald-100 text-emerald-800">Personalizado</span> Plano baseado no seu biotipo e IMC</div>
+          <div class="flex items-center gap-2 text-sm text-slate-500">
+            <span class="badge bg-emerald-100 text-emerald-800">Personalizado</span> Plano baseado no seu biotipo e IMC
+          </div>
           <h2 class="mt-2 text-2xl font-extrabold">O que já está pronto para você</h2>
 
           <ul class="mt-4 space-y-3 text-slate-700">
@@ -102,39 +123,32 @@
             <p id="descSpan" class="mt-1 text-slate-800"></p>
           </div>
 
-          <!-- Botão dourado -->
           <div class="text-center mt-6">
             <button id="btnResultados">📸 Veja os resultados de nossos pacientes</button>
           </div>
         </div>
 
-        <!-- Box de Pagamento -->
+        <!-- BOX DE PAGAMENTO -->
         <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft text-center relative">
           <div id="countdownBox" class="mx-auto">⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span></div>
           <div class="text-sm text-slate-500 mt-4">Continue</div>
           <h3 class="text-xl font-extrabold mt-1">Liberar acesso agora</h3>
-
           <h4 class="text-2xl font-extrabold mt-3 text-emerald-600">
             <span class="text-amber-600 text-sm uppercase font-semibold block mb-1">🔥 Somente hoje</span>
             De <span class="text-red-500 line-through">R$ 249,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 19,90</span>
           </h4>
-
           <p class="mt-3 text-slate-700 text-sm leading-relaxed">
             Estamos oferecendo este valor especial porque <strong>uma vez por ano</strong> abrimos vagas com preço simbólico.
           </p>
-
           <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Suporte por WhatsApp</div>
-
           <div id="mp-checkout" class="mt-6"></div>
-          <a id="btnPagamento" href="#" class="mt-4 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
-            Quero meu plano agora
-          </a>
+          <a id="btnPagamento" href="#" class="mt-4 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Quero meu plano agora</a>
         </aside>
       </div>
     </div>
   </section>
 
-  <!-- Galeria -->
+  <!-- GALERIA -->
   <section class="bg-white py-12 border-t border-slate-200">
     <div class="container mx-auto px-4 text-center">
       <h2 class="text-3xl font-extrabold text-emerald-600 mb-6">Resultados Reais de Nossos Pacientes 💪</h2>
@@ -156,25 +170,18 @@
   <script>
   document.addEventListener("DOMContentLoaded",function(){
     const nome = localStorage.getItem('lead_nome') || '';
-    const imc  = localStorage.getItem('quiz_imc_value') || '';
-    const imcLabel = localStorage.getItem('quiz_imc_label') || '';
-    const biotipo = localStorage.getItem('body_type') || localStorage.getItem('quiz_body_type') || '';
+    const imc = localStorage.getItem('quiz_imc_value') || '';
+    const biotipo = localStorage.getItem('quiz_result_body_name') || '';
 
-    // Personalização dinâmica
-    const titulo = document.getElementById('tituloPersonalizado');
-    const subtitulo = document.getElementById('subPersonalizado');
-    if (nome && titulo && subtitulo) {
-      titulo.innerHTML = `${nome}, seu plano personalizado está pronto 🎉`;
-      subtitulo.innerHTML = `De acordo com seu <strong>peso</strong>, seu <strong>IMC é ${imc} (${imcLabel})</strong> e seu <strong>biotipo é ${biotipo}</strong>.<br>Com base nesses dados, criamos o plano ideal para você alcançar excelentes resultados! 💪`;
+    if (nome || imc || biotipo) {
+      const p = document.getElementById('personalizacao');
+      p.innerHTML = `${nome ? '<strong>'+nome+'</strong>,' : ''} de acordo com seu <strong>IMC ${imc}</strong> e seu <strong>biotipo '+biotipo+'</strong>, criamos o plano ideal para você alcançar excelentes resultados! 💪`;
     }
 
-    // === Scroll suave até galeria ===
-    const btnResultados=document.getElementById('btnResultados');
-    if(btnResultados){
-      btnResultados.addEventListener('click',()=>{
-        document.querySelector('.galeria')?.scrollIntoView({behavior:'smooth',block:'start'});
-      });
-    }
+    // Scroll suave até galeria
+    document.getElementById('btnResultados')?.addEventListener('click',()=>{
+      document.querySelector('.galeria')?.scrollIntoView({behavior:'smooth',block:'start'});
+    });
   });
   </script>
 </body>
