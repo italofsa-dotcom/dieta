@@ -92,6 +92,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       body_type: body_type || 'Não informado',
       imc_value: imc_value || '',
       imc_label: imc_label || '',
+      amount: valor, // 💰 novo campo
       secret: LEAD_TOKEN
     };
 
