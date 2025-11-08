@@ -57,12 +57,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       customer_name = '',
       customer_email = '',
       customer_whatsapp = '',
-      // 🔹 Campos personalizados vindos do quiz
       diet_title = '',
       body_type = '',
       imc_value = '',
       imc_label = ''
     } = bodyData;
+
+    // ✅ Determina nome final da dieta (prioriza resultado do quiz)
+    const finalDietTitle =
+      diet_title && diet_title.trim().length > 0
+        ? diet_title.trim()
+        : titulo || 'Plano de Dieta Completo';
 
     // ✅ Usa o mesmo ref vindo do frontend
     const extRef = external_reference && external_reference.trim()
@@ -82,8 +87,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       name: customer_name,
       email: customer_email,
       phone: customer_whatsapp,
-      // 🔹 Envia corretamente os dados do quiz
-      diet_title: diet_title || titulo || 'Plano de Dieta Completo',
+      // ✅ grava corretamente tipo de dieta do quiz
+      diet_title: finalDietTitle,
       body_type: body_type || 'Não informado',
       imc_value: imc_value || '',
       imc_label: imc_label || '',
@@ -95,7 +100,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!leadResponse.ok) {
       log('Falha ao criar lead', leadResponse.error || 'sem detalhes');
-      // Continua para pagamento mesmo que o lead falhe
     } else {
       log('Lead criado com sucesso no PHP', leadResponse.ref);
     }
@@ -106,7 +110,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const prefBody = {
       items: [
         {
-          title: String(diet_title || titulo),
+          title: finalDietTitle, // ✅ o título do produto será o tipo de dieta
           quantity: 1,
           unit_price: Number(valor),
           currency_id: 'BRL'
@@ -126,7 +130,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
       metadata: {
         order_type: 'main_diet',
-        diet_title: diet_title || titulo,
+        diet_title: finalDietTitle,
         body_type,
         imc_value,
         imc_label,
@@ -150,16 +154,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(resp.status).json({ error: data });
     }
 
-    // ✅ Preferência criada com sucesso
     log('Preferência criada com sucesso', {
       id: data.id,
-      ref: extRef
+      ref: extRef,
+      tipo: finalDietTitle
     });
 
     return res.status(200).json({
       id: data.id,
       init_point: data.init_point,
-      external_reference: extRef
+      external_reference: extRef,
+      diet_title: finalDietTitle
     });
   } catch (err: any) {
     console.error('[mp-preference] Erro geral:', err);
