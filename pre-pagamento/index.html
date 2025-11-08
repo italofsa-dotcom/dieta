@@ -1,4 +1,173 @@
-<script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seu Plano Personalizado está pronto ✅</title>
+  <meta name="description" content="Pré-pagamento: página de confirmação com personalização automática de nome, IMC e biotipo.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <style>
+    :root { --brand:#22c55e; --gold:#fbbf24; }
+    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif; }
+    .container{ max-width:980px; }
+    .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
+    .badge{ display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;font-size:.8rem; }
+    #countdownBox{background:linear-gradient(90deg,#fbbf24,#f59e0b,#facc15);color:#fff;font-weight:800;font-size:1.4rem;padding:.6rem 1.8rem;border-radius:.8rem;display:inline-flex;align-items:center;gap:.5rem;box-shadow:0 0 25px rgba(245,158,11,.5);animation:gradientMove 3s linear infinite;background-size:200% 200%;margin-bottom:1rem;}
+    @keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    #countdownBox.pulse{animation:pulse 1s infinite,gradientMove 3s linear infinite}
+    @keyframes pulse{0%{transform:scale(1);box-shadow:0 0 25px rgba(245,158,11,.5)}50%{transform:scale(1.05);box-shadow:0 0 45px rgba(245,158,11,.8)}100%{transform:scale(1);box-shadow:0 0 25px rgba(245,158,11,.5)}}
+
+    /* === Botão Dourado com brilho === */
+    #btnResultados {
+      background: linear-gradient(90deg, #fbbf24, #facc15, #fbbf24);
+      background-size: 200% 200%;
+      color: white;
+      font-weight: 600;
+      padding: 0.8rem 2rem;
+      border-radius: 0.8rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(251,191,36,0.4);
+      animation: shimmer 4s linear infinite;
+    }
+    #btnResultados:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(251,191,36,0.6);
+    }
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* === Galeria === */
+    .galeria img{
+      transition:transform .4s ease, box-shadow .4s ease;
+      border-radius:1rem;
+    }
+    .galeria img:hover{
+      transform:scale(1.05);
+      box-shadow:0 10px 25px rgba(0,0,0,.25);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-emerald-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+        </div>
+        <span class="font-extrabold tracking-tight">Dieta Pronta Online</span>
+      </div>
+      <div class="text-sm text-slate-500 hidden md:block">Plano personalizado pronto para você</div>
+    </div>
+  </header>
+
+  <!-- Hero com Personalização -->
+  <section class="bg-gradient-to-b from-white to-slate-100">
+    <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <div id="personalizacao" class="mb-4 text-emerald-700 font-semibold leading-relaxed text-lg"></div>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Seu plano personalizado está pronto 🎉</h1>
+        <p id="intro" class="mt-4 text-lg text-slate-600">
+          Com base nas suas respostas, montamos um <strong>PLANO COMPLETO</strong> e 100% ajustado ao seu corpo e rotina.
+        </p>
+        <div id="imcInfo" class="mt-4 hidden"></div>
+        <div class="mt-6 flex gap-3">
+          <a id="btnContinuarTop" href="#oferta" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+            Ver o que você vai receber
+          </a>
+          <span class="text-slate-500 self-center">Leva menos de 1 minuto</span>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
+          <img src="https://dietapronta.online/nutri2.jpg" alt="Alimentos saudáveis" class="w-full h-72 object-cover"/> 
+          <div class="p-6">
+            <h3 class="text-xl font-bold">Plano realmente aplicável</h3>
+            <p class="mt-1 text-slate-600">
+              Nada de fórmulas mágicas: passos simples, combinações inteligentes e foco no que funciona para <span id="nomeSpan">você</span>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Oferta -->
+  <section id="oferta" class="py-10">
+    <div class="container mx-auto px-4">
+      <div class="grid lg:grid-cols-3 gap-6 items-start">
+        <div class="lg:col-span-2 p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+          <div class="flex items-center gap-2 text-sm text-slate-500">
+            <span class="badge bg-emerald-100 text-emerald-800">Personalizado</span> Plano baseado no seu biotipo e IMC
+          </div>
+          <h2 class="mt-2 text-2xl font-extrabold">O que já está pronto para você</h2>
+
+          <ul class="mt-4 space-y-3 text-slate-700">
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Dieta semanal completa</strong> — 3 opções por refeição ajustadas ao seu perfil.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Livro digital com 200+ receitas</strong> — fáceis, econômicas e saborosas.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Suplementação recomendada</strong> — alinhada ao seu objetivo e biotipo.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Estratégias complementares</strong> — hábitos e ajustes que aceleram o resultado.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Explicação do seu metabolismo e tipo de corpo</strong> — entenda como usar isso ao seu favor.</span></li>
+          </ul>
+
+          <div class="mt-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
+            <p id="resumoPlano" class="font-semibold">Seu plano: <span id="planoSpan">Personalizado</span>.</p>
+            <p id="descSpan" class="mt-1 text-slate-800"></p>
+          </div>
+
+          <div class="text-center mt-6">
+            <button id="btnResultados">📸 Veja os resultados de nossos pacientes</button>
+          </div>
+        </div>
+
+        <!-- BOX DE PAGAMENTO -->
+        <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft text-center relative">
+          <div id="countdownBox" class="mx-auto">⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span></div>
+          <div class="text-sm text-slate-500 mt-4">Continue</div>
+          <h3 class="text-xl font-extrabold mt-1">Liberar acesso agora</h3>
+          <h4 class="text-2xl font-extrabold mt-3 text-emerald-600">
+            <span class="text-amber-600 text-sm uppercase font-semibold block mb-1">🔥 Somente hoje</span>
+            De <span class="text-red-500 line-through">R$ 249,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 19,90</span>
+          </h4>
+          <p class="mt-3 text-slate-700 text-sm leading-relaxed">
+            Estamos oferecendo este valor especial porque <strong>uma vez por ano</strong> abrimos vagas com preço simbólico.
+          </p>
+          <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Suporte por WhatsApp</div>
+          <div id="mp-checkout" class="mt-6"></div>
+          <a id="btnPagamento" href="#" class="mt-4 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Quero meu plano agora</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERIA -->
+  <section class="bg-white py-12 border-t border-slate-200">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-extrabold text-emerald-600 mb-6">Resultados Reais de Nossos Pacientes 💪</h2>
+      <div class="galeria grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <img src="https://dietapronta.online/upload/9kg%20em%205%20semanas.jpg" alt="Fernanda Costa" class="w-full object-cover shadow-md">
+        <img src="https://dietapronta.online/upload/mariele%20queiroz.jpg" alt="Mariele Queiroz" class="w-full object-cover shadow-md">
+        <img src="https://dietapronta.online/upload/dieta.jpg" alt="Claudia Silva" class="w-full object-cover shadow-md">
+        <img src="https://dietapronta.online/upload/Julia%20andrade.jpg" alt="Julia Andrade" class="w-full object-cover shadow-md">
+        <img src="https://dietapronta.online/upload/cibele%20almeida.jpg" alt="Cibele Almeida" class="w-full object-cover shadow-md">
+        <img src="https://dietapronta.online/upload/Luciana%20Martins.jpg" alt="Luciana Martins" class="w-full object-cover shadow-md">
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
 document.addEventListener("DOMContentLoaded", function() {
   const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
   const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
@@ -100,3 +269,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 </script>
+
+</body>
+</html>
