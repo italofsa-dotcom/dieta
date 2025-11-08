@@ -184,6 +184,8 @@ document.addEventListener("DOMContentLoaded", function() {
   const nome = localStorage.getItem('lead_nome') || '';
   const imc = localStorage.getItem('quiz_imc_value') || '';
   const biotipo = localStorage.getItem('quiz_result_body_name') || '';
+  const diet_title = localStorage.getItem('quiz_result_title') || localStorage.getItem('diet_title') || 'Plano de Dieta Completo';
+  const imc_label = localStorage.getItem('quiz_imc_label') || '';
 
   const personalizacao = document.getElementById('personalizacao');
   const titulo = document.querySelector('h1');
@@ -236,7 +238,10 @@ document.addEventListener("DOMContentLoaded", function() {
           customer_name: nome,
           customer_email: localStorage.getItem('lead_email') || '',
           customer_whatsapp: localStorage.getItem('lead_whats') || '',
-          body_type: biotipo
+          body_type: biotipo,
+          diet_title: diet_title,
+          imc_value: imc,
+          imc_label: imc_label
         })
       });
       const data = await r.json();
