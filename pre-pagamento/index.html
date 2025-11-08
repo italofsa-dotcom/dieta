@@ -73,7 +73,6 @@
   <section class="bg-gradient-to-b from-white to-slate-100">
     <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
       <div>
-        
         <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Seu plano personalizado está pronto 🎉</h1>
         <br>
         <div id="personalizacao" class="mb-4 text-emerald-700 font-semibold leading-relaxed text-lg"></div>
@@ -139,19 +138,16 @@
             <span class="text-amber-600 text-sm uppercase font-semibold block mb-1">🔥 Somente hoje</span>
             De <span class="text-red-500 line-through">R$ 349,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 19,90</span>
           </h4>
-          <!-- <p class="mt-3 text-slate-700 text-sm leading-relaxed"> --->
-
-           <p class="mt-3 text-slate-700 text-sm leading-relaxed">Você deve estar se perguntando.. porque tudo isso por somente R$ 19,90? ... verdade o valor está extremamente baixo, porem tem um motivo pra isso... <strong>somente uma vez no ano</strong> nós liberamos vagas com este preço simbólico, com intuito de ajudar o maior número de mulheres e homens que já tentaram de tudo, porem sem o plano correto não conseguiam chegar ao seu objetivo! Sua oportunidade é agora! 
-           
+          <p class="mt-3 text-slate-700 text-sm leading-relaxed">
+            Você deve estar se perguntando.. porque tudo isso por somente R$ 19,90? ... verdade o valor está extremamente baixo, porem tem um motivo pra isso... <strong>somente uma vez no ano</strong> nós liberamos vagas com este preço simbólico, com intuito de ajudar o maior número de mulheres e homens que já tentaram de tudo, porem sem o plano correto não conseguiam chegar ao seu objetivo! Sua oportunidade é agora! 
           </p>
           <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Acesso Vitalício</div>
           <div id="mp-checkout" class="mt-6"></div>
           <a id="btnPagamento" href="#" class="mt-4 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Quero meu plano agora</a>
          
           <div id="buyersCount" class="mt-4 text-amber-600 font-semibold text-lg">
-  🔥 <span id="buyersNumber">37</span> pessoas compraram na última hora!
+            🔥 <span id="buyersNumber">37</span> pessoas compraram na última hora!
           </div>
-
         </aside>
       </div>
     </div>
@@ -185,27 +181,25 @@ document.addEventListener("DOMContentLoaded", function() {
   const $ = id => document.getElementById(id);
 
   // === Personalização dinâmica ===
-const nome = localStorage.getItem('lead_nome') || '';
-const imc = localStorage.getItem('quiz_imc_value') || '';
-const biotipo = localStorage.getItem('quiz_result_body_name') || '';
+  const nome = localStorage.getItem('lead_nome') || '';
+  const imc = localStorage.getItem('quiz_imc_value') || '';
+  const biotipo = localStorage.getItem('quiz_result_body_name') || '';
 
-const personalizacao = document.getElementById('personalizacao');
-const titulo = document.querySelector('h1'); // captura o título principal
+  const personalizacao = document.getElementById('personalizacao');
+  const titulo = document.querySelector('h1');
 
-if (personalizacao) {
-  personalizacao.innerHTML = `
-    ${nome ? `<strong></strong>` : ''}
-    De acordo com seu <strong>IMC ${imc || '—'}</strong> e seu 
-    <strong>biotipo ${biotipo || '—'}</strong>, 
-    criamos o plano ideal para você alcançar excelentes resultados! 💪
-  `;
-}
+  if (personalizacao) {
+    personalizacao.innerHTML = `
+      ${nome ? `<strong></strong>` : ''}
+      De acordo com seu <strong>IMC ${imc || '—'}</strong> e seu 
+      <strong>biotipo ${biotipo || '—'}</strong>, 
+      criamos o plano ideal para você alcançar excelentes resultados! 💪
+    `;
+  }
 
-// === Altera o título principal dinamicamente ===
-if (titulo) {
-  titulo.innerHTML = `${nome ? nome + ',' : ''} sua dieta personalizada está pronta 🎉`;
-}
-
+  if (titulo) {
+    titulo.innerHTML = `${nome ? nome + ',' : ''} sua dieta personalizada está pronta 🎉`;
+  }
 
   // === Contagem regressiva ===
   if ($('countdown')) {
@@ -264,42 +258,13 @@ if (titulo) {
     btn.disabled = false;
   });
 
+  // ✅ Nova função de verificação aprimorada
   function startPolling(ref, btn) {
     let tries = 0;
+    const localRef = localStorage.getItem('mp_external_ref') || ref;
+    console.log("[Polling] Iniciando verificação do ref:", localRef);
+
     const timer = setInterval(async () => {
       tries++;
       try {
-        const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
-        const data = await res.json();
-        if (data && data.found && data.status?.toLowerCase() === "approved") {
-          clearInterval(timer);
-          btn.textContent = "✅ Pagamento aprovado! Redirecionando...";
-          setTimeout(() => window.location.href = HOME_UPSELL + encodeURIComponent(ref), 2000);
-        }
-      } catch (e) { console.warn(e); }
-      if (tries > 40) clearInterval(timer);
-    }, 5000);
-  }
-
-  // === Rolagem suave até a galeria ===
-  document.getElementById('btnResultados')?.addEventListener('click', () => {
-    document.querySelector('.galeria')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-});
-
-
-    // === Pessoas comprando (contador dinâmico) ===
-const buyersEl = document.getElementById('buyersNumber');
-if (buyersEl) {
-  let buyers = 30 + Math.floor(Math.random() * 8);
-  buyersEl.textContent = buyers;
-  setInterval(() => {
-    const change = Math.random() < 0.5 ? -1 : 1;
-    buyers = Math.max(20, buyers + change);
-    buyersEl.textContent = buyers;
-  }, 7000);
-}
-</script>
-
-</body>
-</html>
+        const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(localRef)}&t
