@@ -57,6 +57,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       customer_name = '',
       customer_email = '',
       customer_whatsapp = '',
+      // 🔹 Campos personalizados vindos do quiz
       diet_title = '',
       body_type = '',
       imc_value = '',
@@ -81,10 +82,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       name: customer_name,
       email: customer_email,
       phone: customer_whatsapp,
-      diet_title,
-      body_type,
-      imc_value,
-      imc_label,
+      // 🔹 Envia corretamente os dados do quiz
+      diet_title: diet_title || titulo || 'Plano de Dieta Completo',
+      body_type: body_type || 'Não informado',
+      imc_value: imc_value || '',
+      imc_label: imc_label || '',
       secret: LEAD_TOKEN
     };
 
@@ -93,7 +95,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (!leadResponse.ok) {
       log('Falha ao criar lead', leadResponse.error || 'sem detalhes');
-      // Ainda assim continua para o pagamento, mas loga
+      // Continua para pagamento mesmo que o lead falhe
     } else {
       log('Lead criado com sucesso no PHP', leadResponse.ref);
     }
@@ -104,7 +106,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const prefBody = {
       items: [
         {
-          title: String(titulo),
+          title: String(diet_title || titulo),
           quantity: 1,
           unit_price: Number(valor),
           currency_id: 'BRL'
@@ -123,7 +125,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         email: customer_email || undefined
       },
       metadata: {
-        diet_title,
+        order_type: 'main_diet',
+        diet_title: diet_title || titulo,
         body_type,
         imc_value,
         imc_label,
