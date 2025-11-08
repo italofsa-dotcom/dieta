@@ -110,7 +110,7 @@
 
         <!-- Botões -->
         <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-          <a id="btnPagamento" href="/pagamento/?produto=receitas200&valor=9.90"
+          <a id="btnPagamento" href="#" 
              class="flex-1 text-center rounded-xl px-5 py-4 bg-[var(--brand)] text-white font-bold text-xl hover:bg-emerald-600 transition">
              Quero minhas 200 receitas por R$ 9,90 ➜
           </a>
@@ -160,11 +160,26 @@
     function $(id){ return document.getElementById(id); }
     $('year').textContent = (new Date()).getFullYear();
 
+    // === Cria nova referência exclusiva para o UPSELL ===
+    const refUpsell = 'ref-upsell-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+    try { localStorage.setItem('mp_external_ref_upsell', refUpsell); } catch(e){}
+
+    // Atualiza link do botão de pagamento
+    const btnPagamento = $('btnPagamento');
+    if (btnPagamento) {
+      const baseUrl = "https://dietapronta.online/pagamento/";
+      const params = new URLSearchParams({
+        ref: refUpsell,
+        produto: "receitas200",
+        valor: "9.90"
+      });
+      btnPagamento.href = baseUrl + "?" + params.toString();
+    }
+
     // Countdown
     let timeLeft = 5 * 60;
     const countdownEl = $('countdown');
     const countdownBox = $('countdownBox');
-    const btnPagamento = $('btnPagamento');
     const timer = setInterval(() => {
       const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
       const sec = String(timeLeft % 60).padStart(2, '0');
@@ -175,7 +190,7 @@
         countdownEl.textContent = "00:00";
         countdownBox.textContent = "⏰ Oferta Expirada!";
         btnPagamento.textContent = "⏰ Oferta Expirada";
-        btnPagamento.classList.add("bg-gray-400", "cursor-not-allowed", "hover:bg-gray-400");
+        btnPagamento.classList.add("bg-gray-400","cursor-not-allowed","hover:bg-gray-400");
         btnPagamento.removeAttribute("href");
       }
       timeLeft--;
