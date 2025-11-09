@@ -85,6 +85,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       phone: customer_whatsapp,
       diet_title: "200 Receitas Saudáveis",
       body_type: "Upsell",
+      amount: Number(valor) || 9.9, // ✅ Envia o valor da compra
       secret: LEAD_TOKEN,
     };
 
