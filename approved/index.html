@@ -126,16 +126,17 @@
   });
   </script>
 
-
- <script>
-(async () => {
-  // Obtém dados gravados no localStorage
-  const nome  = localStorage.getItem('lead_nome') || '';
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
   const phone = localStorage.getItem('lead_whats') || '';
   const dieta = localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
 
-  if (!phone) {
-    console.warn("Telefone não encontrado no localStorage!");
+  console.log("📲 WhatsApp detectado:", phone);
+  console.log("🥗 Tipo de dieta:", dieta);
+
+  // Evita duplicar envio
+  if (!phone || localStorage.getItem('whatsapp_sent') === '1') {
+    console.log("⏩ Envio já feito ou telefone não encontrado.");
     return;
   }
 
@@ -148,13 +149,25 @@
         message: dieta
       })
     });
+
     const data = await res.json();
-    console.log('📤 Envio para WhatsApp:', data);
+    console.log("✅ Resposta do servidor:", data);
+
+    if (data.ok) {
+      localStorage.setItem('whatsapp_sent', '1'); // evita reenviar
+      console.log("✅ Mensagem enviada com sucesso!");
+    } else {
+      console.warn("⚠️ Falha ao enviar WhatsApp:", data);
+    }
   } catch (e) {
-    console.error('Erro ao enviar mensagem para WhatsApp:', e);
+    console.error("❌ Erro ao enviar para WhatsApp:", e);
   }
-})();
+});
 </script>
+
+
+
+  
 
 
   
