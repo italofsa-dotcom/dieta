@@ -125,5 +125,37 @@
     document.getElementById('btnPlano').setAttribute('href', linkZap);
   });
   </script>
+
+
+   <script>
+    (async () => {
+      // Dados do cliente armazenados no localStorage
+      const nome  = localStorage.getItem('lead_nome') || '';
+      const phone = localStorage.getItem('lead_whats') || '';
+      const dieta = localStorage.getItem('quiz_result_diet') || localStorage.getItem('quiz_result_body_name') || 'Dieta Personalizada';
+
+      if (!phone) {
+        console.warn("Telefone não encontrado no localStorage!");
+        return;
+      }
+
+      try {
+        const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: phone,
+            message: dieta
+          })
+        });
+        const data = await res.json();
+        console.log('Resposta do WhatsApp Bot:', data);
+      } catch (e) {
+        console.error('Erro ao enviar mensagem:', e);
+      }
+    })();
+  </script>
+
+  
 </body>
 </html>
