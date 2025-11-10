@@ -139,5 +139,38 @@
     document.getElementById('btnEbook').setAttribute('href', linkZap);
   });
   </script>
+
+
+<script>
+(async () => {
+  // Obtém dados gravados no localStorage
+  const nome  = localStorage.getItem('lead_nome') || '';
+  const phone = localStorage.getItem('lead_whats') || '';
+  const dieta = localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
+
+  if (!phone) {
+    console.warn("Telefone não encontrado no localStorage!");
+    return;
+  }
+
+  try {
+    const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone: phone,
+        message: dieta
+      })
+    });
+    const data = await res.json();
+    console.log('📤 Envio para WhatsApp:', data);
+  } catch (e) {
+    console.error('Erro ao enviar mensagem para WhatsApp:', e);
+  }
+})();
+</script>
+
+  
+  
 </body>
 </html>
