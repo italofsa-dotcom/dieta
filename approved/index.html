@@ -134,11 +134,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   console.log("📲 WhatsApp detectado:", phone);
   console.log("🥗 Tipo de dieta:", dieta);
 
-  // Evita duplicar envio
-  if (!phone || localStorage.getItem('whatsapp_sent') === '1') {
-    console.log("⏩ Envio já feito ou telefone não encontrado.");
-    return;
-  }
+// Evita duplicar envio
+//  if (!phone || localStorage.getItem('whatsapp_sent') === '1') {
+ //   console.log("⏩ Envio já feito ou telefone não encontrado.");
+ //   return;
+ // }
 
   try {
     const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
