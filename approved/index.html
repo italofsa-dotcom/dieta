@@ -15,10 +15,24 @@
     .container{ max-width:980px; }
     .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
     .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
+
+    /* === Destaque de envio === */
     #statusEnvio {
-      font-size: 1.1rem;
-      margin-top: 1rem;
-      font-weight: 600;
+      display: inline-block;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-top: 1.5rem;
+      background: #ecfdf5;
+      color: #047857;
+      border: 2px solid #6ee7b7;
+      border-radius: 1rem;
+      padding: 1rem 1.5rem;
+      animation: pulseText 1s infinite alternate;
+      transition: all .3s ease;
+    }
+    @keyframes pulseText {
+      0% { opacity: 1; box-shadow: 0 0 10px rgba(16,185,129,0.4); }
+      100% { opacity: 0.7; box-shadow: 0 0 20px rgba(16,185,129,0.8); }
     }
   </style>
 </head>
@@ -49,7 +63,7 @@
       </p>
 
       <!-- 🚀 MENSAGEM DE ENVIO AUTOMÁTICO -->
-      <div id="statusEnvio" class="text-emerald-600"></div>
+      <div id="statusEnvio" class="mx-auto"></div>
     </div>
   </section>
 
@@ -143,6 +157,10 @@
       if (count < 0) {
         clearInterval(timer);
         statusDiv.textContent = `✅ Enviado com sucesso para seu WhatsApp: ${phone ? phone.replace(/^55/, '').replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3") : 'número não encontrado'}`;
+        statusDiv.style.animation = "none";
+        statusDiv.style.background = "#d1fae5";
+        statusDiv.style.color = "#065f46";
+        statusDiv.style.boxShadow = "0 0 20px rgba(16,185,129,0.6)";
       }
     }, 1000);
   });
@@ -153,9 +171,6 @@
     const phone = localStorage.getItem('lead_whats') || '';
     const dieta = localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
 
-    console.log("📲 WhatsApp detectado:", phone);
-    console.log("🥗 Tipo de dieta:", dieta);
-
     try {
       const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
         method: 'POST',
@@ -165,13 +180,6 @@
 
       const data = await res.json();
       console.log("✅ Resposta do servidor:", data);
-
-      if (data.ok) {
-        localStorage.setItem('whatsapp_sent', '1');
-        console.log("✅ Mensagem enviada com sucesso!");
-      } else {
-        console.warn("⚠️ Falha ao enviar WhatsApp:", data);
-      }
     } catch (e) {
       console.error("❌ Erro ao enviar para WhatsApp:", e);
     }
