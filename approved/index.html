@@ -188,6 +188,43 @@
   </script>
 
 
+  
+
+  <a id="btnEmail" href="#" class="block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+  Receber meu plano por e-mail
+</a>
+<div id="statusEnvio" class="mt-4 text-center text-slate-700 font-medium"></div>
+
+<script>
+document.getElementById("btnEmail").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const nome = localStorage.getItem('lead_nome') || '';
+  const email = localStorage.getItem('lead_email') || '';
+  const dieta = localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
+  const upsell = localStorage.getItem('upsell_comprado') === '1';
+  const status = document.getElementById('statusEnvio');
+  status.innerHTML = "📤 Enviando seu plano por e-mail...";
+  
+  try {
+    const res = await fetch('https://italomelo.com/server/send_email_plan.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: nome, email, dieta, upsell })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      status.innerHTML = "✅ Plano enviado com sucesso para: <strong>" + email + "</strong>";
+    } else {
+      status.innerHTML = "⚠️ Falha no envio: " + (data.error || 'erro desconhecido');
+    }
+  } catch (err) {
+    console.error(err);
+    status.innerHTML = "❌ Erro de conexão ao enviar o e-mail.";
+  }
+});
+</script>
+
+
 
 
   <script>
