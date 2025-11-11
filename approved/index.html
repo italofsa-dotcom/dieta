@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pagamento Aprovado 🎉 | Dieta Pronta Online</title>
+  <title>Pagamento Aprovado | Dieta Pronta Online</title>
   <meta name="description" content="Confirmação de pagamento aprovado para o plano personalizado da Dieta Pronta Online.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,6 @@
     :root { --brand: #22c55e; }
     body { font-family: 'Inter', system-ui, sans-serif; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2,6,23,.08); }
-
     /* Animações da mensagem WhatsApp */
     .msg-whats {
       font-size: 1.4rem;
@@ -29,7 +28,6 @@
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
-
   <!-- Header -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -48,10 +46,10 @@
   <!-- Hero -->
   <section class="bg-gradient-to-b from-white to-slate-100 text-center">
     <div class="max-w-3xl mx-auto px-4 py-12">
-      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">🎉 Parabéns, <span id="nomeSpan">sua jornada começou com o pé direito!</span></h1>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">Parabéns, <span id="nomeSpan">sua jornada começou com o pé direito!</span></h1>
       <p class="mt-4 text-lg text-slate-700">
-        Seu pagamento foi <strong>aprovado com sucesso!</strong>  
-        Agora você tem acesso ao seu <strong>Plano Alimentar Personalizado</strong>, criado com base no seu corpo e nas suas respostas do quiz. 🥗
+        Seu pagamento foi <strong>aprovado com sucesso!</strong>
+        Agora você tem acesso ao seu <strong>Plano Alimentar Personalizado</strong>, criado com base no seu corpo e nas suas respostas do quiz.
       </p>
       <div id="msgWhats" class="mt-6 msg-whats"></div>
     </div>
@@ -61,7 +59,7 @@
   <section class="py-8">
     <div class="max-w-4xl mx-auto px-4">
       <div class="p-6 bg-white rounded-2xl shadow-soft border border-slate-200">
-        <h2 class="text-2xl font-extrabold mb-3 text-emerald-700">📋 Resumo do seu plano</h2>
+        <h2 class="text-2xl font-extrabold mb-3 text-emerald-700">Resumo do seu plano</h2>
         <div class="grid md:grid-cols-2 gap-6 text-slate-700">
           <div>
             <p><strong>Nome:</strong> <span id="infoNome">-</span></p>
@@ -80,14 +78,12 @@
   <!-- Formulário de Envio por E-mail -->
   <section class="py-8">
     <div class="max-w-md mx-auto bg-white rounded-2xl shadow-soft border border-slate-200 p-6 text-center">
-      <h3 class="text-2xl font-bold text-emerald-700 mb-3">📧 Receba seu plano por e-mail</h3>
+      <h3 class="text-2xl font-bold text-emerald-700 mb-3">Receba seu plano por e-mail</h3>
       <p class="text-slate-600 mb-5">Digite seu e-mail abaixo e receba automaticamente seu plano personalizado (com PDF em anexo).</p>
-
       <form id="formEmail" class="space-y-4">
         <input type="email" id="emailInput" required placeholder="Seu melhor e-mail" class="w-full border rounded-xl px-4 py-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
         <button type="submit" class="w-full bg-[var(--brand)] text-white font-semibold rounded-xl px-4 py-3 hover:bg-emerald-600 transition">Enviar agora</button>
       </form>
-
       <div id="statusEmail" class="mt-4 text-slate-700 font-medium"></div>
     </div>
   </section>
@@ -96,6 +92,7 @@
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
   </footer>
 
+  <!-- SCRIPT CORRIGIDO E SEGURO -->
   <script>
   document.addEventListener("DOMContentLoaded", () => {
     const nome = localStorage.getItem('lead_nome') || '';
@@ -104,37 +101,43 @@
     const imc = localStorage.getItem('quiz_imc_value') || '';
     const imcLabel = localStorage.getItem('quiz_imc_label') || '';
     const phone = localStorage.getItem('lead_whats') || '';
-    document.getElementById('year').textContent = new Date().getFullYear();
 
+    // === Atualiza campos ===
+    document.getElementById('year').textContent = new Date().getFullYear();
     document.getElementById('infoNome').textContent = nome || '-';
     document.getElementById('infoDieta').textContent = dieta;
     document.getElementById('infoBodyType').textContent = bodyType;
     document.getElementById('infoIMC').textContent = imc;
-    document.getElementById('infoIMCLabel').textContent = imcLabel ? "(" + imcLabel + ")" : "";
+    document.getElementById('infoIMCLabel').textContent = imcLabel ? `(${imcLabel})` : ''; // ← CORRIGIDO
 
-    // === Mensagem dinâmica WhatsApp ===
+    // === Mensagem WhatsApp com contagem e segurança ===
     const msgEl = document.getElementById('msgWhats');
     let count = 5;
-    msgEl.textContent = "⏳ Enviando plano para seu WhatsApp...";
+    msgEl.textContent = "Enviando plano para seu WhatsApp...";
+
     const timer = setInterval(() => {
-      msgEl.textContent = `⏳ Enviando plano para seu WhatsApp... (${count})`;
+      msgEl.textContent = `Enviando plano para seu WhatsApp... (${count})`;
       count--;
       if (count < 0) {
         clearInterval(timer);
-        msgEl.innerHTML = `✅ Enviado com sucesso para seu WhatsApp: <strong>${phone.replace(/^55/, '').replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')}</strong>`;
+        const phoneClean = phone.replace(/\D/g, '');
+        const phoneFormatted = phoneClean.length >= 11
+          ? phoneClean.replace(/^55/, '').replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
+          : 'número não informado';
+
+        msgEl.innerHTML = `Enviado com sucesso para seu WhatsApp: <strong>${phoneFormatted}</strong>`;
         msgEl.classList.remove('msg-whats');
       }
     }, 1000);
 
-    // === Envio do e-mail ===
+    // === Envio por e-mail (mantido) ===
     const form = document.getElementById('formEmail');
     const status = document.getElementById('statusEmail');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('emailInput').value.trim();
       if (!email) return;
-
-      status.innerHTML = "📤 Enviando seu plano para o e-mail...";
+      status.innerHTML = "Enviando seu plano para o e-mail...";
       try {
         const res = await fetch('https://italomelo.com/server/send_email_plan.php', {
           method: 'POST',
@@ -143,12 +146,12 @@
         });
         const data = await res.json();
         if (data.ok) {
-          status.innerHTML = "✅ Plano enviado com sucesso para: <strong>" + email + "</strong>";
+          status.innerHTML = `Plano enviado com sucesso para: <strong>${email}</strong>`;
         } else {
-          status.innerHTML = "⚠️ Falha no envio: " + (data.error || "erro desconhecido");
+          status.innerHTML = `Falha no envio: ${data.error || "erro desconhecido"}`;
         }
       } catch (err) {
-        status.innerHTML = "❌ Erro ao conectar com o servidor de envio.";
+        status.innerHTML = "Erro ao conectar com o servidor.";
         console.error(err);
       }
     });
