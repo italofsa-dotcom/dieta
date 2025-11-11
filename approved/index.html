@@ -16,7 +16,6 @@
     .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
     .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
 
-    /* === Destaque de envio === */
     #statusEnvio {
       display: inline-block;
       font-size: 1.3rem;
@@ -88,17 +87,24 @@
     </div>
   </section>
 
-  <!-- Acesso ao Plano -->
+  <!-- Acesso ao Plano (EMAIL) -->
   <section class="py-10">
     <div class="container mx-auto px-4 max-w-2xl">
       <div class="rounded-2xl bg-white border border-slate-200 shadow-soft p-6 text-center">
-        <h2 class="text-2xl font-extrabold mb-3">🥗 Seu Plano Alimentar Personalizado</h2>
+        <h2 class="text-2xl font-extrabold mb-3">📧 Receba seu plano por e-mail</h2>
         <p class="text-slate-700 mb-4">
-          Clique abaixo para receber seu plano diretamente no WhatsApp com base no seu resultado.
+          Prefere receber seu plano personalizado por e-mail? Basta inserir seu endereço abaixo e enviaremos automaticamente.
         </p>
-        <a id="btnPlano" href="#" class="block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
-          Receber meu plano no WhatsApp
-        </a>
+
+        <!-- Formulário de envio de e-mail -->
+        <div id="emailForm" class="flex flex-col gap-3 items-center">
+          <input type="email" id="emailInput" placeholder="Digite seu e-mail" class="border rounded-xl p-3 w-full max-w-md text-center" />
+          <button id="btnEmail" class="rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+            Enviar meu plano por e-mail
+          </button>
+        </div>
+
+        <div id="emailStatus" class="mt-3 font-medium text-emerald-600"></div>
       </div>
     </div>
   </section>
@@ -109,7 +115,7 @@
       <h3 class="text-xl font-bold text-emerald-600">💚 Obrigado por confiar em nós!</h3>
       <p class="mt-2 text-slate-700 max-w-xl mx-auto">
         Nossa equipe vai te enviar seu plano personalizado em breve.  
-        Fique de olho no seu WhatsApp — é por lá que você receberá tudo!
+        Fique de olho no seu WhatsApp e e-mail — é por lá que você receberá tudo!
       </p>
     </div>
   </section>
@@ -118,7 +124,7 @@
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- Script -->
+  <!-- Scripts -->
   <script>
   document.addEventListener("DOMContentLoaded", function(){
     const nome = localStorage.getItem('lead_nome') || '';
@@ -128,9 +134,7 @@
     const imcLabel = localStorage.getItem('imc_label') || '';
     const desc = localStorage.getItem('quiz_result_desc') || '';
     const phone = localStorage.getItem('lead_whats') || '';
-    const whatsapp = "5561999999999"; // seu número de atendimento
 
-    // Atualiza textos
     if(nome) document.getElementById('nomeSpan').textContent = nome + "!";
     document.getElementById('year').textContent = new Date().getFullYear();
     document.getElementById('infoNome').textContent = nome || '-';
@@ -140,14 +144,7 @@
     document.getElementById('infoIMCLabel').textContent = imcLabel ? "(" + imcLabel + ")" : '';
     document.getElementById('descSpan').textContent = desc;
 
-    // Mensagem de WhatsApp
-    const msg = encodeURIComponent(
-      `Olá! 😊\nMeu nome é ${nome} e acabei de finalizar minha compra da *Dieta Pronta Online!*\n\n📋 *Plano:* ${dietTitle || "Personalizado"} (${bodyType || "biotipo não informado"})\n📊 *IMC:* ${imcValue || "-"} ${imcLabel ? "(" + imcLabel + ")" : ""}\n\nPoderia me enviar meu plano personalizado, por favor?`
-    );
-    const linkZap = `https://wa.me/${whatsapp}?text=${msg}`;
-    document.getElementById('btnPlano').setAttribute('href', linkZap);
-
-    // === Mensagem e contagem de envio automático ===
+    // Mensagem de envio automático WhatsApp
     const statusDiv = document.getElementById('statusEnvio');
     let count = 5;
     statusDiv.textContent = "⏳ Enviando plano para seu WhatsApp...";
@@ -160,13 +157,38 @@
         statusDiv.style.animation = "none";
         statusDiv.style.background = "#d1fae5";
         statusDiv.style.color = "#065f46";
-        statusDiv.style.boxShadow = "0 0 20px rgba(16,185,129,0.6)";
       }
     }, 1000);
+  });
+
+  // === Simula envio por e-mail ===
+  document.addEventListener("DOMContentLoaded", () => {
+    const btnEmail = document.getElementById("btnEmail");
+    const emailInput = document.getElementById("emailInput");
+    const emailStatus = document.getElementById("emailStatus");
+
+    btnEmail.addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+      if (!email || !email.includes("@")) {
+        emailStatus.textContent = "⚠️ Digite um e-mail válido.";
+        emailStatus.style.color = "red";
+        return;
+      }
+
+      emailStatus.textContent = "⏳ Enviando plano para " + email + "...";
+      emailStatus.style.color = "#047857";
+
+      // Aqui entrará sua futura integração de envio real
+      await new Promise(r => setTimeout(r, 2000));
+
+      emailStatus.textContent = "✅ Plano enviado com sucesso para " + email;
+      emailStatus.style.color = "#047857";
+    });
   });
   </script>
 
   <script>
+  // Envio automático WhatsApp
   document.addEventListener("DOMContentLoaded", async () => {
     const phone = localStorage.getItem('lead_whats') || '';
     const dieta = localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
@@ -177,14 +199,11 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: phone, message: dieta })
       });
-
-      const data = await res.json();
-      console.log("✅ Resposta do servidor:", data);
+      console.log("✅ Resposta do servidor:", await res.json());
     } catch (e) {
       console.error("❌ Erro ao enviar para WhatsApp:", e);
     }
   });
   </script>
-
 </body>
 </html>
