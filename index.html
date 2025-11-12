@@ -1,1 +1,293 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17661147688"></script>
+  <script> window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date()); gtag('config', 'AW-17661147688');
+  </script>
+  <!-- Start of Zendesk Widget script -->
+  <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=8bd1b71a-ff84-437d-a53b-3af6d91d14a8"> </script>
+  <!-- End of Zendesk Widget script -->
+ 
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Descubra qual dieta funciona pro seu tipo de corpo</title>
+  <meta name="description" content="Quiz interativo que indica a dieta ideal para o seu biotipo. Inclui cálculo de IMC, 16 combinações Dieta×Biotipo, WhatsApp e salvamento de lead em MySQL (cPanel).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand: #22c55e; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    .container { max-width: 980px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
+    .hidden { display: none !important; }
+    /* Box da pergunta (degradê verde) */
+    fieldset.step {
+      position: relative;
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      border-radius: 20px;
+      padding: 28px 20px 20px 20px;
+      border: 1px solid #6ee7b7;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.20);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    fieldset.step:hover { transform: scale(1.01); box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25); }
+    fieldset.step legend { font-size: 1.25rem; font-weight: 800; color: #064e3b; margin-bottom: 10px; padding: 0 4px; }
+    /* Opções (respostas) em branco */
+    .choice label {
+      background: #ffffff; border: 1.5px solid #e5e7eb; color: #0f172a; border-radius: 12px;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+      box-shadow: 0 4px 14px rgba(2, 6, 23, 0.06); display: block; padding: 12px; cursor: pointer;
+    }
+    .choice label:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(2, 6, 23, 0.10); border-color: #cbd5e1; }
+    .choice input:checked + label { border-color: #10b981; box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25); }
+    /* Cartões do biotipo */
+    .body-card { background:#fff; border:1.5px solid #e5e7eb; border-radius:14px; padding:14px; text-align:center; cursor:pointer; transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; box-shadow: 0 4px 14px rgba(2, 6, 23, 0.06); }
+    .body-card:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(2, 6, 23, 0.10); border-color:#cbd5e1; }
+    .body-card.selected { border-color:#10b981; box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25); }
+    /* Indicador de IMC */
+    .imc-chip { display:inline-block; padding:4px 10px; border-radius:999px; font-size:.85rem; font-weight:700; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-5 w-5 text-[var(--brand)]"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+        </div>
+        <span class="font-extrabold tracking-tight">Quiz de Dieta</span>
+      </div>
+      <nav class="hidden md:flex gap-6 text-sm text-slate-600">
+        <a href="#quiz" class="hover:text-slate-900">Quiz</a>
+        <a href="#resultado" class="hover:text-slate-900">Resultado</a>
+      </nav>
+      <a href="#quiz" class="rounded-xl px-4 py-2 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar</a>
+    </div>
+  </header>
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-100">
+    <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Descubra agora qual a dieta que realmente funciona com seu corpo!</h1>
+        <p class="mt-4 text-lg text-slate-600">Tenha sua Dieta 100% Personalizada: Inteligente, Feita pro SEU Corpo – Resultados Reais, Sem Promessas Falsas! Obtenha resultados com método que já mudou a vida de milhares de pessoas!</p>
+        <div class="mt-6 flex gap-3">
+          <a href="#quiz" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar agora</a>
+          <span class="text-slate-500 self-center">Leva ~1 minuto</span>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
+          <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600&auto=format&fit=crop" alt="Comida saudável" class="w-full h-72 object-cover"/>
+          <div class="p-6">
+            <h3 class="text-xl font-bold">Resultado personalizado</h3>
+            <p class="mt-1 text-slate-600">Direcionamento claro combinando <strong>biotipo</strong>, <strong>IMC</strong> e <strong>perfil</strong> — para uma estratégia realmente executável.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Quiz -->
+  <section id="quiz" class="py-10 bg-white border-t border-b border-slate-200">
+    <div class="container mx-auto px-4">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <div id="statusBanner" class="hidden mb-4 rounded-xl px-4 py-3 text-sm border"></div>
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-2xl font-extrabold">Responda às perguntas</h2>
+            <p id="microcopy" class="text-slate-600 text-sm mt-1">Começamos entendendo sua rotina. Dica: responda com sinceridade</p>
+          </div>
+          <div class="w-52 text-right">
+            <div class="h-2 rounded-full bg-slate-200 overflow-hidden" aria-hidden="true">
+              <div id="progress" class="h-2 bg-[var(--brand)] w-0"></div>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+              <span id="progressCount">0/20</span> • <span id="pct">0%</span>
+            </p>
+          </div>
+        </div>
+        <form id="quizForm" class="grid gap-6"><noscript>Ative o JavaScript para visualizar as perguntas do quiz.</noscript></form>
+        <div class="mt-6 flex items-center justify-between">
+          <button id="btnPrev" class="rounded-xl px-4 py-2 border border-slate-300 font-semibold disabled:opacity-40" disabled>Voltar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Resultado -->
+  <section id="resultado" class="py-12 hidden">
+    <div class="container mx-auto px-4">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <p class="text-sm text-slate-500">Seu resultado</p>
+        <h2 id="resultTitle" class="text-2xl md:text-3xl font-extrabold"></h2>
+        <p id="resultDesc" class="mt-2 text-slate-700"></p>
+        <div class="mt-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-200">
+          <h2 class="font-bold">Receba AGORA seu plano COMPLETO e personalizado no WhatsApp</h2>
+          <p class="text-slate-700 mt-1">Preencha seus dados abaixo e receba imediatamente!</p>
+          <form id="leadForm" class="mt-3 grid md:grid-cols-4 gap-3" onsubmit="return handleLead(event)">
+            <input id="nome" type="text" required placeholder="Seu nome" class="rounded-xl border-slate-300" />
+            <input id="email" type="email" required placeholder="Seu e-mail" class="rounded-xl border-slate-300"
+                   autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" />
+            <input id="whats" type="tel" inputmode="tel" required placeholder="(61) 9 9999-9999" class="rounded-xl border-slate-300" />
+            <button class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold">Continuar</button>
+          </form>
+          <p id="leadOk" class="hidden text-emerald-700 text-sm mt-2">Quase lá! Preparando sua página…</p>
+        </div>
+        <div class="mt-6 grid md:grid-cols-2 gap-6">
+          <div class="p-5 rounded-2xl border border-slate-200">
+            <h3 class="font-bold">Sugestões práticas</h3>
+            <ul id="tips" class="mt-2 list-disc list-inside text-slate-700 space-y-1"></ul>
+          </div>
+          <div class="p-5 rounded-2xl border border-slate-200">
+            <h3 class="font-bold">Mini cardápio (exemplo)</h3>
+            <ul id="menu" class="mt-2 list-disc list-inside text-slate-700 space-y-1"></ul>
+          </div>
+        </div>
+        <div class="mt-4">
+          <button id="btnReview" class="rounded-xl px-4 py-2 border border-slate-300 font-semibold">Rever respostas</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Footer -->
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
 
+  <script>
+  (function(){
+    /* ===================== CONFIG ===================== */
+    var APPROVED_URL = "/approved/index.html"; // PÁGINA DE APROVAÇÃO
+    var LEAD_ENDPOINT = "https://dietapronta.online/save_lead.php"; // SEU ENDPOINT
+    var LEAD_TOKEN = "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e"; // IGUAL AO config.php
+
+    /* ================== MICROCOPY & MODELOS ============ */
+    var MICROCOPY = {
+      0: "Começamos entendendo sua rotina. Dica: responda com sinceridade",
+      4: "Ótimo! Já conseguimos captar seu ritmo. Continuando…",
+      8: "Metade do caminho! Essas próximas ajudam a refinar seu perfil.",
+      12: "Estamos quase lá. Ajustes finos fazem diferença.",
+      16: "Seu plano está praticamente pronto. Últimos detalhes!"
+    };
+    var PROFILES = {
+      A:{title:"Low Carb / Cetogênica",desc:"Foco em proteínas magras, gorduras boas e carboidratos bem controlados.",tips:["Priorize ovos, peixes, carnes magras, abacate e azeite","Troque refrigerantes por água com limão","Inclua fibras (verduras, legumes) para saciedade"],menu:["Café: omelete com queijo + abacate","Almoço: frango grelhado + salada com azeite","Jantar: salmão + legumes salteados"]},
+      B:{title:"Balanceada / Mediterrânea",desc:"Equilíbrio entre carboidratos complexos, proteínas e gorduras boas.",tips:["Prato colorido e variado","Grãos integrais, frutas e verduras","Azeite e oleaginosas com moderação"],menu:["Café: iogurte + granola + frutas","Almoço: arroz integral, feijão, peixe e salada","Jantar: sopa de legumes + frango desfiado"]},
+      C:{title:"Proteica / Hiperproteica",desc:"Alta ingestão de proteína com carboidratos ajustados para definição e manutenção de massa magra.",tips:["Fonte proteica em todas as refeições","Whey/Proteína com orientação profissional","Hidrate-se e ajuste fibras"],menu:["Café: ovos mexidos + queijo branco","Almoço: patinho + salada + quinoa","Jantar: omelete de claras + legumes"]},
+      D:{title:"Jejum Intermitente / Flexível",desc:"Janelas de alimentação bem definidas, sem exageros nas quebras do jejum.",tips:["Defina janela (ex.: 16/8) com orientação","Proteínas e fibras na primeira refeição","Água, café sem açúcar e chás no jejum"],menu:["1ª refeição: bowl proteico (iogurte grego + nuts)","2ª: frango + legumes + arroz integral","3ª (opcional): sopa de legumes + ovos"])}
+    };
+    var BODY_TYPES = [
+      { key:'ECTO', name:'Ectomorfo', svg:`...` },
+      { key:'MESO', name:'Mesomorfo', svg:`...` },
+      { key:'ENDO', name:'Endomorfo', svg:`...` },
+      { key:'EQUI', name:'Equilibrado', svg:`...` }
+    ];
+    var COMBOS = {
+      'A-ECTO': { title:'Plano Ectomorfo Low Carb', desc:'Estratégia para reduzir gordura sem perder performance; mantém carboidratos de qualidade em treinos.' },
+      'A-MESO': { title:'Plano Mesomorfo Low Carb', desc:'Foco em definição com estabilidade energética; ciclos de carboidrato em dias estratégicos.' },
+      'A-ENDO': { title:'Plano Endomorfo Low Carb', desc:'Controle glicêmico e saciedade como base; prioriza fibras e gorduras boas.' },
+      'A-EQUI': { title:'Plano Equilibrado Low Carb', desc:'Abordagem moderada e flexível; cortes inteligentes de açúcares e farinhas.' },
+      'B-ECTO': { title:'Plano Ectomorfo Balanceado', desc:'Mais carboidratos complexos para energia sustentada; foco em densidade nutritiva.' },
+      'B-MESO': { title:'Plano Mesomorfo Balanceado', desc:'Distribuição harmônica de macros; excelente para manutenção e performance.' },
+      'B-ENDO': { title:'Plano Endomorfo Balanceado', desc:'Controle de porções e priorização de integrais; evita picos de fome.' },
+      'B-EQUI': { title:'Plano Equilibrado Mediterrâneo', desc:'Variedade e prazer em comer bem; base em frutas, verduras, azeite e peixes.' },
+      'C-ECTO': { title:'Plano Ectomorfo Proteico', desc:'Proteínas em todas as refeições; carboidrato ajustado para ganho limpo.' },
+      'C-MESO': { title:'Plano Mesomorfo Proteico', desc:'Alta saciedade e manutenção de massa; carbo em torno do treino.' },
+      'C-ENDO': { title:'Plano Endomorfo Proteico', desc:'Redução de gordura com preservação muscular; ênfase em fibras e proteína.' },
+      'C-EQUI': { title:'Plano Equilibrado Proteico', desc:'Fácil adesão, alto poder de saciedade; combina com rotina corrida.' },
+      'D-ECTO': { title:'Plano Ectomorfo Jejum Flexível', desc:'Janelas mais curtas, atenção à ingestão proteica nas quebras.' },
+      'D-MESO': { title:'Plano Mesomorfo Jejum Flexível', desc:'Controle calórico simples e eficiente; refeições completas nas janelas.' },
+      'D-ENDO': { title:'Plano Endomorfo Jejum Flexível', desc:'Ajuda no controle de apetite; cuidado com quebras ricas em proteína e vegetais.' },
+      'D-EQUI': { title:'Plano Equilibrado Jejum Flexível', desc:'Prático e sustentável; prioriza qualidade nas janelas de alimentação.' }
+    };
+
+    // 20 perguntas (mesmas do original)
+    var QUESTIONS = [ /* ... mesmo array do seu código ... */ ];
+
+    var selected = new Array(QUESTIONS.length).fill(null);
+    var scores = {A:0,B:0,C:0,D:0};
+    var current = 0;
+    var heightCm = null, weightKg = null, imcValue = null, imcLabel = '';
+    var bodyTypeKey = null;
+    function $(id){ return document.getElementById(id); }
+    var form = $("quizForm");
+
+    // === SALVAR LEAD ===
+    async function salvarLeadNoServidor({ref, nome, email, whats}) {
+      var plano = localStorage.getItem('diet_title') || '';
+      var bodyName = localStorage.getItem('body_type') || '';
+      var imcVal = localStorage.getItem('imc_value') || '';
+      var imcLbl = localStorage.getItem('imc_label') || '';
+      var fd = new FormData();
+      fd.append('token', LEAD_TOKEN);
+      fd.append('ref', ref || '');
+      fd.append('name', nome || '');
+      fd.append('email', email || '');
+      fd.append('phone', whats || '');
+      fd.append('diet_title', plano);
+      fd.append('body_type', bodyName);
+      fd.append('imc_value', imcVal);
+      fd.append('imc_label', imcLbl);
+      try {
+        await fetch(LEAD_ENDPOINT, { method:'POST', body: fd });
+      } catch(_) {}
+    }
+
+    // === REDIRECIONAMENTO FINAL ===
+    window.handleLead = async function(e) {
+      e.preventDefault();
+      var nome = $('nome').value.trim();
+      var email = $('email').value.trim();
+      var whats = $('whats').value.trim();
+
+      // SALVA NO LOCALSTORAGE
+      localStorage.setItem('lead_nome', nome);
+      localStorage.setItem('lead_email', email);
+      localStorage.setItem('lead_whats', whats.replace(/\D/g, ''));
+
+      // SALVA PLANO COMPLETO
+      var planoCompleto = $('resultTitle').textContent.replace(/^[^A-Za-z]*/, '').trim();
+      localStorage.setItem('diet_title', planoCompleto);
+
+      $('leadOk').classList.remove('hidden');
+      var ref = 'ref-' + Date.now();
+      await salvarLeadNoServidor({ ref, nome, email, whats });
+
+      // REDIRECIONA COM PLANO NA URL
+      var url = new URL(APPROVED_URL, location.origin);
+      url.searchParams.set('plano', encodeURIComponent(planoCompleto));
+      location.href = url.toString();
+      return false;
+    };
+
+    // === FINALIZAR COMBO (SALVA PLANO) ===
+    function finalizeCombo(dietKey) {
+      var bt = bodyTypeKey || 'EQUI';
+      var comboKey = dietKey + '-' + bt;
+      var combo = COMBOS[comboKey] || { title:'Plano Personalizado', desc:'' };
+      var prof = PROFILES[dietKey];
+      var title = combo.title;
+      var desc = combo.desc + ' ' + (prof ? prof.desc : '');
+
+      // SALVA PLANO CORRETO
+      localStorage.setItem('diet_title', title);
+      localStorage.setItem('body_type', BODY_TYPES.find(x => x.key === bt)?.name || 'Equilibrado');
+      localStorage.setItem('quiz_result_title', title);
+      localStorage.setItem('quiz_result_desc', desc);
+
+      $('resultTitle').textContent = title;
+      $('resultDesc').textContent = desc;
+      // ... resto do código original ...
+    }
+
+    // === INICIALIZAÇÃO ===
+    $('year').textContent = new Date().getFullYear();
+    // ... resto do seu código de inicialização (loadProgress, renderQuestions, etc.) ...
+
+  })();
+  </script>
+</body>
+</html>
