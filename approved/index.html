@@ -11,9 +11,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root { --brand: #22c55e; }
-    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans',sans-serif; }
-    .container{ max-width:980px; }
-    .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    .container { max-width: 980px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, .08); }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: .8rem; }
     #statusEnvio {
       display: inline-block;
       font-size: 1.3rem;
@@ -34,6 +35,7 @@
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
+
   <!-- Header -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -57,7 +59,8 @@
         Seu pagamento foi <strong>aprovado com sucesso!</strong>
         Agora você tem acesso ao seu <strong>Plano Alimentar Personalizado</strong>, criado com base no seu corpo e nas suas respostas do quiz.
       </p>
-      <div id="statusEnvio" class="mx-auto"></div>
+      <!-- MENSAGEM DE ENVIO AUTOMÁTICO -->
+      <div id="statusEnvio" class="mx-auto">Enviando plano para seu WhatsApp...</div>
     </div>
   </section>
 
@@ -101,11 +104,12 @@
     </div>
   </section>
 
+  <!-- Agradecimento -->
   <section class="py-10 text-center">
     <div class="container mx-auto px-4">
       <h3 class="text-xl font-bold text-emerald-600">Obrigado por confiar em nós!</h3>
       <p class="mt-2 text-slate-700 max-w-xl mx-auto">
-        Nosso time já está enviando seu plano por WhatsApp e e-mail. Fique de olho!
+        Fique de olho no seu WhatsApp e e-mail — é por lá que você receberá tudo!
       </p>
     </div>
   </section>
@@ -114,145 +118,114 @@
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- Scripts -->
+  <!-- SCRIPT PRINCIPAL -->
   <script>
-  // === FUNÇÃO: PEGA PARÂMETRO DA URL ===
-  function getUrlParam(name) {
-    return new URLSearchParams(window.location.search).get(name);
-  }
-
   document.addEventListener("DOMContentLoaded", function () {
-    // === 1. PEGA PLANO DA URL (PRIORIDADE MÁXIMA) ===
-    let plano = getUrlParam('plano') || getUrlParam('dieta');
-
-    // === 2. SE NÃO TEM NA URL, TENTA LOCALSTORAGE ===
-    if (!plano) {
-      plano = localStorage.getItem('diet_title') ||
-              localStorage.getItem('quiz_result_title') ||
-              localStorage.getItem('plano_selecionado') ||
-              'Plano Ectomorfo Low Carb';
-    }
-
-    // === 3. OUTROS DADOS DO LOCALSTORAGE ===
+    // === CARREGA DADOS DO LOCALSTORAGE ===
     const nome = localStorage.getItem('lead_nome') || '';
-    const bodyType = localStorage.getItem('body_type') || localStorage.getItem('quiz_body_type') || '';
+    const dietTitle = localStorage.getItem('diet_title') || 'Dieta Personalizada';
+    const bodyType = localStorage.getItem('body_type') || '---';
     const imcValue = localStorage.getItem('imc_value') || '';
     const imcLabel = localStorage.getItem('imc_label') || '';
     const desc = localStorage.getItem('quiz_result_desc') || '';
-    const phone = localStorage.getItem('lead_whats') || '';
-    const email = localStorage.getItem('lead_email') || '';
+    const rawPhone = localStorage.getItem('lead_whats') || '';
 
-    // === 4. PREENCHE CAMPOS NA TELA ===
+    // === PREENCHE CAMPOS ===
     if (nome) document.getElementById('nomeSpan').textContent = nome + "!";
     document.getElementById('year').textContent = new Date().getFullYear();
     document.getElementById('infoNome').textContent = nome || '-';
-    document.getElementById('infoDieta').textContent = plano;
-    document.getElementById('infoBodyType').textContent = bodyType || '---';
+    document.getElementById('infoDieta').textContent = dietTitle;
+    document.getElementById('infoBodyType').textContent = bodyType;
     document.getElementById('infoIMC').textContent = imcValue || '---';
     document.getElementById('infoIMCLabel').textContent = imcLabel ? `(${imcLabel})` : '';
     document.getElementById('descSpan').textContent = desc;
 
-    // === 5. DEBUG NO CONSOLE ===
-    console.log("=== DEBUG FINAL ===");
-    console.log("PLANO ENVIADO:", plano);
-    console.log("PHONE:", phone);
-    console.log("URL:", window.location.href);
-    console.log("==================");
+    // === LIMPA E VALIDA TELEFONE ===
+    const cleanPhone = rawPhone.replace(/\D/g, ''); // Remove tudo que não for número
+    const statusDiv = document.getElementById('statusEnvio');
 
-    // === 6. ENVIO AUTOMÁTICO WHATSAPP ===
-    if (phone && plano) {
-      const statusDiv = document.getElementById('statusEnvio');
-      let count = 5;
-      statusDiv.innerHTML = "Enviando seu plano por WhatsApp...";
-      const timer = setInterval(async () => {
-        statusDiv.innerHTML = `Enviando... ${count}`;
-        count--;
-        if (count < 0) {
-          clearInterval(timer);
-          try {
-          // Dentro do handleLead (substitua o payload)
-const formattedPhone = '55' + phone.replace(/\D/g, '');  // Seu código atual
-const payload = {
-  phone: '+' + formattedPhone,  // FIX: Adiciona o '+'
-  dieta: plano,
-  tipo: "dieta+receitas"
-};
-
-            console.log("ENVIANDO WHATSAPP:", payload);
-
-            const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-            console.log("RESPOSTA WHATSAPP:", data);
-
-            if (data.ok && !data.skip) {
-              statusDiv.innerHTML = `Enviado com sucesso!`;
-              statusDiv.style.color = "#065f46";
-            } else {
-              statusDiv.innerHTML = `Falha: ${data.msg || data.error || 'erro'}`;
-              statusDiv.style.color = "red";
-            }
-          } catch (e) {
-            console.error("ERRO WHATSAPP:", e);
-            statusDiv.innerHTML = "Erro de conexão.";
-            statusDiv.style.color = "red";
-          }
-          statusDiv.style.animation = "none";
-          statusDiv.style.background = "#d1fae5";
-        }
-      }, 1000);
-    } else {
-      document.getElementById('statusEnvio').innerHTML = "WhatsApp ou plano não configurado.";
-    }
-  });
-
-  // === ENVIO DE E-MAIL (BOTÃO) ===
-  document.getElementById("btnEmail").addEventListener("click", async (e) => {
-    e.preventDefault();
-    const emailInput = document.getElementById("emailInput");
-    const emailStatus = document.getElementById("emailStatus");
-    const email = emailInput.value.trim();
-
-    // Pega plano da URL ou localStorage
-    let plano = getUrlParam('plano') || getUrlParam('dieta');
-    if (!plano) {
-      plano = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || 'Plano Ectomorfo Low Carb';
-    }
-
-    if (!email || !email.includes("@")) {
-      emailStatus.textContent = "Digite um e-mail válido.";
-      emailStatus.style.color = "red";
+    if (cleanPhone.length !== 11 || !/^\d{11}$/.test(cleanPhone)) {
+      statusDiv.innerHTML = "Número inválido. Verifique no quiz.";
+      statusDiv.style.background = "#fee2e2";
+      statusDiv.style.color = "#991b1b";
       return;
     }
 
-    emailStatus.textContent = "Enviando...";
-    emailStatus.style.color = "#047857";
+    // === ENVIO AUTOMÁTICO PARA WHATSAPP ===
+    (async () => {
+      let count = 5;
+      const timer = setInterval(() => {
+        statusDiv.textContent = `Enviando plano para seu WhatsApp... ${count}`;
+        count--;
+        if (count < 0) clearInterval(timer);
+      }, 1000);
+
+      try {
+        const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phone: cleanPhone,           // 11 dígitos: 61999165507
+            dieta: dietTitle,
+            tipo: "dieta+receitas"
+          })
+        });
+
+        const data = await res.json();
+        console.log("RESPOSTA WHATSAPP:", data);
+
+        clearInterval(timer);
+        if (data.ok && data.sent) {
+          const formatted = `(${cleanPhone.substr(0,2)}) ${cleanPhone.substr(2,5)}-${cleanPhone.substr(7)}`;
+          statusDiv.innerHTML = `Enviado com sucesso para WhatsApp: ${formatted}`;
+          statusDiv.style.background = "#d1fae5";
+          statusDiv.style.color = "#065f46";
+          statusDiv.style.animation = "none";
+        } else {
+          statusDiv.innerHTML = `Erro: ${data.error || 'Falha no envio'}`;
+          statusDiv.style.background = "#fee2e2";
+          statusDiv.style.color = "#991b1b";
+        }
+      } catch (err) {
+        console.error("Erro de rede:", err);
+        clearInterval(timer);
+        statusDiv.innerHTML = "Erro de conexão. Tente novamente.";
+        statusDiv.style.background = "#fee2e2";
+        statusDiv.style.color = "#991b1b";
+      }
+    })();
+  });
+
+  // === ENVIO POR E-MAIL ===
+  document.getElementById("btnEmail").addEventListener("click", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("emailInput").value.trim();
+    const status = document.getElementById("emailStatus");
+    if (!email || !email.includes("@")) {
+      status.textContent = "Digite um e-mail válido.";
+      status.style.color = "red";
+      return;
+    }
+    status.textContent = "Enviando...";
+    status.style.color = "#047857";
 
     try {
-      const payload = { email, dieta: plano, tipo: "dieta+receitas" };
-      console.log("ENVIANDO E-MAIL:", payload);
-
       const res = await fetch('https://italomelo.com/server/send_email_plan.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          name: localStorage.getItem('lead_nome') || '',
+          email: email,
+          dieta: localStorage.getItem('diet_title') || 'Dieta Personalizada',
+          upsell: localStorage.getItem('upsell_comprado') === '1'
+        })
       });
       const data = await res.json();
-      console.log("RESPOSTA E-MAIL:", data);
-
-      if (data.ok) {
-        emailStatus.innerHTML = `Enviado com sucesso para: <strong>${email}</strong>`;
-      } else {
-        emailStatus.innerHTML = `Falha: ${data.error || 'erro desconhecido'}`;
-        emailStatus.style.color = "red";
-      }
-    } catch (e) {
-      console.error("ERRO E-MAIL:", e);
-      emailStatus.textContent = "Erro de conexão.";
-      emailStatus.style.color = "red";
+      status.textContent = data.ok ? `Enviado com sucesso para ${email}` : `Erro: ${data.error}`;
+      status.style.color = data.ok ? "#047857" : "red";
+    } catch (err) {
+      status.textContent = "Erro de conexão.";
+      status.style.color = "red";
     }
   });
   </script>
