@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pagamento Aprovado | Dieta Pronta Online</title>
+  <title>Pagamento Aprovado 🎉 | Dieta Pronta Online</title>
   <meta name="description" content="Confirmação de pagamento aprovado para o plano personalizado da Dieta Pronta Online.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +54,7 @@
   <section class="py-10">
     <div class="container mx-auto px-4">
       <div class="p-6 bg-white rounded-2xl shadow-soft border border-slate-200">
-        <h2 class="text-2xl font-extrabold mb-3 text-emerald-700">Resumo do seu plano</h2>
+        <h2 class="text-2xl font-extrabold mb-3 text-emerald-700">📋 Resumo do seu plano</h2>
         <div class="grid md:grid-cols-2 gap-6 text-slate-700">
           <div>
             <p><strong>Nome:</strong> <span id="infoNome">-</span></p>
@@ -74,10 +74,10 @@
   <!-- Hero -->
   <section class="bg-gradient-to-b from-white to-slate-100 text-center">
     <div class="container mx-auto px-4 py-14">
-      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">Parabéns, <span id="nomeSpan">sua jornada começou com o pé direito!</span></h1>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">🎉 Parabéns, <span id="nomeSpan">sua jornada começou com o pé direito!</span></h1>
       <p class="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
         Seu pagamento foi <strong>aprovado com sucesso!</strong>
-        Agora você tem acesso ao seu <strong>Plano Alimentar Personalizado</strong>, criado com base no seu corpo e nas suas respostas do quiz.
+        Agora você tem acesso ao seu <strong>Plano Alimentar Personalizado</strong>, criado com base no seu corpo e nas suas respostas do quiz. 🥗
       </p>
       <!-- MENSAGEM DE ENVIO AUTOMÁTICO -->
       <div id="statusEnvio" class="mx-auto"></div>
@@ -88,7 +88,7 @@
   <section class="py-10">
     <div class="container mx-auto px-4 max-w-2xl">
       <div class="rounded-2xl bg-white border border-slate-200 shadow-soft p-6 text-center">
-        <h2 class="text-2xl font-extrabold mb-3">Receba seu plano por e-mail</h2>
+        <h2 class="text-2xl font-extrabold mb-3">📧 Receba seu plano por e-mail</h2>
         <p class="text-slate-700 mb-4">
           Prefere receber seu plano personalizado por e-mail? Basta inserir seu endereço abaixo e enviaremos automaticamente.
         </p>
@@ -107,9 +107,10 @@
   <!-- Agradecimento -->
   <section class="py-10 text-center">
     <div class="container mx-auto px-4">
-      <h3 class="text-xl font-bold text-emerald-600">Obrigado por confiar em nós!</h3>
+      <h3 class="text-xl font-bold text-emerald-600">💚 Obrigado por confiar em nós!</h3>
       <p class="mt-2 text-slate-700 max-w-xl mx-auto">
-        Nosso time já está enviando seu plano por WhatsApp e e-mail. Fique de olho!
+        Nossa equipe vai te enviar seu plano personalizado em breve.
+        Fique de olho no seu WhatsApp e e-mail — é por lá que você receberá tudo!
       </p>
     </div>
   </section>
@@ -121,9 +122,9 @@
   <!-- Scripts -->
   <script>
   document.addEventListener("DOMContentLoaded", function(){
-    // === CARREGA DADOS DO LOCALSTORAGE ===
+    // === CARREGA DADOS DO LOCALSTORAGE (COM DEBUG) ===
     const nome = localStorage.getItem('lead_nome') || '';
-    const dietTitle = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
+    let dietTitle = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
     const bodyType = localStorage.getItem('body_type') || localStorage.getItem('quiz_body_type') || '';
     const imcValue = localStorage.getItem('imc_value') || '';
     const imcLabel = localStorage.getItem('imc_label') || '';
@@ -131,93 +132,130 @@
     const phone = localStorage.getItem('lead_whats') || '';
     const email = localStorage.getItem('lead_email') || '';
 
+    // === DEBUG NO CONSOLE ===
+    console.log("=== DEBUG LOCALSTORAGE ===");
+    console.log("diet_title:", localStorage.getItem('diet_title'));
+    console.log("quiz_result_title:", localStorage.getItem('quiz_result_title'));
+    console.log("body_type:", bodyType);
+    console.log("phone:", phone);
+    console.log("========================");
+
+    // === FORÇA ATUALIZAÇÃO DA DIETA (SE VAZIA, TENTA OUTRAS CHAVES) ===
+    if (!dietTitle || dietTitle === 'Dieta Personalizada') {
+      dietTitle = localStorage.getItem('plano_selecionado') || localStorage.getItem('result_plano') || 'Plano Ectomorfo Low Carb'; // Fallback
+      localStorage.setItem('quiz_result_title', dietTitle); // Salva para próxima vez
+    }
+
     // === PREENCHE CAMPOS NA TELA ===
     if(nome) document.getElementById('nomeSpan').textContent = nome + "!";
     document.getElementById('year').textContent = new Date().getFullYear();
     document.getElementById('infoNome').textContent = nome || '-';
-    document.getElementById('infoDieta').textContent = dietTitle;
+    document.getElementById('infoDieta').textContent = dietTitle; // ← AQUI FICA CORRETO
     document.getElementById('infoBodyType').textContent = bodyType || '---';
     document.getElementById('infoIMC').textContent = imcValue || '---';
     document.getElementById('infoIMCLabel').textContent = imcLabel ? "(" + imcLabel + ")" : '';
     document.getElementById('descSpan').textContent = desc;
 
-    // === ENVIO AUTOMÁTICO PARA WHATSAPP ===
+    // === ENVIO AUTOMÁTICO PARA WHATSAPP (COM FORMATAÇÃO E DEBUG) ===
     if (phone) {
       const statusDiv = document.getElementById('statusEnvio');
       let count = 5;
-      statusDiv.textContent = "Enviando plano para seu WhatsApp...";
+      statusDiv.textContent = "⏳ Enviando plano para seu WhatsApp...";
       const timer = setInterval(async () => {
-        statusDiv.textContent = `Enviando plano para seu WhatsApp... ${count}`;
+        statusDiv.textContent = `⏳ Enviando plano para seu WhatsApp... ${count}`;
         count--;
         if (count < 0) {
           clearInterval(timer);
           try {
+            // Formata phone: remove não-dígitos + adiciona 55
+            const formattedPhone = '55' + phone.replace(/\D/g, '');
+
             const payload = {
-              phone: phone,
-              dieta: dietTitle,
-              tipo: "dieta+receitas"
+              phone: formattedPhone,  // ← CORRIGIDO: phone formatado
+              dieta: dietTitle,  // ← Plano correto
+              tipo: "dieta+receitas"  // ← Adicionado para receitas
             };
+
+            console.log("=== DEBUG WHATSAPP PAYLOAD ===", payload);
+
             const res = await fetch('https://dietapronta.online/whatsapp-bot.php', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload)
             });
             const data = await res.json();
-            if (data.sent || data.ok) {
-              statusDiv.innerHTML = `Enviado com sucesso para seu WhatsApp: ${phone.replace(/^55/, '').replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3")}`;
+            console.log("=== RESPOSTA WHATSAPP ===", data);
+
+            if (data.ok && !data.skip) {
+              statusDiv.innerHTML = `✅ Enviado com sucesso para seu WhatsApp: ${formattedPhone.replace(/^55/, '').replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3")}`;
             } else {
-              statusDiv.innerHTML = `Falha no WhatsApp: ${data.msg || 'erro'}`;
+              statusDiv.innerHTML = `⚠️ Falha no WhatsApp: ${data.msg || data.error || 'erro desconhecido'}`;
+              statusDiv.style.color = "red";
             }
           } catch (e) {
-            statusDiv.innerHTML = "Erro ao conectar com o WhatsApp.";
+            console.error("ERRO WHATSAPP:", e);
+            statusDiv.innerHTML = "❌ Erro de conexão ao enviar para WhatsApp.";
+            statusDiv.style.color = "red";
           }
           statusDiv.style.animation = "none";
           statusDiv.style.background = "#d1fae5";
           statusDiv.style.color = "#065f46";
         }
       }, 1000);
+    } else {
+      document.getElementById('statusEnvio').textContent = "⚠️ WhatsApp não configurado.";
     }
   });
 
   // === ENVIO DE E-MAIL (BOTÃO) ===
-  document.getElementById("btnEmail").addEventListener("click", async (e) => {
-    e.preventDefault();
+  document.addEventListener("DOMContentLoaded", () => {
+    const btnEmail = document.getElementById("btnEmail");
     const emailInput = document.getElementById("emailInput");
     const emailStatus = document.getElementById("emailStatus");
-    const email = emailInput.value.trim();
     const dietTitle = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
 
-    if (!email || !email.includes("@")) {
-      emailStatus.textContent = "Digite um e-mail válido.";
-      emailStatus.style.color = "red";
-      return;
-    }
+    btnEmail.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
 
-    emailStatus.textContent = "Enviando plano para " + email + "...";
-    emailStatus.style.color = "#047857";
+      if (!email || !email.includes("@")) {
+        emailStatus.textContent = "⚠️ Digite um e-mail válido.";
+        emailStatus.style.color = "red";
+        return;
+      }
 
-    try {
-      const payload = {
-        email: email,
-        dieta: dietTitle,
-        tipo: "dieta+receitas"
-      };
-      const res = await fetch('https://dietapronta.online/send_email_plan.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      if (data.ok) {
-        emailStatus.innerHTML = "Plano enviado com sucesso para: <strong>" + email + "</strong>";
-      } else {
-        emailStatus.innerHTML = "Falha no envio: " + (data.error || 'erro desconhecido');
+      emailStatus.textContent = "⏳ Enviando plano para " + email + "...";
+      emailStatus.style.color = "#047857";
+
+      try {
+        const payload = {
+          email: email,  // ← Usuário digita
+          dieta: dietTitle,  // ← Plano correto do localStorage
+          tipo: "dieta+receitas"
+        };
+
+        console.log("=== DEBUG E-MAIL PAYLOAD ===", payload);
+
+        const res = await fetch('https://dietapronta.online/send_email_plan.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        console.log("=== RESPOSTA E-MAIL ===", data);
+
+        if (data.ok) {
+          emailStatus.innerHTML = "✅ Plano enviado com sucesso para: <strong>" + email + "</strong>";
+        } else {
+          emailStatus.innerHTML = "⚠️ Falha no envio: " + (data.error || 'erro desconhecido');
+          emailStatus.style.color = "red";
+        }
+      } catch (err) {
+        console.error("ERRO E-MAIL:", err);
+        emailStatus.textContent = "❌ Erro de conexão ao enviar o e-mail.";
         emailStatus.style.color = "red";
       }
-    } catch (err) {
-      emailStatus.textContent = "Erro de conexão ao enviar o e-mail.";
-      emailStatus.style.color = "red";
-    }
+    });
   });
   </script>
 </body>
