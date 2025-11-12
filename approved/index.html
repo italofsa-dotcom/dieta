@@ -48,12 +48,24 @@
       <div class="text-sm text-slate-500 hidden md:block">Pagamento confirmado</div>
     </div>
   </header>
- 
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-100 text-center">
+    <div class="container mx-auto px-4 py-14">
+      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">Parabéns, <span id="nomeSpan">sua jornada começou com o pé direito!</span></h1>
+      <p class="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
+        Seu pagamento foi <strong>aprovado com sucesso!</strong>
+        Agora você tem acesso ao seu <strong>Plano Alimentar Personalizado</strong>, criado com base no seu corpo e nas suas respostas do quiz.
+      </p>
+      <div id="statusEnvio" class="mx-auto"></div>
+    </div>
+  </section>
+
   <!-- Resumo do Plano -->
   <section class="py-10">
     <div class="container mx-auto px-4">
       <div class="p-6 bg-white rounded-2xl shadow-soft border border-slate-200">
-        <h2 class="text-2xl font-extrabold mb-3 text-emerald-700">Resumo do seu道德</h2>
+        <h2 class="text-2xl font-extrabold mb-3 text-emerald-700">Resumo do seu plano</h2>
         <div class="grid md:grid-cols-2 gap-6 text-slate-700">
           <div>
             <p><strong>Nome:</strong> <span id="infoNome">-</span></p>
@@ -67,18 +79,6 @@
         </div>
         <div id="descSpan" class="mt-4 text-slate-600 text-sm italic"></div>
       </div>
-    </div>
-  </section>
- 
-  <!-- Hero -->
-  <section class="bg-gradient-to-b from-white to-slate-100 text-center">
-    <div class="container mx-auto px-4 py-14">
-      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">Parabéns, <span id="nomeSpan">sua jornada começou com o pé direito!</span></h1>
-      <p class="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
-        Seu pagamento foi <strong>aprovado com sucesso!</strong>
-        Agora você tem acesso ao seu <strong>Plano Alimentar Personalizado</strong>, criado com base no seu corpo e nas suas respostas do quiz.
-      </p>
-      <div id="statusEnvio" class="mx-auto"></div>
     </div>
   </section>
 
@@ -100,7 +100,7 @@
       </div>
     </div>
   </section>
- 
+
   <section class="py-10 text-center">
     <div class="container mx-auto px-4">
       <h3 class="text-xl font-bold text-emerald-600">Obrigado por confiar em nós!</h3>
@@ -122,10 +122,10 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    // === 1. PEGA PLANO DA URL (PRIORIDADE) ===
+    // === 1. PEGA PLANO DA URL (PRIORIDADE MÁXIMA) ===
     let plano = getUrlParam('plano') || getUrlParam('dieta');
 
-    // === 2. SE NÃO TEM, TENTA LOCALSTORAGE ===
+    // === 2. SE NÃO TEM NA URL, TENTA LOCALSTORAGE ===
     if (!plano) {
       plano = localStorage.getItem('diet_title') ||
               localStorage.getItem('quiz_result_title') ||
@@ -133,7 +133,7 @@
               'Plano Ectomorfo Low Carb';
     }
 
-    // === 3. OUTROS DADOS ===
+    // === 3. OUTROS DADOS DO LOCALSTORAGE ===
     const nome = localStorage.getItem('lead_nome') || '';
     const bodyType = localStorage.getItem('body_type') || localStorage.getItem('quiz_body_type') || '';
     const imcValue = localStorage.getItem('imc_value') || '';
@@ -142,7 +142,7 @@
     const phone = localStorage.getItem('lead_whats') || '';
     const email = localStorage.getItem('lead_email') || '';
 
-    // === 4. PREENCHE TELA ===
+    // === 4. PREENCHE CAMPOS NA TELA ===
     if (nome) document.getElementById('nomeSpan').textContent = nome + "!";
     document.getElementById('year').textContent = new Date().getFullYear();
     document.getElementById('infoNome').textContent = nome || '-';
@@ -153,9 +153,11 @@
     document.getElementById('descSpan').textContent = desc;
 
     // === 5. DEBUG NO CONSOLE ===
+    console.log("=== DEBUG FINAL ===");
     console.log("PLANO ENVIADO:", plano);
     console.log("PHONE:", phone);
     console.log("URL:", window.location.href);
+    console.log("==================");
 
     // === 6. ENVIO AUTOMÁTICO WHATSAPP ===
     if (phone && plano) {
@@ -175,6 +177,8 @@
               tipo: "dieta+receitas"
             };
 
+            console.log("ENVIANDO WHATSAPP:", payload);
+
             const res = await fetch('https://dietapronta.online/whatsapp-bot.php', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -187,18 +191,20 @@
               statusDiv.innerHTML = `Enviado com sucesso!`;
               statusDiv.style.color = "#065f46";
             } else {
-              statusDiv.innerHTML = `Falha: ${data.msg || 'erro'}`;
+              statusDiv.innerHTML = `Falha: ${data.msg || data.error || 'erro'}`;
               statusDiv.style.color = "red";
             }
           } catch (e) {
+            console.error("ERRO WHATSAPP:", e);
             statusDiv.innerHTML = "Erro de conexão.";
             statusDiv.style.color = "red";
-            console.error(e);
           }
           statusDiv.style.animation = "none";
           statusDiv.style.background = "#d1fae5";
         }
       }, 1000);
+    } else {
+      document.getElementById('statusEnvio').innerHTML = "WhatsApp ou plano não configurado.";
     }
   });
 
@@ -209,6 +215,7 @@
     const emailStatus = document.getElementById("emailStatus");
     const email = emailInput.value.trim();
 
+    // Pega plano da URL ou localStorage
     let plano = getUrlParam('plano') || getUrlParam('dieta');
     if (!plano) {
       plano = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || 'Plano Ectomorfo Low Carb';
@@ -225,20 +232,24 @@
 
     try {
       const payload = { email, dieta: plano, tipo: "dieta+receitas" };
+      console.log("ENVIANDO E-MAIL:", payload);
+
       const res = await fetch('https://dietapronta.online/send_email_plan.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       const data = await res.json();
+      console.log("RESPOSTA E-MAIL:", data);
 
       if (data.ok) {
-        emailStatus.innerHTML = `Enviado para: <strong>${email}</strong>`;
+        emailStatus.innerHTML = `Enviado com sucesso para: <strong>${email}</strong>`;
       } else {
-        emailStatus.innerHTML = `Erro: ${data.error || 'desconhecido'}`;
+        emailStatus.innerHTML = `Falha: ${data.error || 'erro desconhecido'}`;
         emailStatus.style.color = "red";
       }
     } catch (e) {
+      console.error("ERRO E-MAIL:", e);
       emailStatus.textContent = "Erro de conexão.";
       emailStatus.style.color = "red";
     }
