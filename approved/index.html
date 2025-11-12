@@ -117,111 +117,114 @@
   </footer>
 
   <!-- SCRIPT PRINCIPAL -->
-  <script>
-  document.addEventListener("DOMContentLoaded", async function () {
-    const nome = localStorage.getItem('lead_nome') || '';
-    const dietTitle = localStorage.getItem('diet_title') || 'Dieta Personalizada';
-    const bodyType = localStorage.getItem('body_type') || '---';
-    const imcValue = localStorage.getItem('imc_value') || '';
-    const imcLabel = localStorage.getItem('imc_label') || '';
-    const desc = localStorage.getItem('quiz_result_desc') || '';
-    const rawPhone = localStorage.getItem('lead_whats') || '';
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+  // === CARREGA DADOS COM PRIORIDADE CORRETA ===
+  const nome = localStorage.getItem('lead_nome') || '';
+  const planoReal = localStorage.getItem('quiz_result_title') 
+      || localStorage.getItem('diet_title') 
+      || 'Dieta Personalizada';
+  const bodyType = localStorage.getItem('body_type') || '---';
+  const imcValue = localStorage.getItem('imc_value') || '';
+  const imcLabel = localStorage.getItem('imc_label') || '';
+  const desc = localStorage.getItem('quiz_result_desc') || '';
+  const rawPhone = localStorage.getItem('lead_whats') || '';
 
-    // Preenche campos
-    if (nome) document.getElementById('nomeSpan').textContent = nome + "!";
-    document.getElementById('year').textContent = new Date().getFullYear();
-    document.getElementById('infoNome').textContent = nome || '-';
-    document.getElementById('infoDieta').textContent = dietTitle;
-    document.getElementById('infoBodyType').textContent = bodyType;
-    document.getElementById('infoIMC').textContent = imcValue || '---';
-    document.getElementById('infoIMCLabel').textContent = imcLabel ? `(${imcLabel})` : '';
-    document.getElementById('descSpan').textContent = desc;
+  // === PREENCHE CAMPOS ===
+  if (nome) document.getElementById('nomeSpan').textContent = nome + "!";
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('infoNome').textContent = nome || '-';
+  document.getElementById('infoDieta').textContent = planoReal;
+  document.getElementById('infoBodyType').textContent = bodyType;
+  document.getElementById('infoIMC').textContent = imcValue || '---';
+  document.getElementById('infoIMCLabel').textContent = imcLabel ? `(${imcLabel})` : '';
+  document.getElementById('descSpan').textContent = desc;
 
-    const statusDiv = document.getElementById('statusEnvio');
-    const cleanPhone = rawPhone.replace(/\D/g, '');
+  const statusDiv = document.getElementById('statusEnvio');
+  const cleanPhone = rawPhone.replace(/\D/g, '');
 
-    if (cleanPhone.length !== 11) {
-      statusDiv.innerHTML = "Número inválido. Verifique no quiz.";
-      statusDiv.style.background = "#fee2e2";
-      statusDiv.style.color = "#991b1b";
-      return;
-    }
+  if (cleanPhone.length !== 11) {
+    statusDiv.innerHTML = "Número inválido. Verifique no quiz.";
+    statusDiv.style.background = "#fee2e2";
+    statusDiv.style.color = "#991b1b";
+    return;
+  }
 
-    // ENVIO AUTOMÁTICO WHATSAPP
-    let count = 5;
-    const timer = setInterval(() => {
-      statusDiv.textContent = `Enviando plano para seu WhatsApp... ${count}`;
-      count--;
-      if (count < 0) clearInterval(timer);
-    }, 1000);
+  // === ENVIO AUTOMÁTICO WHATSAPP ===
+  let count = 5;
+  const timer = setInterval(() => {
+    statusDiv.textContent = `Enviando plano para seu WhatsApp... ${count}`;
+    count--;
+    if (count < 0) clearInterval(timer);
+  }, 1000);
 
-    try {
-      const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          phone: cleanPhone,           // ENVIA 11 DÍGITOS: 61999165507
-          dieta: dietTitle,
-          tipo: "dieta+receitas"
-        })
-      });
+  try {
+    const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone: cleanPhone,
+        dieta: planoReal,           // AGORA ENVIA O PLANO CERTO
+        tipo: "dieta+receitas"
+      })
+    });
 
-      const data = await res.json();
-      console.log("RESPOSTA WHATSAPP:", data);
-      clearInterval(timer);
+    const data = await res.json();
+    console.log("RESPOSTA WHATSAPP:", data);
+    clearInterval(timer);
 
-      if (data.ok && data.sent) {
-        const formatted = `(${cleanPhone.substr(0,2)}) ${cleanPhone.substr(2,5)}-${cleanPhone.substr(7)}`;
-        statusDiv.innerHTML = `Enviado com sucesso para WhatsApp: ${formatted}`;
-        statusDiv.style.background = "#d1fae5";
-        statusDiv.style.color = "#065f46";
-        statusDiv.style.animation = "none";
-      } else {
-        statusDiv.innerHTML = `Erro: ${data.error || 'Falha no envio'}`;
-        statusDiv.style.background = "#fee2e2";
-        statusDiv.style.color = "#991b1b";
-      }
-    } catch (err) {
-      console.error("Erro de rede:", err);
-      clearInterval(timer);
-      statusDiv.innerHTML = "Erro de conexão.";
+    if (data.ok && data.sent) {
+      const formatted = `(${cleanPhone.substr(0,2)}) ${cleanPhone.substr(2,5)}-${cleanPhone.substr(7)}`;
+      statusDiv.innerHTML = `Enviado com sucesso para WhatsApp: ${formatted}`;
+      statusDiv.style.background = "#d1fae5";
+      statusDiv.style.color = "#065f46";
+      statusDiv.style.animation = "none";
+    } else {
+      statusDiv.innerHTML = `Erro: ${data.error || 'Falha no envio'}`;
       statusDiv.style.background = "#fee2e2";
       statusDiv.style.color = "#991b1b";
     }
-  });
+  } catch (err) {
+    console.error("Erro de rede:", err);
+    clearInterval(timer);
+    statusDiv.innerHTML = "Erro de conexão.";
+    statusDiv.style.background = "#fee2e2";
+    statusDiv.style.color = "#991b1b";
+  }
+});
 
-  // ENVIO POR E-MAIL
-  document.getElementById("btnEmail").addEventListener("click", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("emailInput").value.trim();
-    const status = document.getElementById("emailStatus");
-    if (!email || !email.includes("@")) {
-      status.textContent = "Digite um e-mail válido.";
-      status.style.color = "red";
-      return;
-    }
-    status.textContent = "Enviando...";
-    status.style.color = "#047857";
+// === ENVIO POR E-MAIL ===
+document.getElementById("btnEmail").addEventListener("click", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("emailInput").value.trim();
+  const status = document.getElementById("emailStatus");
+  if (!email || !email.includes("@")) {
+    status.textContent = "Digite um e-mail válido.";
+    status.style.color = "red";
+    return;
+  }
+  status.textContent = "Enviando...";
+  status.style.color = "#047857";
 
-    try {
-      const res = await fetch('https://italomelo.com/server/send_email_plan.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: localStorage.getItem('lead_nome') || '',
-          email: email,
-          dieta: localStorage.getItem('diet_title') || 'Dieta Personalizada',
-          upsell: localStorage.getItem('upsell_comprado') === '1'
-        })
-      });
-      const data = await res.json();
-      status.textContent = data.ok ? `Enviado com sucesso para ${email}` : `Erro: ${data.error}`;
-      status.style.color = data.ok ? "#047857" : "red";
-    } catch (err) {
-      status.textContent = "Erro de conexão.";
-      status.style.color = "red";
-    }
-  });
-  </script>
+  try {
+    const res = await fetch('https://italomelo.com/server/send_email_plan.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: localStorage.getItem('lead_nome') || '',
+        email: email,
+        dieta: localStorage.getItem('quiz_result_title') || localStorage.getItem('diet_title') || 'Dieta Personalizada',
+        upsell: localStorage.getItem('upsell_comprado') === '1'
+      })
+    });
+    const data = await res.json();
+    status.textContent = data.ok ? `Enviado com sucesso para ${email}` : `Erro: ${data.error}`;
+    status.style.color = data.ok ? "#047857" : "red";
+  } catch (err) {
+    status.textContent = "Erro de conexão.";
+    status.style.color = "red";
+  }
+});
+</script>
 </body>
 </html>
