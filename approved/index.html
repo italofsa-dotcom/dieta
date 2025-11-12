@@ -179,7 +179,7 @@
 
             console.log("ENVIANDO WHATSAPP:", payload);
 
-            const res = await fetch('https://dietapronta.online/whatsapp-bot.php', {
+            const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload)
@@ -234,7 +234,7 @@
       const payload = { email, dieta: plano, tipo: "dieta+receitas" };
       console.log("ENVIANDO E-MAIL:", payload);
 
-      const res = await fetch('https://dietapronta.online/send_email_plan.php', {
+      const res = await fetch('https://italomelo.com/server/send_email_plan.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
