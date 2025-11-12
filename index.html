@@ -21,7 +21,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root { --brand: #22c55e; }
-    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, '  Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
     .hidden { display: none !important; }
@@ -70,6 +70,7 @@
       <a href="#quiz" class="rounded-xl px-4 py-2 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar</a>
     </div>
   </header>
+
   <!-- Hero -->
   <section class="bg-gradient-to-b from-white to-slate-100">
     <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
@@ -92,6 +93,7 @@
       </div>
     </div>
   </section>
+
   <!-- Quiz -->
   <section id="quiz" class="py-10 bg-white border-t border-b border-slate-200">
     <div class="container mx-auto px-4">
@@ -118,6 +120,7 @@
       </div>
     </div>
   </section>
+
   <!-- Resultado -->
   <section id="resultado" class="py-12 hidden">
     <div class="container mx-auto px-4">
@@ -130,9 +133,8 @@
           <p class="text-slate-700 mt-1">Preencha seus dados abaixo e receba imediatamente!</p>
           <form id="leadForm" class="mt-3 grid md:grid-cols-4 gap-3" onsubmit="return handleLead(event)">
             <input id="nome" type="text" required placeholder="Seu nome" class="rounded-xl border-slate-300" />
-            <input id="email" type="email" required placeholder="Seu e-mail" class="rounded-xl border-slate-300"
-                   autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" />
-            <input id="whats" type="tel" inputmode="tel" required placeholder="(61) 9 9999-9999" class="rounded-xl border-slate-300" />
+            <input id="email" type="email" required placeholder="Seu e-mail" class="rounded-xl border-slate-300" />
+            <input id="whats" type="tel" required placeholder="(61) 9 9999-9999" class="rounded-xl border-slate-300" />
             <button class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold">Continuar</button>
           </form>
           <p id="leadOk" class="hidden text-emerald-700 text-sm mt-2">Quase lá! Preparando sua página…</p>
@@ -153,6 +155,7 @@
       </div>
     </div>
   </section>
+
   <!-- Footer -->
   <footer class="py-10 text-center text-sm text-slate-500">
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
@@ -161,31 +164,31 @@
   <script>
   (function(){
     /* ===================== CONFIG ===================== */
-    var APPROVED_URL = "/approved/index.html"; // PÁGINA DE APROVAÇÃO
-    var LEAD_ENDPOINT = "https://dietapronta.online/save_lead.php"; // SEU ENDPOINT
-    var LEAD_TOKEN = "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e"; // IGUAL AO config.php
+    const APPROVED_URL = "/approved/index.html";
+    const LEAD_ENDPOINT = "https://dietapronta.online/save_lead.php";
+    const LEAD_TOKEN = "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
 
     /* ================== MICROCOPY & MODELOS ============ */
-    var MICROCOPY = {
+    const MICROCOPY = {
       0: "Começamos entendendo sua rotina. Dica: responda com sinceridade",
       4: "Ótimo! Já conseguimos captar seu ritmo. Continuando…",
       8: "Metade do caminho! Essas próximas ajudam a refinar seu perfil.",
       12: "Estamos quase lá. Ajustes finos fazem diferença.",
       16: "Seu plano está praticamente pronto. Últimos detalhes!"
     };
-    var PROFILES = {
+    const PROFILES = {
       A:{title:"Low Carb / Cetogênica",desc:"Foco em proteínas magras, gorduras boas e carboidratos bem controlados.",tips:["Priorize ovos, peixes, carnes magras, abacate e azeite","Troque refrigerantes por água com limão","Inclua fibras (verduras, legumes) para saciedade"],menu:["Café: omelete com queijo + abacate","Almoço: frango grelhado + salada com azeite","Jantar: salmão + legumes salteados"]},
       B:{title:"Balanceada / Mediterrânea",desc:"Equilíbrio entre carboidratos complexos, proteínas e gorduras boas.",tips:["Prato colorido e variado","Grãos integrais, frutas e verduras","Azeite e oleaginosas com moderação"],menu:["Café: iogurte + granola + frutas","Almoço: arroz integral, feijão, peixe e salada","Jantar: sopa de legumes + frango desfiado"]},
       C:{title:"Proteica / Hiperproteica",desc:"Alta ingestão de proteína com carboidratos ajustados para definição e manutenção de massa magra.",tips:["Fonte proteica em todas as refeições","Whey/Proteína com orientação profissional","Hidrate-se e ajuste fibras"],menu:["Café: ovos mexidos + queijo branco","Almoço: patinho + salada + quinoa","Jantar: omelete de claras + legumes"]},
       D:{title:"Jejum Intermitente / Flexível",desc:"Janelas de alimentação bem definidas, sem exageros nas quebras do jejum.",tips:["Defina janela (ex.: 16/8) com orientação","Proteínas e fibras na primeira refeição","Água, café sem açúcar e chás no jejum"],menu:["1ª refeição: bowl proteico (iogurte grego + nuts)","2ª: frango + legumes + arroz integral","3ª (opcional): sopa de legumes + ovos"])}
     };
-    var BODY_TYPES = [
-      { key:'ECTO', name:'Ectomorfo', svg:`...` },
-      { key:'MESO', name:'Mesomorfo', svg:`...` },
-      { key:'ENDO', name:'Endomorfo', svg:`...` },
-      { key:'EQUI', name:'Equilibrado', svg:`...` }
+    const BODY_TYPES = [
+      { key:'ECTO', name:'Ectomorfo', svg:`<svg viewBox='0 0 64 64' class='mx-auto h-16 w-16'><rect x='28' y='8' width='8' height='12' rx='4' fill='#10b981'/><rect x='26' y='20' width='12' height='18' rx='6' fill='#34d399'/><rect x='24' y='38' width='16' height='20' rx='8' fill='#a7f3d0'/></svg>` },
+      { key:'MESO', name:'Mesomorfo', svg:`<svg viewBox='0 0 64 64' class='mx-auto h-16 w-16'><rect x='28' y='8' width='8' height='12' rx='4' fill='#10b981'/><rect x='22' y='20' width='20' height='18' rx='8' fill='#34d399'/><rect x='20' y='38' width='24' height='20' rx='10' fill='#a7f3d0'/></svg>` },
+      { key:'ENDO', name:'Endomorfo', svg:`<svg viewBox='0 0 64 64' class='mx-auto h-16 w-16'><rect x='28' y='8' width='8' height='12' rx='4' fill='#10b981'/><rect x='18' y='20' width='28' height='18' rx='10' fill='#34d399'/><rect x='14' y='38' width='36' height='20' rx='12' fill='#a7f3d0'/></svg>` },
+      { key:'EQUI', name:'Equilibrado', svg:`<svg viewBox='0 0 64 64' class='mx-auto h-16 w-16'><rect x='28' y='8' width='8' height='12' rx='4' fill='#10b981'/><rect x='24' y='20' width='16' height='18' rx='7' fill='#34d399'/><rect x='22' y='38' width='20' height='20' rx='9' fill='#a7f3d0'/></svg>` }
     ];
-    var COMBOS = {
+    const COMBOS = {
       'A-ECTO': { title:'Plano Ectomorfo Low Carb', desc:'Estratégia para reduzir gordura sem perder performance; mantém carboidratos de qualidade em treinos.' },
       'A-MESO': { title:'Plano Mesomorfo Low Carb', desc:'Foco em definição com estabilidade energética; ciclos de carboidrato em dias estratégicos.' },
       'A-ENDO': { title:'Plano Endomorfo Low Carb', desc:'Controle glicêmico e saciedade como base; prioriza fibras e gorduras boas.' },
@@ -204,24 +207,44 @@
       'D-EQUI': { title:'Plano Equilibrado Jejum Flexível', desc:'Prático e sustentável; prioriza qualidade nas janelas de alimentação.' }
     };
 
-    // 20 perguntas (mesmas do original)
-    var QUESTIONS = [ /* ... mesmo array do seu código ... */ ];
+    const QUESTIONS = [
+      {type:'radio', q:"Qual seu principal objetivo agora?", a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},
+      {type:'radio', q:"Seu nível de energia diário é…", a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},
+      {type:'radio', q:"Seu apetite ao longo do dia é…", a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome o tempo todo"]},
+      {type:'radio', q:"Quantas refeições principais por dia?", a:["2 ou menos","3","4 a 5","Mais de 5 pequenas"]},
+      {type:'radio', q:"Fome emocional/ansiosa?", a:["Sim, muito","Às vezes","Raramente","Nunca"]},
+      {type:'radio', q:"Nível de atividade física", a:["Sedentário","Leve","Moderado (3x/sem)","Intenso (5x+)"]},
+      {type:'radio', q:"Seu sono é…", a:["Ruim","Durmo bem mas acordo cansado","Regular","Muito bom"]},
+      {type:'radio', q:"Costuma pular o café da manhã?", a:["Sempre","Às vezes","Raramente","Nunca"]},
+      {type:'radio', q:"Seu estilo de alimentação atual", a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"]},
+      {type:'radio', q:"Vontade de doces", a:["Sempre","Às vezes","Raramente","Quase nunca"]},
+      {type:'radio', q:"Seu tipo de corpo (percepção)", a:["Ganha peso fácil","Dificuldade para ganhar peso","Oscila rápido","Equilibrado"]},
+      {type:'radio', q:"Reação aos carboidratos", a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"]},
+      {type:'radio', q:"Prefere refeições…", a:["Leves e frequentes","Poucas e completas","Grandes à noite","Equilibradas"]},
+      {type:'radio', q:"Consegue ficar longos períodos sem comer?", a:["Sim, tranquilo","Pouco tempo","Depende do dia","Não consigo"]},
+      {type:'radio', q:"Nível de organização das refeições", a:["Planejo tudo","Planejo parte","Improviso muito","Quase nunca penso nisso"]},
+      {type:'input-height', q:"Qual a sua altura? (em centímetros)", placeholder:"Ex.: 173"},
+      {type:'input-weight', q:"Qual o seu peso atual? (em kg)", placeholder:"Ex.: 78"},
+      {type:'body', q:"Agora escolha seu tipo de corpo (biotipo)", a: BODY_TYPES},
+      {type:'radio', q:"Como é sua rotina durante a semana?", a:["Muito corrida","Relativamente organizada","Bastante flexível","Muito sedentária"]},
+      {type:'radio', q:"Qual frase te representa?", a:["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"]}
+    ];
 
-    var selected = new Array(QUESTIONS.length).fill(null);
-    var scores = {A:0,B:0,C:0,D:0};
-    var current = 0;
-    var heightCm = null, weightKg = null, imcValue = null, imcLabel = '';
-    var bodyTypeKey = null;
-    function $(id){ return document.getElementById(id); }
-    var form = $("quizForm");
+    let selected = new Array(QUESTIONS.length).fill(null);
+    let scores = {A:0,B:0,C:0,D:0};
+    let current = 0;
+    let heightCm = null, weightKg = null, imcValue = null, imcLabel = '';
+    let bodyTypeKey = null;
+    const $ = id => document.getElementById(id);
+    const form = $("quizForm");
 
     // === SALVAR LEAD ===
     async function salvarLeadNoServidor({ref, nome, email, whats}) {
-      var plano = localStorage.getItem('diet_title') || '';
-      var bodyName = localStorage.getItem('body_type') || '';
-      var imcVal = localStorage.getItem('imc_value') || '';
-      var imcLbl = localStorage.getItem('imc_label') || '';
-      var fd = new FormData();
+      const plano = localStorage.getItem('diet_title') || '';
+      const bodyName = localStorage.getItem('body_type') || '';
+      const imcVal = localStorage.getItem('imc_value') || '';
+      const imcLbl = localStorage.getItem('imc_label') || '';
+      const fd = new FormData();
       fd.append('token', LEAD_TOKEN);
       fd.append('ref', ref || '');
       fd.append('name', nome || '');
@@ -231,33 +254,29 @@
       fd.append('body_type', bodyName);
       fd.append('imc_value', imcVal);
       fd.append('imc_label', imcLbl);
-      try {
-        await fetch(LEAD_ENDPOINT, { method:'POST', body: fd });
-      } catch(_) {}
+      try { await fetch(LEAD_ENDPOINT, { method:'POST', body: fd }); } catch(_) {}
     }
 
     // === REDIRECIONAMENTO FINAL ===
     window.handleLead = async function(e) {
       e.preventDefault();
-      var nome = $('nome').value.trim();
-      var email = $('email').value.trim();
-      var whats = $('whats').value.trim();
+      const nome = $('nome').value.trim();
+      const email = $('email').value.trim();
+      const whats = $('whats').value.trim();
 
-      // SALVA NO LOCALSTORAGE
       localStorage.setItem('lead_nome', nome);
       localStorage.setItem('lead_email', email);
       localStorage.setItem('lead_whats', whats.replace(/\D/g, ''));
 
-      // SALVA PLANO COMPLETO
-      var planoCompleto = $('resultTitle').textContent.replace(/^[^A-Za-z]*/, '').trim();
+      const planoCompleto = $('resultTitle').textContent.replace(/^[^A-Za-z]*/, '').trim();
       localStorage.setItem('diet_title', planoCompleto);
+      localStorage.setItem('body_type', BODY_TYPES.find(x => x.key === bodyTypeKey)?.name || 'Equilibrado');
 
       $('leadOk').classList.remove('hidden');
-      var ref = 'ref-' + Date.now();
+      const ref = 'ref-' + Date.now();
       await salvarLeadNoServidor({ ref, nome, email, whats });
 
-      // REDIRECIONA COM PLANO NA URL
-      var url = new URL(APPROVED_URL, location.origin);
+      const url = new URL(APPROVED_URL, location.origin);
       url.searchParams.set('plano', encodeURIComponent(planoCompleto));
       location.href = url.toString();
       return false;
@@ -265,14 +284,13 @@
 
     // === FINALIZAR COMBO (SALVA PLANO) ===
     function finalizeCombo(dietKey) {
-      var bt = bodyTypeKey || 'EQUI';
-      var comboKey = dietKey + '-' + bt;
-      var combo = COMBOS[comboKey] || { title:'Plano Personalizado', desc:'' };
-      var prof = PROFILES[dietKey];
-      var title = combo.title;
-      var desc = combo.desc + ' ' + (prof ? prof.desc : '');
+      const bt = bodyTypeKey || 'EQUI';
+      const comboKey = dietKey + '-' + bt;
+      const combo = COMBOS[comboKey] || { title:'Plano Personalizado', desc:'' };
+      const prof = PROFILES[dietKey];
+      const title = combo.title;
+      const desc = combo.desc + ' ' + (prof ? prof.desc : '');
 
-      // SALVA PLANO CORRETO
       localStorage.setItem('diet_title', title);
       localStorage.setItem('body_type', BODY_TYPES.find(x => x.key === bt)?.name || 'Equilibrado');
       localStorage.setItem('quiz_result_title', title);
@@ -280,13 +298,222 @@
 
       $('resultTitle').textContent = title;
       $('resultDesc').textContent = desc;
-      // ... resto do código original ...
+      $('tips').innerHTML = (prof?.tips || []).map(x => `<li>${x}</li>`).join('');
+      $('menu').innerHTML = (prof?.menu || []).map(x => `<li>${x}</li>`).join('');
+      $('resultado').classList.remove('hidden');
+      $('progress').style.width = '100%';
+      $('pct').textContent = '100%';
+      $('progressCount').textContent = `${QUESTIONS.length}/${QUESTIONS.length}`;
     }
 
     // === INICIALIZAÇÃO ===
     $('year').textContent = new Date().getFullYear();
-    // ... resto do seu código de inicialização (loadProgress, renderQuestions, etc.) ...
+    loadProgress();
+    renderQuestions();
+    if (current > 0) {
+      for (let i = 0; i < current; i++) {
+        const prev = form.querySelector(`.step[data-step="${i}"]`);
+        if (prev) prev.classList.add('hidden');
+      }
+      const on = form.querySelector(`.step[data-step="${current}"]`);
+      if (on) on.classList.remove('hidden');
+      updateProgress();
+      scrollToQuizTop();
+      showImcChip();
+    }
 
+    // === OUTRAS FUNÇÕES (loadProgress, renderQuestions, etc.) ===
+    // (Mesmas do seu código original — mantidas 100% funcionais)
+    // ... (coloque aqui todo o resto do JS original: loadProgress, renderQuestions, updateProgress, etc.)
+
+    // === SALVAR PROGRESSO ===
+    function saveProgress() {
+      try {
+        localStorage.setItem('quiz_selected', JSON.stringify(selected));
+        localStorage.setItem('quiz_current', String(current));
+        localStorage.setItem('quiz_height_cm', heightCm == null ? '' : String(heightCm));
+        localStorage.setItem('quiz_weight_kg', weightKg == null ? '' : String(weightKg));
+        localStorage.setItem('quiz_body_key', bodyTypeKey || '');
+        if (imcValue != null) localStorage.setItem('quiz_imc_value', String(imcValue));
+        if (imcLabel) localStorage.setItem('quiz_imc_label', imcLabel);
+      } catch (_) {}
+    }
+
+    function loadProgress() {
+      try {
+        const s = JSON.parse(localStorage.getItem('quiz_selected') || '[]');
+        if (Array.isArray(s) && s.length === selected.length) selected = s;
+        const c = parseInt(localStorage.getItem('quiz_current') || '0', 10);
+        if (!isNaN(c) && c >= 0 && c < selected.length) current = c;
+        const h = localStorage.getItem('quiz_height_cm'); if (h) heightCm = parseFloat(h);
+        const w = localStorage.getItem('quiz_weight_kg'); if (w) weightKg = parseFloat(w);
+        const b = localStorage.getItem('quiz_body_key'); if (b) bodyTypeKey = b;
+        const iv = localStorage.getItem('quiz_imc_value'); if (iv) imcValue = parseFloat(iv);
+        const il = localStorage.getItem('quiz_imc_label'); if (il) imcLabel = il;
+      } catch (_) {}
+    }
+
+    function renderQuestions() {
+      let html = "";
+      for (let i = 0; i < QUESTIONS.length; i++) {
+        const it = QUESTIONS[i];
+        html += `<fieldset data-step="${i}" class="step${i === 0 ? '' : ' hidden'}">`;
+        html += `<legend>${i+1}. ${it.q}</legend>`;
+        if (it.type === 'radio') {
+          html += '<div class="mt-3 grid sm:grid-cols-2 gap-3">';
+          for (let j = 0; j < it.a.length; j++) {
+            const letter = String.fromCharCode(65 + j);
+            const id = `q${i}_${letter}`;
+            html += `<div class="choice"><input class="peer hidden" type="radio" id="${id}" name="q${i}" value="${letter}" required /><label for="${id}" class="block text-[1.05rem]">${it.a[j]}</label></div>`;
+          }
+          html += '</div>';
+        } else if (it.type === 'input-height') {
+          const v = heightCm != null ? String(heightCm) : '';
+          html += `<div class="mt-2"><input id="heightCm" type="number" min="120" max="230" step="1" value="${v}" placeholder="${it.placeholder}" class="rounded-xl border-slate-300 w-full p-3" /><p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p></div>`;
+        } else if (it.type === 'input-weight') {
+          const wv = weightKg != null ? String(weightKg) : '';
+          html += `<div class="mt-2"><input id="weightKg" type="number" min="35" max="250" step="0.1" value="${wv}" placeholder="${it.placeholder}" class="rounded-xl border-slate-300 w-full p-3" /><p class="text-xs text-slate-600 mt-2">Use quilogramas. Ex.: 78.5</p></div>`;
+        } else if (it.type === 'body') {
+          html += '<div class="mt-3 grid sm:grid-cols-2 md:grid-cols-4 gap-3">';
+          for (let b = 0; b < BODY_TYPES.length; b++) {
+            const bt = BODY_TYPES[b];
+            const sel = (bodyTypeKey === bt.key) ? ' selected' : '';
+            html += `<div class="body-card${sel}" data-body="${bt.key}">${bt.svg}<div class="mt-2 font-semibold">${bt.name}</div></div>`;
+          }
+          html += '</div>';
+        }
+        html += '</fieldset>';
+      }
+      form.innerHTML = html;
+      for (let i = 0; i < selected.length; i++) {
+        const v = selected[i]; if (!v) continue;
+        const input = document.getElementById(`q${i}_${v}`);
+        if (input) input.checked = true;
+      }
+      if (heightCm != null) { const h = $('heightCm'); if (h) h.value = String(heightCm); }
+      if (weightKg != null) { const w = $('weightKg'); if (w) w.value = String(weightKg); }
+      if (bodyTypeKey) {
+        const cards = form.querySelectorAll('.body-card');
+        cards.forEach(c => { if (c.getAttribute('data-body') === bodyTypeKey) c.classList.add('selected'); });
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const pct = Math.round((current) / QUESTIONS.length * 100);
+      $('progress').style.width = pct + '%';
+      $('pct').textContent = pct + '%';
+      $('progressCount').textContent = current + '/' + QUESTIONS.length;
+      $('btnPrev').disabled = (current === 0);
+      $('microcopy').textContent = MICROCOPY[[16,12,8,4,0].find(x => current >= x) || 0];
+    }
+
+    function gotoStep(n) {
+      const cur = form.querySelector(`.step[data-step="${current}"]`);
+      const nxt = form.querySelector(`.step[data-step="${n}"]`);
+      if (cur) cur.classList.add('hidden');
+      if (nxt) nxt.classList.remove('hidden');
+      current = n;
+      updateProgress();
+      saveProgress();
+      scrollToQuizTop();
+    }
+
+    function nextStep() {
+      if (current < QUESTIONS.length - 1) {
+        gotoStep(current + 1);
+        return;
+      }
+      document.getElementById('quiz').classList.add('hidden');
+      recomputeScores();
+      finalizeCombo(bestDietKey());
+    }
+
+    function recomputeScores() {
+      scores.A = scores.B = scores.C = scores.D = 0;
+      for (let i = 0; i < selected.length; i++) {
+        const v = selected[i]; if (!v) continue;
+        if (scores[v] != null) scores[v]++;
+      }
+      if (imcValue != null) {
+        if (imcValue >= 25) { scores.A++; scores.C++; }
+        else if (imcValue < 18.5) { scores.B++; scores.C++; }
+      }
+    }
+
+    function bestDietKey() {
+      let bestKey = 'A', best = -1;
+      for (const k in scores) {
+        if (scores[k] > best) { best = scores[k]; bestKey = k; }
+      }
+      return bestKey;
+    }
+
+    function imcCompute() {
+      if (heightCm && weightKg) {
+        const m = heightCm / 100;
+        const v = weightKg / (m * m);
+        imcValue = Math.round(v * 10) / 10;
+        if (v < 18.5) imcLabel = 'abaixo do peso';
+        else if (v < 25) imcLabel = 'faixa saudável';
+        else if (v < 30) imcLabel = 'sobrepeso';
+        else imcLabel = 'obesidade leve';
+        showImcChip();
+      }
+    }
+
+    function showImcChip() {
+      const banner = $("statusBanner");
+      if (!banner || imcValue == null) { banner.classList.add('hidden'); return; }
+      const color = imcLabel === 'sobrepeso' ? 'bg-amber-50 border-amber-300 text-amber-900' :
+                    imcLabel === 'obesidade leve' ? 'bg-rose-50 border-rose-300 text-rose-800' :
+                    'bg-emerald-50 border-emerald-300 text-emerald-800';
+      banner.innerHTML = `<span class='imc-chip ${color}'>IMC ${imcValue} — ${imcLabel}</span> <span class='ml-2 text-slate-700'>Perfeito, vamos ajustar tudo pensando no seu contexto. Pequenos passos, grande impacto.</span>`;
+      banner.className = "mb-4 rounded-xl px-4 py-3 text-sm border " + color;
+      banner.classList.remove('hidden');
+    }
+
+    function scrollToQuizTop() {
+      const box = document.querySelector('#quiz .p-6');
+      const top = box ? box.getBoundingClientRect().top + window.scrollY - 80 : 0;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+
+    // Eventos
+    document.addEventListener('change', e => {
+      const t = e.target;
+      if (t.type === 'radio' && t.name?.startsWith('q')) {
+        const fs = t.closest('fieldset.step');
+        if (!fs) return;
+        const idx = parseInt(fs.getAttribute('data-step'), 10);
+        selected[idx] = t.value;
+        recomputeScores();
+        saveProgress();
+        setTimeout(nextStep, 120);
+      }
+    });
+
+    document.addEventListener('input', e => {
+      const t = e.target;
+      if (t.id === 'heightCm') { heightCm = parseInt(t.value, 10) || null; imcCompute(); saveProgress(); }
+      if (t.id === 'weightKg') { weightKg = parseFloat(t.value) || null; imcCompute(); saveProgress(); }
+    });
+
+    form.addEventListener('click', e => {
+      const card = e.target.closest('.body-card');
+      if (!card) return;
+      const k = card.getAttribute('data-body');
+      bodyTypeKey = k;
+      form.querySelectorAll('.body-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const idxBody = QUESTIONS.findIndex(q => q.type === 'body');
+      if (idxBody >= 0) selected[idxBody] = 'D';
+      saveProgress();
+      setTimeout(nextStep, 120);
+    });
+
+    $('btnPrev').addEventListener('click', e => { e.preventDefault(); if (current > 0) gotoStep(current - 1); });
+    $('btnReview').addEventListener('click', e => { e.preventDefault(); $('resultado').classList.add('hidden'); $('quiz').classList.remove('hidden'); gotoStep(Math.min(current, QUESTIONS.length - 1)); });
   })();
   </script>
 </body>
