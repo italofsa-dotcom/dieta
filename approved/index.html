@@ -172,7 +172,8 @@
           try {
             const formattedPhone = '55' + phone.replace(/\D/g, '');
             const payload = {
-              phone: formattedPhone,
+              //  phone: formattedPhone,
+	      phone: '+' + formattedPhone,  // AQUI: ADICIONA O '+'
               dieta: plano,
               tipo: "dieta+receitas"
             };
