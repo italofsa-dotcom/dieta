@@ -14,7 +14,6 @@
     body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, .08); }
-    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: .8rem; }
     #statusEnvio {
       display: inline-block;
       font-size: 1.3rem;
@@ -59,7 +58,6 @@
         Seu pagamento foi <strong>aprovado com sucesso!</strong>
         Agora você tem acesso ao seu <strong>Plano Alimentar Personalizado</strong>, criado com base no seu corpo e nas suas respostas do quiz.
       </p>
-      <!-- MENSAGEM DE ENVIO AUTOMÁTICO -->
       <div id="statusEnvio" class="mx-auto">Enviando plano para seu WhatsApp...</div>
     </div>
   </section>
@@ -93,7 +91,7 @@
         <p class="text-slate-700 mb-4">
           Prefere receber seu plano personalizado por e-mail? Basta inserir seu endereço abaixo e enviaremos automaticamente.
         </p>
-        <div id="emailForm" class="flex flex-col gap-3 items-center">
+        <div class="flex flex-col gap-3 items-center">
           <input type="email" id="emailInput" placeholder="Digite seu e-mail" class="border rounded-xl p-3 w-full max-w-md text-center" />
           <button id="btnEmail" class="rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
             Enviar meu plano por e-mail
@@ -120,8 +118,7 @@
 
   <!-- SCRIPT PRINCIPAL -->
   <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // === CARREGA DADOS DO LOCALSTORAGE ===
+  document.addEventListener("DOMContentLoaded", async function () {
     const nome = localStorage.getItem('lead_nome') || '';
     const dietTitle = localStorage.getItem('diet_title') || 'Dieta Personalizada';
     const bodyType = localStorage.getItem('body_type') || '---';
@@ -130,7 +127,7 @@
     const desc = localStorage.getItem('quiz_result_desc') || '';
     const rawPhone = localStorage.getItem('lead_whats') || '';
 
-    // === PREENCHE CAMPOS ===
+    // Preenche campos
     if (nome) document.getElementById('nomeSpan').textContent = nome + "!";
     document.getElementById('year').textContent = new Date().getFullYear();
     document.getElementById('infoNome').textContent = nome || '-';
@@ -140,63 +137,60 @@
     document.getElementById('infoIMCLabel').textContent = imcLabel ? `(${imcLabel})` : '';
     document.getElementById('descSpan').textContent = desc;
 
-    // === LIMPA E VALIDA TELEFONE ===
-    const cleanPhone = rawPhone.replace(/\D/g, ''); // Remove tudo que não for número
     const statusDiv = document.getElementById('statusEnvio');
+    const cleanPhone = rawPhone.replace(/\D/g, '');
 
-    if (cleanPhone.length !== 11 || !/^\d{11}$/.test(cleanPhone)) {
+    if (cleanPhone.length !== 11) {
       statusDiv.innerHTML = "Número inválido. Verifique no quiz.";
       statusDiv.style.background = "#fee2e2";
       statusDiv.style.color = "#991b1b";
       return;
     }
 
-    // === ENVIO AUTOMÁTICO PARA WHATSAPP ===
-    (async () => {
-      let count = 5;
-      const timer = setInterval(() => {
-        statusDiv.textContent = `Enviando plano para seu WhatsApp... ${count}`;
-        count--;
-        if (count < 0) clearInterval(timer);
-      }, 1000);
+    // ENVIO AUTOMÁTICO WHATSAPP
+    let count = 5;
+    const timer = setInterval(() => {
+      statusDiv.textContent = `Enviando plano para seu WhatsApp... ${count}`;
+      count--;
+      if (count < 0) clearInterval(timer);
+    }, 1000);
 
-      try {
-        const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            phone: cleanPhone,           // 11 dígitos: 61999165507
-            dieta: dietTitle,
-            tipo: "dieta+receitas"
-          })
-        });
+    try {
+      const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone: cleanPhone,           // ENVIA 11 DÍGITOS: 61999165507
+          dieta: dietTitle,
+          tipo: "dieta+receitas"
+        })
+      });
 
-        const data = await res.json();
-        console.log("RESPOSTA WHATSAPP:", data);
+      const data = await res.json();
+      console.log("RESPOSTA WHATSAPP:", data);
+      clearInterval(timer);
 
-        clearInterval(timer);
-        if (data.ok && data.sent) {
-          const formatted = `(${cleanPhone.substr(0,2)}) ${cleanPhone.substr(2,5)}-${cleanPhone.substr(7)}`;
-          statusDiv.innerHTML = `Enviado com sucesso para WhatsApp: ${formatted}`;
-          statusDiv.style.background = "#d1fae5";
-          statusDiv.style.color = "#065f46";
-          statusDiv.style.animation = "none";
-        } else {
-          statusDiv.innerHTML = `Erro: ${data.error || 'Falha no envio'}`;
-          statusDiv.style.background = "#fee2e2";
-          statusDiv.style.color = "#991b1b";
-        }
-      } catch (err) {
-        console.error("Erro de rede:", err);
-        clearInterval(timer);
-        statusDiv.innerHTML = "Erro de conexão. Tente novamente.";
+      if (data.ok && data.sent) {
+        const formatted = `(${cleanPhone.substr(0,2)}) ${cleanPhone.substr(2,5)}-${cleanPhone.substr(7)}`;
+        statusDiv.innerHTML = `Enviado com sucesso para WhatsApp: ${formatted}`;
+        statusDiv.style.background = "#d1fae5";
+        statusDiv.style.color = "#065f46";
+        statusDiv.style.animation = "none";
+      } else {
+        statusDiv.innerHTML = `Erro: ${data.error || 'Falha no envio'}`;
         statusDiv.style.background = "#fee2e2";
         statusDiv.style.color = "#991b1b";
       }
-    })();
+    } catch (err) {
+      console.error("Erro de rede:", err);
+      clearInterval(timer);
+      statusDiv.innerHTML = "Erro de conexão.";
+      statusDiv.style.background = "#fee2e2";
+      statusDiv.style.color = "#991b1b";
+    }
   });
 
-  // === ENVIO POR E-MAIL ===
+  // ENVIO POR E-MAIL
   document.getElementById("btnEmail").addEventListener("click", async (e) => {
     e.preventDefault();
     const email = document.getElementById("emailInput").value.trim();
