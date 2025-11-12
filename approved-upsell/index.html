@@ -1,158 +1,219 @@
-<?php
-// === CORS ===
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header('Content-Type: application/json; charset=utf-8');
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-  http_response_code(204);
-  exit;
-}
-// === DEPURAÇÃO OPCIONAL ===
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
-// === Caminhos do PHPMailer ===
-require __DIR__ . '/PHPMailer/PHPMailer.php';
-require __DIR__ . '/PHPMailer/SMTP.php';
-require __DIR__ . '/PHPMailer/Exception.php';
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-// === CONFIGURAÇÃO DO SMTP ===
-$MAIL_HOST = 'mail.dietapronta.online';
-$MAIL_USER = 'contato@dietapronta.online';
-$MAIL_PASS = 'italo1607';
-$MAIL_PORT = 465;
-$MAIL_FROM = 'contato@dietapronta.online';
-$MAIL_NAME = 'Dieta Pronta Online';
-// === RECEBE DADOS ===
-$raw = file_get_contents("php://input");
-$data = json_decode($raw, true);
-if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
-    $data = $_POST;
-}
-$email = trim($data['email'] ?? '');
-$dieta_raw = trim($data['dieta'] ?? '');
-$nome = trim($data['nome'] ?? 'Cliente');
-if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-  echo json_encode(['ok' => false, 'error' => 'email_missing_or_invalid']);
-  exit;
-}
-// ======================================================================
-// MAPA DE DIETAS (Link do PDF)
-// ======================================================================
-$mensagens = [
-  'Low Carb' => 'https://dietapronta.online/pdfs/Dieta_Low_Carb.pdf',
-  'Cetogênica' => 'https://dietapronta.online/pdfs/Dieta_Cetogenica.pdf',
-  'Flexível' => 'https://dietapronta.online/pdfs/Dieta_Flexivel.pdf',
-  'Mediterrânea' => 'https://dietapronta.online/pdfs/Dieta_Mediterranea.pdf',
-  '200 Receitas Saudáveis' => 'https://dietapronta.online/pdfs/200_Receitas_Saudaveis.pdf'
-];
-// === MAPEAMENTO DE PALAVRAS-CHAVE ===
-$dietas_mapeadas = [
-  'low carb' => 'Low Carb',
-  'cetogenica' => 'Cetogênica',
-  'flexivel' => 'Flexível',
-  'mediterranea'=> 'Mediterrânea',
-  'ectomorfo' => 'Low Carb',
-  'mesomorfo' => 'Flexível',
-  'endomorfo' => 'Cetogênica'
-];
-// === ENCONTRA A DIETA CORRETA ===
-$dieta_encontrada = null;
-$dieta_limpa = strtolower(preg_replace('/[^\w\s]/', '', $dieta_raw));
-foreach ($dietas_mapeadas as $chave => $nome) {
-  if (strpos($dieta_limpa, $chave) !== false) {
-    $dieta_encontrada = $nome;
-    break;
-  }
-}
-if (!$dieta_encontrada && isset($mensagens[$dieta_raw])) {
-  $dieta_encontrada = $dieta_raw;
-}
-$dieta_exibicao = $dieta_raw;
-$dieta = $dieta_encontrada ?? 'Desconhecida';
-// ======================================================================
-// MONTA LINKS
-// ======================================================================
-$link_plano_html = '';
-$link_receitas_html = '';
-$alt_text = "Seu plano $dieta_exibicao está pronto.";
-if ($dieta !== 'Desconhecida' && isset($mensagens[$dieta])) {
-  $link = $mensagens[$dieta];
-  $link_plano_html = '<p><a href="' . $link . '" target="_blank" style="color:#1a73e8;font-weight:bold;text-decoration:none;">Baixar Plano ' . $dieta . ' (PDF)</a></p>';
-  $alt_text .= " Acesse: $link";
-} else {
-  $link_plano_html = '<p><strong style="color:red;">[ERRO] Dieta não reconhecida: "' . htmlspecialchars($dieta_raw, ENT_QUOTES) . '"</strong></p>';
-}
-// No upsell, o PDF de receitas é sempre adicionado
-$link_rec = $mensagens['200 Receitas Saudáveis'];
-$link_receitas_html = '<p><a href="' . $link_rec . '" target="_blank" style="color:#1a73e8;font-weight:bold;text-decoration:none;">Baixar 200 Receitas Saudáveis (PDF)</a></p>';
-$alt_text .= " | Receitas: $link_rec";
-// ======================================================================
-// CORPO DO E-MAIL
-// ======================================================================
-$body = '
-<h2>🎉 Obrigado por adquirir o Combo Completo!</h2>
-<p>Olá, <b>' . htmlspecialchars($nome, ENT_QUOTES) . '</b>!</p>
-<p>Conforme suas respostas no quiz, enviamos abaixo seu plano <b>' . htmlspecialchars($dieta_exibicao, ENT_QUOTES) . '</b> e o bônus exclusivo de receitas.</p>
-<p><strong>Clique nos links abaixo para baixar seus arquivos:</strong></p>'
-. $link_plano_html . $link_receitas_html .
-'<p><b>Dieta Pronta Online 💚</b></p>';
-$body = trim(str_replace(["\n", "\r", "\t"], '', $body));
-// ======================================================================
-// ENVIO
-// ======================================================================
-$mail = new PHPMailer(true);
-$response = [];
-try {
-  $mail->isSMTP();
-  $mail->Host = $MAIL_HOST;
-  $mail->SMTPAuth = true;
-  $mail->Username = $MAIL_USER;
-  $mail->Password = $MAIL_PASS;
-  $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-  $mail->Port = $MAIL_PORT;
-  $mail->CharSet = 'UTF-8';
-  $mail->Encoding = '8bit';
-  $mail->setFrom($MAIL_FROM, $MAIL_NAME);
-  $mail->addAddress($email);
-  $mail->Subject = '📦 Seu Combo Completo – Plano + Receitas (Dieta Pronta Online)';
-  $mail->isHTML(true);
-  $mail->Body = $body;
-  $mail->AltBody = $alt_text;
-  file_put_contents(__DIR__ . '/logs/last_email_upsell.html', $body);
-  $mail->send();
-  $response['ok'] = true;
-  $response['message'] = 'E-mail de upsell enviado com sucesso!';
-  $response['to'] = $email;
-  $response['dieta_raw'] = $dieta_raw;
-  $response['dieta_mapeada'] = $dieta;
-} catch (Exception $e) {
-  $response['ok'] = false;
-  $response['error'] = $mail->ErrorInfo ?: $e->getMessage();
-}
-// ======================================================================
-// LOG
-// ======================================================================
-$log_dir = __DIR__ . '/logs';
-if (!is_dir($log_dir)) {
-    mkdir($log_dir, 0755, true);
-}
-file_put_contents(
-  "$log_dir/envios_upsell.txt",
-  sprintf("[%s] EMAIL: %s | RAW: %s | MAPEADA: %s | STATUS: %s\n",
-    date('Y-m-d H:i:s'),
-    $email,
-    $dieta_raw,
-    $dieta,
-    $response['ok'] ? 'OK' : 'ERRO'
-  ),
-  FILE_APPEND
-);
-// ======================================================================
-// RETORNO JSON
-// ======================================================================
-if (!headers_sent()) {
-  header('Content-Type: application/json; charset=utf-8');
-}
-echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Combo Completo Aprovado 🎉 | Dieta Pronta Online</title>
+  <meta name="description" content="Confirmação de pagamento aprovado para o Combo Completo (Plano + Receitas) da Dieta Pronta Online.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand: #22c55e; }
+    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans',sans-serif; }
+    .container{ max-width:980px; }
+    .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
+
+    #statusEnvio {
+      display: inline-block;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-top: 1.5rem;
+      background: #ecfdf5;
+      color: #047857;
+      border: 2px solid #6ee7b7;
+      border-radius: 1rem;
+      padding: 1rem 1.5rem;
+      animation: pulseText 1s infinite alternate;
+      transition: all .3s ease;
+    }
+    @keyframes pulseText {
+      0% { opacity: 1; box-shadow: 0 0 10px rgba(16,185,129,0.4); }
+      100% { opacity: 0.7; box-shadow: 0 0 20px rgba(16,185,129,0.8); }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-emerald-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <span class="font-extrabold tracking-tight">Dieta Pronta Online</span>
+      </div>
+      <div class="text-sm text-slate-500 hidden md:block">Pagamento confirmado</div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-white to-slate-100 text-center">
+    <div class="container mx-auto px-4 py-14">
+      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">🎉 Parabéns, <span id="nomeSpan">seu combo completo foi liberado!</span></h1>
+      <p class="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
+        Seu pagamento foi <strong>aprovado com sucesso!</strong><br>
+        Agora você tem acesso ao seu <strong>Plano Alimentar + 200 Receitas Saudáveis</strong>, criados com base nas suas respostas do quiz. 🥗🍳
+      </p>
+
+      <!-- 🚀 MENSAGEM DE ENVIO AUTOMÁTICO -->
+      <div id="statusEnvio" class="mx-auto"></div>
+    </div>
+  </section>
+
+  <!-- Resumo -->
+  <section class="py-10">
+    <div class="container mx-auto px-4">
+      <div class="p-6 bg-white rounded-2xl shadow-soft border border-slate-200">
+        <h2 class="text-2xl font-extrabold mb-3 text-emerald-700">📋 Resumo do seu combo</h2>
+        <div class="grid md:grid-cols-2 gap-6 text-slate-700">
+          <div>
+            <p><strong>Nome:</strong> <span id="infoNome">-</span></p>
+            <p><strong>Dieta Recomendada:</strong> <span id="infoDieta">-</span></p>
+            <p><strong>Biotipo:</strong> <span id="infoBodyType">-</span></p>
+          </div>
+          <div>
+            <p><strong>IMC:</strong> <span id="infoIMC">-</span> <small id="infoIMCLabel" class="text-slate-500"></small></p>
+            <p><strong>Plano:</strong> <span id="infoPlano">Combo Completo (Plano + Receitas)</span></p>
+          </div>
+        </div>
+        <div id="descSpan" class="mt-4 text-slate-600 text-sm italic"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Envio por e-mail -->
+  <section class="py-10">
+    <div class="container mx-auto px-4 max-w-2xl">
+      <div class="rounded-2xl bg-white border border-slate-200 shadow-soft p-6 text-center">
+        <h2 class="text-2xl font-extrabold mb-3">📧 Receba seu Combo por e-mail</h2>
+        <p class="text-slate-700 mb-4">
+          Prefere receber seu plano e receitas no e-mail? Basta digitar abaixo — enviaremos automaticamente.
+        </p>
+
+        <div id="emailForm" class="flex flex-col gap-3 items-center">
+          <input type="email" id="emailInput" placeholder="Digite seu e-mail" class="border rounded-xl p-3 w-full max-w-md text-center" />
+          <button id="btnEmail" class="rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+            Enviar Combo por E-mail
+          </button>
+        </div>
+
+        <div id="emailStatus" class="mt-3 font-medium text-emerald-600"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agradecimento -->
+  <section class="py-10 text-center">
+    <div class="container mx-auto px-4">
+      <h3 class="text-xl font-bold text-emerald-600">💚 Obrigado por confiar em nós!</h3>
+      <p class="mt-2 text-slate-700 max-w-xl mx-auto">
+        Enviamos seu combo completo automaticamente para o WhatsApp.<br>
+        Caso prefira, também pode recebê-lo agora no seu e-mail.
+      </p>
+    </div>
+  </section>
+
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+  document.addEventListener("DOMContentLoaded", function(){
+    const nome = localStorage.getItem('lead_nome') || '';
+    const dietTitle = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || '';
+    const bodyType = localStorage.getItem('body_type') || localStorage.getItem('quiz_body_type') || '';
+    const imcValue = localStorage.getItem('imc_value') || '';
+    const imcLabel = localStorage.getItem('imc_label') || '';
+    const desc = localStorage.getItem('quiz_result_desc') || '';
+    const phone = localStorage.getItem('lead_whats') || '';
+
+    if(nome) document.getElementById('nomeSpan').textContent = nome + "!";
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('infoNome').textContent = nome || '-';
+    document.getElementById('infoDieta').textContent = dietTitle || 'Personalizada';
+    document.getElementById('infoBodyType').textContent = bodyType || '---';
+    document.getElementById('infoIMC').textContent = imcValue || '---';
+    document.getElementById('infoIMCLabel').textContent = imcLabel ? "(" + imcLabel + ")" : '';
+    document.getElementById('descSpan').textContent = desc;
+
+    // Mensagem automática WhatsApp
+    const statusDiv = document.getElementById('statusEnvio');
+    let count = 5;
+    statusDiv.textContent = "⏳ Enviando Combo para seu WhatsApp...";
+    const timer = setInterval(() => {
+      statusDiv.textContent = `⏳ Enviando Combo para seu WhatsApp... ${count}`;
+      count--;
+      if (count < 0) {
+        clearInterval(timer);
+        statusDiv.textContent = `✅ Enviado com sucesso para seu WhatsApp: ${phone ? phone.replace(/^55/, '').replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3") : 'número não encontrado'}`;
+        statusDiv.style.animation = "none";
+        statusDiv.style.background = "#d1fae5";
+        statusDiv.style.color = "#065f46";
+      }
+    }, 1000);
+  });
+
+  // Envio de e-mail (UPS)
+  document.addEventListener("DOMContentLoaded", () => {
+    const btnEmail = document.getElementById("btnEmail");
+    const emailInput = document.getElementById("emailInput");
+    const emailStatus = document.getElementById("emailStatus");
+
+    btnEmail.addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+      const nome = localStorage.getItem('lead_nome') || '';
+      const dieta = localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
+
+      if (!email || !email.includes("@")) {
+        emailStatus.textContent = "⚠️ Digite um e-mail válido.";
+        emailStatus.style.color = "red";
+        return;
+      }
+
+      emailStatus.textContent = "⏳ Enviando combo para " + email + "...";
+      emailStatus.style.color = "#047857";
+
+      try {
+        const res = await fetch('https://italomelo.com/server/send_email_upsell.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome, email, dieta })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          emailStatus.textContent = "✅ Combo enviado com sucesso para " + email;
+        } else {
+          emailStatus.textContent = "⚠️ Falha: " + (data.error || 'erro desconhecido');
+        }
+      } catch (err) {
+        console.error(err);
+        emailStatus.textContent = "❌ Erro de conexão ao enviar o e-mail.";
+      }
+    });
+  });
+
+  // Envio automático WhatsApp
+  document.addEventListener("DOMContentLoaded", async () => {
+    const phone = localStorage.getItem('lead_whats') || '';
+    const dieta = localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
+
+    try {
+      const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: phone, message: dieta })
+      });
+      console.log("✅ Resposta do servidor:", await res.json());
+    } catch (e) {
+      console.error("❌ Erro ao enviar para WhatsApp:", e);
+    }
+  });
+  </script>
+</body>
+</html>
