@@ -204,7 +204,7 @@
     const dieta = localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
 
     try {
-      const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
+      const res = await fetch('https://italomelo.com/server/whatsapp-die-rec.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phone: phone, message: dieta })
