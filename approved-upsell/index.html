@@ -1,15 +1,4 @@
 <?php
-/**
- * Envio Automático de Planos + Receitas (UPSELL)
- * --------------------------------------------------------
- * E-mail: contato@dietapronta.online
- * SMTP: mail.dietapronta.online (porta 465, SSL)
- * Hospedagem: HostGator
- * --------------------------------------------------------
- * Retorna JSON sempre:
- * { "ok": true, "message": "E-mail enviado com sucesso!" }
- */
-
 // === CORS ===
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
@@ -19,18 +8,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   http_response_code(204);
   exit;
 }
-
 // === DEPURAÇÃO OPCIONAL ===
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
-
 // === Caminhos do PHPMailer ===
 require __DIR__ . '/PHPMailer/PHPMailer.php';
 require __DIR__ . '/PHPMailer/SMTP.php';
 require __DIR__ . '/PHPMailer/Exception.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
 // === CONFIGURAÇÃO DO SMTP ===
 $MAIL_HOST = 'mail.dietapronta.online';
 $MAIL_USER = 'contato@dietapronta.online';
@@ -38,68 +24,59 @@ $MAIL_PASS = 'italo1607';
 $MAIL_PORT = 465;
 $MAIL_FROM = 'contato@dietapronta.online';
 $MAIL_NAME = 'Dieta Pronta Online';
-
 // === RECEBE DADOS ===
 $raw = file_get_contents("php://input");
 $data = json_decode($raw, true);
-if (!$data || !is_array($data)) $data = $_POST;
-
+if (json_last_error() !== JSON_ERROR_NONE || !is_array($data)) {
+    $data = $_POST;
+}
 $email = trim($data['email'] ?? '');
 $dieta_raw = trim($data['dieta'] ?? '');
 $nome = trim($data['nome'] ?? 'Cliente');
-
 if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
   echo json_encode(['ok' => false, 'error' => 'email_missing_or_invalid']);
   exit;
 }
-
 // ======================================================================
 // MAPA DE DIETAS (Link do PDF)
 // ======================================================================
 $mensagens = [
-  'Low Carb'               => 'https://dietapronta.online/pdfs/Dieta_Low_Carb.pdf',
-  'Cetogênica'             => 'https://dietapronta.online/pdfs/Dieta_Cetogenica.pdf',
-  'Flexível'               => 'https://dietapronta.online/pdfs/Dieta_Flexivel.pdf',
-  'Mediterrânea'           => 'https://dietapronta.online/pdfs/Dieta_Mediterranea.pdf',
+  'Low Carb' => 'https://dietapronta.online/pdfs/Dieta_Low_Carb.pdf',
+  'Cetogênica' => 'https://dietapronta.online/pdfs/Dieta_Cetogenica.pdf',
+  'Flexível' => 'https://dietapronta.online/pdfs/Dieta_Flexivel.pdf',
+  'Mediterrânea' => 'https://dietapronta.online/pdfs/Dieta_Mediterranea.pdf',
   '200 Receitas Saudáveis' => 'https://dietapronta.online/pdfs/200_Receitas_Saudaveis.pdf'
 ];
-
 // === MAPEAMENTO DE PALAVRAS-CHAVE ===
 $dietas_mapeadas = [
-  'low carb'    => 'Low Carb',
-  'cetogenica'  => 'Cetogênica',
-  'flexivel'    => 'Flexível',
+  'low carb' => 'Low Carb',
+  'cetogenica' => 'Cetogênica',
+  'flexivel' => 'Flexível',
   'mediterranea'=> 'Mediterrânea',
-  'ectomorfo'   => 'Low Carb',
-  'mesomorfo'   => 'Flexível',
-  'endomorfo'   => 'Cetogênica'
+  'ectomorfo' => 'Low Carb',
+  'mesomorfo' => 'Flexível',
+  'endomorfo' => 'Cetogênica'
 ];
-
 // === ENCONTRA A DIETA CORRETA ===
 $dieta_encontrada = null;
 $dieta_limpa = strtolower(preg_replace('/[^\w\s]/', '', $dieta_raw));
-
 foreach ($dietas_mapeadas as $chave => $nome) {
-  if (str_contains($dieta_limpa, $chave)) {
+  if (strpos($dieta_limpa, $chave) !== false) {
     $dieta_encontrada = $nome;
     break;
   }
 }
-
 if (!$dieta_encontrada && isset($mensagens[$dieta_raw])) {
   $dieta_encontrada = $dieta_raw;
 }
-
 $dieta_exibicao = $dieta_raw;
 $dieta = $dieta_encontrada ?? 'Desconhecida';
-
 // ======================================================================
 // MONTA LINKS
 // ======================================================================
 $link_plano_html = '';
 $link_receitas_html = '';
 $alt_text = "Seu plano $dieta_exibicao está pronto.";
-
 if ($dieta !== 'Desconhecida' && isset($mensagens[$dieta])) {
   $link = $mensagens[$dieta];
   $link_plano_html = '<p><a href="' . $link . '" target="_blank" style="color:#1a73e8;font-weight:bold;text-decoration:none;">Baixar Plano ' . $dieta . ' (PDF)</a></p>';
@@ -107,12 +84,10 @@ if ($dieta !== 'Desconhecida' && isset($mensagens[$dieta])) {
 } else {
   $link_plano_html = '<p><strong style="color:red;">[ERRO] Dieta não reconhecida: "' . htmlspecialchars($dieta_raw, ENT_QUOTES) . '"</strong></p>';
 }
-
-// 🔥 No upsell, o PDF de receitas é sempre adicionado
+// No upsell, o PDF de receitas é sempre adicionado
 $link_rec = $mensagens['200 Receitas Saudáveis'];
 $link_receitas_html = '<p><a href="' . $link_rec . '" target="_blank" style="color:#1a73e8;font-weight:bold;text-decoration:none;">Baixar 200 Receitas Saudáveis (PDF)</a></p>';
 $alt_text .= " | Receitas: $link_rec";
-
 // ======================================================================
 // CORPO DO E-MAIL
 // ======================================================================
@@ -123,53 +98,46 @@ $body = '
 <p><strong>Clique nos links abaixo para baixar seus arquivos:</strong></p>'
 . $link_plano_html . $link_receitas_html .
 '<p><b>Dieta Pronta Online 💚</b></p>';
-
 $body = trim(str_replace(["\n", "\r", "\t"], '', $body));
-
 // ======================================================================
 // ENVIO
 // ======================================================================
 $mail = new PHPMailer(true);
 $response = [];
-
 try {
   $mail->isSMTP();
-  $mail->Host       = $MAIL_HOST;
-  $mail->SMTPAuth   = true;
-  $mail->Username   = $MAIL_USER;
-  $mail->Password   = $MAIL_PASS;
+  $mail->Host = $MAIL_HOST;
+  $mail->SMTPAuth = true;
+  $mail->Username = $MAIL_USER;
+  $mail->Password = $MAIL_PASS;
   $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-  $mail->Port       = $MAIL_PORT;
-  $mail->CharSet    = 'UTF-8';
-  $mail->Encoding   = '8bit';
-
+  $mail->Port = $MAIL_PORT;
+  $mail->CharSet = 'UTF-8';
+  $mail->Encoding = '8bit';
   $mail->setFrom($MAIL_FROM, $MAIL_NAME);
   $mail->addAddress($email);
   $mail->Subject = '📦 Seu Combo Completo – Plano + Receitas (Dieta Pronta Online)';
   $mail->isHTML(true);
-  $mail->Body    = $body;
+  $mail->Body = $body;
   $mail->AltBody = $alt_text;
-
   file_put_contents(__DIR__ . '/logs/last_email_upsell.html', $body);
-
   $mail->send();
-
   $response['ok'] = true;
   $response['message'] = 'E-mail de upsell enviado com sucesso!';
   $response['to'] = $email;
   $response['dieta_raw'] = $dieta_raw;
   $response['dieta_mapeada'] = $dieta;
-
 } catch (Exception $e) {
   $response['ok'] = false;
   $response['error'] = $mail->ErrorInfo ?: $e->getMessage();
 }
-
 // ======================================================================
 // LOG
 // ======================================================================
 $log_dir = __DIR__ . '/logs';
-if (!is_dir($log_dir)) mkdir($log_dir, 0755, true);
+if (!is_dir($log_dir)) {
+    mkdir($log_dir, 0755, true);
+}
 file_put_contents(
   "$log_dir/envios_upsell.txt",
   sprintf("[%s] EMAIL: %s | RAW: %s | MAPEADA: %s | STATUS: %s\n",
@@ -181,7 +149,6 @@ file_put_contents(
   ),
   FILE_APPEND
 );
-
 // ======================================================================
 // RETORNO JSON
 // ======================================================================
