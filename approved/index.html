@@ -170,13 +170,13 @@
         if (count < 0) {
           clearInterval(timer);
           try {
-            const formattedPhone = '55' + phone.replace(/\D/g, '');
-            const payload = {
-              //  phone: formattedPhone,
-	      phone: '+' + formattedPhone,  // AQUI: ADICIONA O '+'
-              dieta: plano,
-              tipo: "dieta+receitas"
-            };
+          // Dentro do handleLead (substitua o payload)
+const formattedPhone = '55' + phone.replace(/\D/g, '');  // Seu código atual
+const payload = {
+  phone: '+' + formattedPhone,  // FIX: Adiciona o '+'
+  dieta: plano,
+  tipo: "dieta+receitas"
+};
 
             console.log("ENVIANDO WHATSAPP:", payload);
 
