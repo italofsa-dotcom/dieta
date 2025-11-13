@@ -76,6 +76,9 @@
           <div>
             <p><strong>IMC:</strong> <span id="infoIMC">-</span> <small id="infoIMCLabel" class="text-slate-500"></small></p>
             <p><strong>Plano:</strong> <span id="infoPlano">Personalizado</span></p>
+
+            <!-- 🔥 NOVO CAMPO ADICIONADO -->
+            <p><strong>Resultado do Quiz:</strong> <span id="infoResultadoQuiz">-</span></p>
           </div>
         </div>
         <div id="descSpan" class="mt-4 text-slate-600 text-sm italic"></div>
@@ -120,7 +123,6 @@
 <script>
 document.addEventListener("DOMContentLoaded", async function () {
 
-  // === CAPTURA DO LOCALSTORAGE ===
   const nome          = localStorage.getItem('lead_nome') || '';
   const planoReal     = localStorage.getItem('quiz_result_title') || 'Plano Personalizado';
   const bodyType      = localStorage.getItem('quiz_result_body_name') || '';
@@ -130,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const desc          = localStorage.getItem('quiz_result_desc') || '';
   const rawPhone      = localStorage.getItem('lead_whats') || '';
 
-  // === PREENCHE A INTERFACE ===
+  // === PREENCHE TELA ===
   if (nome) document.getElementById('nomeSpan').textContent = nome + "!";
   document.getElementById('infoNome').textContent = nome || '-';
   document.getElementById('infoDieta').textContent = dietaRecom || '-';
@@ -138,6 +140,10 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.getElementById('infoIMC').textContent = imcValue || '-';
   document.getElementById('infoIMCLabel').textContent = imcLabel ? `(${imcLabel})` : '';
   document.getElementById('descSpan').textContent = desc;
+
+  // 🔥 NOVO CAMPO
+  document.getElementById('infoResultadoQuiz').textContent = planoReal;
+
   document.getElementById('year').textContent = new Date().getFullYear();
 
   const statusDiv = document.getElementById('statusEnvio');
@@ -150,7 +156,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     return;
   }
 
-  // === CONTAGEM REGRESSIVA (visualmente) ===
   let count = 5;
   const timer = setInterval(() => {
     statusDiv.textContent = `Enviando plano para seu WhatsApp... ${count}`;
@@ -158,9 +163,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (count < 0) clearInterval(timer);
   }, 1000);
 
-  // ============================
-  //   ENVIO AUTOMÁTICO WHATSAPP
-  // ============================
   try {
     const payloadWhats = {
       phone: cleanPhone,
@@ -209,9 +211,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 });
 
-// =====================================
-//   ENVIO POR EMAIL (BOTÃO DO CLIENTE)
-// =====================================
+// === ENVIO POR EMAIL ===
 document.getElementById("btnEmail").addEventListener("click", async (e) => {
   e.preventDefault();
 
@@ -227,7 +227,6 @@ document.getElementById("btnEmail").addEventListener("click", async (e) => {
   status.textContent = "Enviando...";
   status.style.color = "#047857";
 
-  // === CAPTURA DOS DADOS NOVAMENTE ===
   const payloadEmail = {
     email: email,
     lead_nome: localStorage.getItem('lead_nome') || '',
@@ -271,7 +270,6 @@ document.getElementById("btnEmail").addEventListener("click", async (e) => {
   }
 });
 </script>
-
 
 </body>
 </html>
