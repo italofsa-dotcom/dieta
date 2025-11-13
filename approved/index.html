@@ -119,24 +119,25 @@
   <!-- SCRIPT PRINCIPAL -->
 <script>
 document.addEventListener("DOMContentLoaded", async function () {
-  // === CAPTURA DO LOCALSTORAGE ===
-  const nome = localStorage.getItem('lead_nome') || '';
-  const planoReal = localStorage.getItem('quiz_result_title') || 'Plano Personalizado';
-  const bodyType = localStorage.getItem('quiz_result_body_name') || '';
-  const dietaRecomendada = localStorage.getItem('quiz_result_diet_title') || '';
-  const imcValue = localStorage.getItem('quiz_imc_value') || '';
-  const imcLabel = localStorage.getItem('quiz_imc_label') || '';
-  const desc = localStorage.getItem('quiz_result_desc') || '';
-  const rawPhone = localStorage.getItem('lead_whats') || '';
 
-  // === PREENCHE CAMPOS DA TELA ===
+  // === CAPTURA DO LOCALSTORAGE ===
+  const nome          = localStorage.getItem('lead_nome') || '';
+  const planoReal     = localStorage.getItem('quiz_result_title') || 'Plano Personalizado';
+  const bodyType      = localStorage.getItem('quiz_result_body_name') || '';
+  const dietaRecom    = localStorage.getItem('quiz_result_diet_title') || '';
+  const imcValue      = localStorage.getItem('quiz_imc_value') || '';
+  const imcLabel      = localStorage.getItem('quiz_imc_label') || '';
+  const desc          = localStorage.getItem('quiz_result_desc') || '';
+  const rawPhone      = localStorage.getItem('lead_whats') || '';
+
+  // === PREENCHE A INTERFACE ===
   if (nome) document.getElementById('nomeSpan').textContent = nome + "!";
   document.getElementById('infoNome').textContent = nome || '-';
-  document.getElementById('infoDieta').textContent = dietaRecomendada || '-';
+  document.getElementById('infoDieta').textContent = dietaRecom || '-';
   document.getElementById('infoBodyType').textContent = bodyType || '-';
   document.getElementById('infoIMC').textContent = imcValue || '-';
   document.getElementById('infoIMCLabel').textContent = imcLabel ? `(${imcLabel})` : '';
-  document.getElementById('descSpan').textContent = desc || '';
+  document.getElementById('descSpan').textContent = desc;
   document.getElementById('year').textContent = new Date().getFullYear();
 
   const statusDiv = document.getElementById('statusEnvio');
@@ -149,7 +150,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     return;
   }
 
-  // Timer visual
+  // === CONTAGEM REGRESSIVA (visualmente) ===
   let count = 5;
   const timer = setInterval(() => {
     statusDiv.textContent = `Enviando plano para seu WhatsApp... ${count}`;
@@ -157,33 +158,40 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (count < 0) clearInterval(timer);
   }, 1000);
 
-  // === ENVIO AO BACKEND ===
+  // ============================
+  //   ENVIO AUTOMÁTICO WHATSAPP
+  // ============================
   try {
-    const payload = {
+    const payloadWhats = {
       phone: cleanPhone,
       lead_nome: nome,
       quiz_imc_value: imcValue,
       quiz_imc_label: imcLabel,
       quiz_result_body_name: bodyType,
-      quiz_result_diet_title: dietaRecomendada,
-      quiz_result_title: planoReal
+      quiz_result_diet_title: dietaRecom,
+      quiz_result_title: planoReal,
+      quiz_result_desc: desc
     };
 
-    console.log("ENVIANDO AO BACKEND:", payload);
+    console.group("⚡ Envio WhatsApp — Payload");
+    console.log(payloadWhats);
+    console.groupEnd();
 
     const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payloadWhats)
     });
 
     const data = await res.json();
-    console.log("RESPOSTA BACKEND:", data);
+    console.group("📩 Resposta WhatsApp");
+    console.log(data);
+    console.groupEnd();
 
     clearInterval(timer);
 
     if (data.ok) {
-      statusDiv.innerHTML = `Plano enviado para seu WhatsApp com sucesso!`;
+      statusDiv.innerHTML = `Plano enviado com sucesso para seu WhatsApp!`;
       statusDiv.style.background = "#d1fae5";
       statusDiv.style.color = "#065f46";
       statusDiv.style.animation = "none";
@@ -193,15 +201,17 @@ document.addEventListener("DOMContentLoaded", async function () {
       statusDiv.style.color = "#991b1b";
     }
   } catch (err) {
-    console.error("Erro de rede:", err);
-    clearInterval(timer);
+    console.error("Erro de conexão com WhatsApp:", err);
     statusDiv.innerHTML = "Erro de conexão.";
     statusDiv.style.background = "#fee2e2";
     statusDiv.style.color = "#991b1b";
   }
+
 });
 
-// === ENVIO POR EMAIL ===
+// =====================================
+//   ENVIO POR EMAIL (BOTÃO DO CLIENTE)
+// =====================================
 document.getElementById("btnEmail").addEventListener("click", async (e) => {
   e.preventDefault();
 
@@ -217,27 +227,51 @@ document.getElementById("btnEmail").addEventListener("click", async (e) => {
   status.textContent = "Enviando...";
   status.style.color = "#047857";
 
+  // === CAPTURA DOS DADOS NOVAMENTE ===
+  const payloadEmail = {
+    email: email,
+    lead_nome: localStorage.getItem('lead_nome') || '',
+    quiz_imc_value: localStorage.getItem('quiz_imc_value') || '',
+    quiz_imc_label: localStorage.getItem('quiz_imc_label') || '',
+    quiz_result_body_name: localStorage.getItem('quiz_result_body_name') || '',
+    quiz_result_diet_title: localStorage.getItem('quiz_result_diet_title') || '',
+    quiz_result_title: localStorage.getItem('quiz_result_title') || '',
+    quiz_result_desc: localStorage.getItem('quiz_result_desc') || ''
+  };
+
+  console.group("📧 Envio Email — Payload");
+  console.log(payloadEmail);
+  console.groupEnd();
+
   try {
     const res = await fetch('https://italomelo.com/server/send_email_plan.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: localStorage.getItem('lead_nome') || '',
-        email: email,
-        dieta: localStorage.getItem('quiz_result_title') || 'Plano Personalizado',
-        upsell: localStorage.getItem('upsell_comprado') === '1'
-      })
+      body: JSON.stringify(payloadEmail)
     });
 
     const data = await res.json();
-    status.textContent = data.ok ? `Enviado para ${email}` : `Erro: ${data.error}`;
-    status.style.color = data.ok ? "#047857" : "red";
+
+    console.group("📬 Resposta do Servidor (Email)");
+    console.log(data);
+    console.groupEnd();
+
+    if (data.ok) {
+      status.textContent = `Plano enviado com sucesso para ${email}`;
+      status.style.color = "#047857";
+    } else {
+      status.textContent = "Erro: " + data.error;
+      status.style.color = "red";
+    }
+
   } catch (err) {
+    console.error("Erro de conexão com servidor de email:", err);
     status.textContent = "Erro de conexão.";
     status.style.color = "red";
   }
 });
 </script>
+
 
 </body>
 </html>
