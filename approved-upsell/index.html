@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log(payloadWhats);
     console.groupEnd();
 
-    const res = await fetch('https://italomelo.com/server/whatsapp-die-rec.php', {
+    const res = await fetch('https://italomelo.com/server/whatsapp-bot-upsell.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payloadWhats)
