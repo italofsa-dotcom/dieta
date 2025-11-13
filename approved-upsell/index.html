@@ -3,18 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Combo Completo Aprovado 🎉 | Dieta Pronta Online</title>
-  <meta name="description" content="Confirmação de pagamento aprovado para o Combo Completo (Plano + Receitas) da Dieta Pronta Online.">
+  <title>Pagamento Aprovado | Dieta Pronta Online</title>
+  <meta name="description" content="Confirmação de pagamento aprovado para o combo: Plano Personalizado + 200 Receitas Saudáveis.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root { --brand: #22c55e; }
-    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,'Noto Sans','Liberation Sans',sans-serif; }
-    .container{ max-width:980px; }
-    .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
-
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    .container { max-width: 980px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, .08); }
     #statusEnvio {
       display: inline-block;
       font-size: 1.3rem;
@@ -54,22 +53,32 @@
   <!-- Hero -->
   <section class="bg-gradient-to-b from-white to-slate-100 text-center">
     <div class="container mx-auto px-4 py-14">
-      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">🎉 Parabéns, <span id="nomeSpan">seu combo completo foi liberado!</span></h1>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-emerald-600">
+        Parabéns, <span id="nomeSpan">sua nova fase começou! 🚀</span>
+      </h1>
       <p class="mt-4 text-lg text-slate-700 max-w-2xl mx-auto">
-        Seu pagamento foi <strong>aprovado com sucesso!</strong><br>
-        Agora você tem acesso ao seu <strong>Plano Alimentar + 200 Receitas Saudáveis</strong>, criados com base nas suas respostas do quiz. 🥗🍳
+        Seu pagamento foi <strong>aprovado com sucesso! 🎉</strong><br>
+        Agora você tem acesso ao <strong>Combo Premium</strong> da Dieta Pronta Online:
       </p>
 
-      <!-- 🚀 MENSAGEM DE ENVIO AUTOMÁTICO -->
-      <div id="statusEnvio" class="mx-auto"></div>
+      <p class="mt-4 text-xl font-semibold text-emerald-600">
+        🥗 Plano Alimentar Personalizado + 📘 200 Receitas Saudáveis
+      </p>
+
+      <p class="mt-4 text-lg text-slate-700 max-w-xl mx-auto">
+        Tudo enviado diretamente para o seu WhatsApp e também disponível por e-mail.  
+        Prepare-se para transformar seus resultados com praticidade e comida de verdade! 💚
+      </p>
+
+      <div id="statusEnvio" class="mx-auto">Enviando seus materiais agora mesmo... 📦</div>
     </div>
   </section>
 
-  <!-- Resumo -->
+  <!-- Resumo do Plano -->
   <section class="py-10">
     <div class="container mx-auto px-4">
       <div class="p-6 bg-white rounded-2xl shadow-soft border border-slate-200">
-        <h2 class="text-2xl font-extrabold mb-3 text-emerald-700">📋 Resumo do seu combo</h2>
+        <h2 class="text-2xl font-extrabold mb-3 text-emerald-700">Resumo do seu plano 💡</h2>
         <div class="grid md:grid-cols-2 gap-6 text-slate-700">
           <div>
             <p><strong>Nome:</strong> <span id="infoNome">-</span></p>
@@ -78,7 +87,8 @@
           </div>
           <div>
             <p><strong>IMC:</strong> <span id="infoIMC">-</span> <small id="infoIMCLabel" class="text-slate-500"></small></p>
-            <p><strong>Plano:</strong> <span id="infoPlano">Combo Completo (Plano + Receitas)</span></p>
+            <p><strong>Plano:</strong> <span id="infoPlano">Personalizado + Receitas</span> 🍽️</p>
+            <p><strong>Resultado do Quiz:</strong> <span id="infoResultadoQuiz">-</span></p>
           </div>
         </div>
         <div id="descSpan" class="mt-4 text-slate-600 text-sm italic"></div>
@@ -86,22 +96,21 @@
     </div>
   </section>
 
-  <!-- Envio por e-mail -->
+  <!-- Acesso ao Plano (EMAIL) -->
   <section class="py-10">
     <div class="container mx-auto px-4 max-w-2xl">
       <div class="rounded-2xl bg-white border border-slate-200 shadow-soft p-6 text-center">
-        <h2 class="text-2xl font-extrabold mb-3">📧 Receba seu Combo por e-mail</h2>
+        <h2 class="text-2xl font-extrabold mb-3">📬 Receber materiais por e-mail</h2>
         <p class="text-slate-700 mb-4">
-          Prefere receber seu plano e receitas no e-mail? Basta digitar abaixo — enviaremos automaticamente.
+          Quer garantir acesso fácil ao seu plano + receitas no seu e-mail também?<br>
+          Basta inserir seu endereço abaixo e enviaremos automaticamente! ✉️
         </p>
-
-        <div id="emailForm" class="flex flex-col gap-3 items-center">
+        <div class="flex flex-col gap-3 items-center">
           <input type="email" id="emailInput" placeholder="Digite seu e-mail" class="border rounded-xl p-3 w-full max-w-md text-center" />
           <button id="btnEmail" class="rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
-            Enviar Combo por E-mail
+            Enviar meus arquivos por e-mail 📥
           </button>
         </div>
-
         <div id="emailStatus" class="mt-3 font-medium text-emerald-600"></div>
       </div>
     </div>
@@ -110,10 +119,10 @@
   <!-- Agradecimento -->
   <section class="py-10 text-center">
     <div class="container mx-auto px-4">
-      <h3 class="text-xl font-bold text-emerald-600">💚 Obrigado por confiar em nós!</h3>
+      <h3 class="text-xl font-bold text-emerald-600">Obrigado pela confiança! 💚</h3>
       <p class="mt-2 text-slate-700 max-w-xl mx-auto">
-        Enviamos seu combo completo automaticamente para o WhatsApp.<br>
-        Caso prefira, também pode recebê-lo agora no seu e-mail.
+        Seus materiais já estão a caminho!<br>
+        Fique de olho no seu WhatsApp e no seu e-mail — sua transformação começa agora! ✨
       </p>
     </div>
   </section>
@@ -122,98 +131,159 @@
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
   </footer>
 
-  <!-- Scripts -->
-  <script>
-  document.addEventListener("DOMContentLoaded", function(){
-    const nome = localStorage.getItem('lead_nome') || '';
-    const dietTitle = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || '';
-    const bodyType = localStorage.getItem('body_type') || localStorage.getItem('quiz_body_type') || '';
-    const imcValue = localStorage.getItem('imc_value') || '';
-    const imcLabel = localStorage.getItem('imc_label') || '';
-    const desc = localStorage.getItem('quiz_result_desc') || '';
-    const phone = localStorage.getItem('lead_whats') || '';
 
-    if(nome) document.getElementById('nomeSpan').textContent = nome + "!";
-    document.getElementById('year').textContent = new Date().getFullYear();
-    document.getElementById('infoNome').textContent = nome || '-';
-    document.getElementById('infoDieta').textContent = dietTitle || 'Personalizada';
-    document.getElementById('infoBodyType').textContent = bodyType || '---';
-    document.getElementById('infoIMC').textContent = imcValue || '---';
-    document.getElementById('infoIMCLabel').textContent = imcLabel ? "(" + imcLabel + ")" : '';
-    document.getElementById('descSpan').textContent = desc;
 
-    // Mensagem automática WhatsApp
-    const statusDiv = document.getElementById('statusEnvio');
-    let count = 5;
-    statusDiv.textContent = "⏳ Enviando Combo para seu WhatsApp...";
-    const timer = setInterval(() => {
-      statusDiv.textContent = `⏳ Enviando Combo para seu WhatsApp... ${count}`;
-      count--;
-      if (count < 0) {
-        clearInterval(timer);
-        statusDiv.textContent = `✅ Enviado com sucesso para seu WhatsApp: ${phone ? phone.replace(/^55/, '').replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3") : 'número não encontrado'}`;
-        statusDiv.style.animation = "none";
-        statusDiv.style.background = "#d1fae5";
-        statusDiv.style.color = "#065f46";
-      }
-    }, 1000);
-  });
+  <!-- SCRIPT PRINCIPAL -->
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
 
-  // Envio de e-mail (UPS)
-  document.addEventListener("DOMContentLoaded", () => {
-    const btnEmail = document.getElementById("btnEmail");
-    const emailInput = document.getElementById("emailInput");
-    const emailStatus = document.getElementById("emailStatus");
+  const nome          = localStorage.getItem('lead_nome') || '';
+  const planoReal     = localStorage.getItem('quiz_result_title') || 'Plano Personalizado';
+  const bodyType      = localStorage.getItem('quiz_result_body_name') || '';
+  const dietaRecom    = localStorage.getItem('quiz_result_diet_title') || '';
+  const imcValue      = localStorage.getItem('quiz_imc_value') || '';
+  const imcLabel      = localStorage.getItem('quiz_imc_label') || '';
+  const desc          = localStorage.getItem('quiz_result_desc') || '';
+  const rawPhone      = localStorage.getItem('lead_whats') || '';
 
-    btnEmail.addEventListener("click", async () => {
-      const email = emailInput.value.trim();
-      const nome = localStorage.getItem('lead_nome') || '';
-      const dieta = localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
+  // === PREENCHE TELA ===
+  if (nome) document.getElementById('nomeSpan').textContent = nome + "!";
+  document.getElementById('infoNome').textContent = nome || '-';
+  document.getElementById('infoDieta').textContent = dietaRecom || '-';
+  document.getElementById('infoBodyType').textContent = bodyType || '-';
+  document.getElementById('infoIMC').textContent = imcValue || '-';
+  document.getElementById('infoIMCLabel').textContent = imcLabel ? `(${imcLabel})` : '';
+  document.getElementById('descSpan').textContent = desc;
 
-      if (!email || !email.includes("@")) {
-        emailStatus.textContent = "⚠️ Digite um e-mail válido.";
-        emailStatus.style.color = "red";
-        return;
-      }
+  // 🔥 NOVO CAMPO
+  document.getElementById('infoResultadoQuiz').textContent = planoReal;
 
-      emailStatus.textContent = "⏳ Enviando combo para " + email + "...";
-      emailStatus.style.color = "#047857";
+  document.getElementById('year').textContent = new Date().getFullYear();
 
-      try {
-        const res = await fetch('https://italomelo.com/server/send_email_upsell.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nome, email, dieta })
-        });
-        const data = await res.json();
-        if (data.ok) {
-          emailStatus.textContent = "✅ Combo enviado com sucesso para " + email;
-        } else {
-          emailStatus.textContent = "⚠️ Falha: " + (data.error || 'erro desconhecido');
-        }
-      } catch (err) {
-        console.error(err);
-        emailStatus.textContent = "❌ Erro de conexão ao enviar o e-mail.";
-      }
+  const statusDiv = document.getElementById('statusEnvio');
+  const cleanPhone = rawPhone.replace(/\D/g, '');
+
+  if (cleanPhone.length !== 11) {
+    statusDiv.innerHTML = "Número inválido. Verifique no quiz.";
+    statusDiv.style.background = "#fee2e2";
+    statusDiv.style.color = "#991b1b";
+    return;
+  }
+
+  let count = 5;
+  const timer = setInterval(() => {
+    statusDiv.textContent = `Enviando plano para seu WhatsApp... ${count}`;
+    count--;
+    if (count < 0) clearInterval(timer);
+  }, 1000);
+
+  try {
+    const payloadWhats = {
+      phone: cleanPhone,
+      lead_nome: nome,
+      quiz_imc_value: imcValue,
+      quiz_imc_label: imcLabel,
+      quiz_result_body_name: bodyType,
+      quiz_result_diet_title: dietaRecom,
+      quiz_result_title: planoReal,
+      quiz_result_desc: desc
+    };
+
+    console.group("⚡ Envio WhatsApp — Payload");
+    console.log(payloadWhats);
+    console.groupEnd();
+
+    const res = await fetch('https://italomelo.com/server/whatsapp-bot.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payloadWhats)
     });
-  });
 
-  // Envio automático WhatsApp
-  document.addEventListener("DOMContentLoaded", async () => {
-    const phone = localStorage.getItem('lead_whats') || '';
-    const dieta = localStorage.getItem('quiz_result_title') || 'Dieta Personalizada';
+    const data = await res.json();
+    console.group("📩 Resposta WhatsApp");
+    console.log(data);
+    console.groupEnd();
 
-    try {
-      const res = await fetch('https://italomelo.com/server/whatsapp-die-rec.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: phone, message: dieta })
-      });
-      console.log("✅ Resposta do servidor:", await res.json());
-    } catch (e) {
-      console.error("❌ Erro ao enviar para WhatsApp:", e);
+    clearInterval(timer);
+
+    if (data.ok) {
+      statusDiv.innerHTML = `Plano enviado com sucesso para seu WhatsApp!`;
+      statusDiv.style.background = "#d1fae5";
+      statusDiv.style.color = "#065f46";
+      statusDiv.style.animation = "none";
+    } else {
+      statusDiv.innerHTML = `Erro: ${data.error || 'Falha ao enviar'}`;
+      statusDiv.style.background = "#fee2e2";
+      statusDiv.style.color = "#991b1b";
     }
-  });
-  </script>
+  } catch (err) {
+    console.error("Erro de conexão com WhatsApp:", err);
+    statusDiv.innerHTML = "Erro de conexão.";
+    statusDiv.style.background = "#fee2e2";
+    statusDiv.style.color = "#991b1b";
+  }
+
+});
+
+// === ENVIO POR EMAIL ===
+document.getElementById("btnEmail").addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("emailInput").value.trim();
+  const status = document.getElementById("emailStatus");
+
+  if (!email || !email.includes("@")) {
+    status.textContent = "Digite um e-mail válido.";
+    status.style.color = "red";
+    return;
+  }
+
+  status.textContent = "Enviando...";
+  status.style.color = "#047857";
+
+  const payloadEmail = {
+    email: email,
+    lead_nome: localStorage.getItem('lead_nome') || '',
+    quiz_imc_value: localStorage.getItem('quiz_imc_value') || '',
+    quiz_imc_label: localStorage.getItem('quiz_imc_label') || '',
+    quiz_result_body_name: localStorage.getItem('quiz_result_body_name') || '',
+    quiz_result_diet_title: localStorage.getItem('quiz_result_diet_title') || '',
+    quiz_result_title: localStorage.getItem('quiz_result_title') || '',
+    quiz_result_desc: localStorage.getItem('quiz_result_desc') || ''
+  };
+
+  console.group("📧 Envio Email — Payload");
+  console.log(payloadEmail);
+  console.groupEnd();
+
+  try {
+    const res = await fetch('https://italomelo.com/server/send_email_plan.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payloadEmail)
+    });
+
+    const data = await res.json();
+
+    console.group("📬 Resposta do Servidor (Email)");
+    console.log(data);
+    console.groupEnd();
+
+    if (data.ok) {
+      status.textContent = `Plano enviado com sucesso para ${email}`;
+      status.style.color = "#047857";
+    } else {
+      status.textContent = "Erro: " + data.error;
+      status.style.color = "red";
+    }
+
+  } catch (err) {
+    console.error("Erro de conexão com servidor de email:", err);
+    status.textContent = "Erro de conexão.";
+    status.style.color = "red";
+  }
+});
+</script>
+
 </body>
 </html>
