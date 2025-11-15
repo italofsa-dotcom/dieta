@@ -170,94 +170,209 @@
 
 
 
-<!-- DEPOIMENTOS DE CLIENTES (VERSÃO BRASILEIRA) -->
-<section class="py-14 bg-white">
-  <div class="container mx-auto px-4 max-w-5xl">
-    
-    <h2 class="text-3xl md:text-4xl font-extrabold text-center text-emerald-600 mb-10">
-      O que nossos clientes dizem 💬✨
-    </h2>
+<!-- DEPOIMENTOS EM CARROSSEL + SELO + ANIMAÇÃO -->
+<section class="py-16 bg-white relative overflow-hidden">
 
-    <div class="grid md:grid-cols-3 gap-8">
+  <!-- Selo superior -->
+  <div class="text-center mb-6">
+    <span class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full font-semibold text-sm shadow">
+      ✔ Clientes Reais Verificados
+    </span>
+  </div>
 
-      <!-- Depoimento 1 -->
-      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft hover:shadow-md transition">
-        <div class="flex items-center gap-4 mb-4">
-          <img src="https://i.pravatar.cc/150?img=47" class="w-14 h-14 rounded-full object-cover" alt="">
-          <div>
-            <h4 class="font-bold text-slate-900">Mariana Oliveira</h4>
-            <p class="text-sm text-slate-500">Usuária verificada</p>
-          </div>
-        </div>
-        <div class="flex text-yellow-400 mb-3">★★★★★</div>
-        <p class="text-slate-700 leading-relaxed">
-          “O combo dieta + receitas mudou tudo pra mim! Agora consigo seguir firme e comendo bem. Já estou sentindo diferença no meu corpo!”
-        </p>
-      </div>
+  <!-- Título -->
+  <h2 class="text-3xl md:text-4xl font-extrabold text-center text-emerald-600 mb-3 opacity-0 animate-fadeIn">
+    O que nossos clientes dizem 💬✨
+  </h2>
 
-      <!-- Depoimento 2 -->
-      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft hover:shadow-md transition">
-        <div class="flex items-center gap-4 mb-4">
-          <img src="https://i.pravatar.cc/150?img=55" class="w-14 h-14 rounded-full object-cover" alt="">
-          <div>
-            <h4 class="font-bold text-slate-900">Rafael Gomes</h4>
-            <p class="text-sm text-slate-500">Usuário verificado</p>
-          </div>
-        </div>
-        <div class="flex text-yellow-400 mb-3">★★★★★</div>
-        <p class="text-slate-700 leading-relaxed">
-          “As receitas são incríveis! Práticas, rápidas e saborosas. Agora a dieta ficou muito mais fácil de seguir.”
-        </p>
-      </div>
+  <!-- Subtítulo -->
+  <p class="text-center text-slate-600 max-w-2xl mx-auto mb-10 opacity-0 animate-fadeIn delay-200">
+    São milhares de pessoas transformando a alimentação com nossos planos personalizados e receitas práticas!
+  </p>
 
-      <!-- Depoimento 3 -->
-      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft hover:shadow-md transition">
-        <div class="flex items-center gap-4 mb-4">
-          <img src="https://i.pravatar.cc/150?img=12" class="w-14 h-14 rounded-full object-cover" alt="">
-          <div>
-            <h4 class="font-bold text-slate-900">Ana Beatriz</h4>
-            <p class="text-sm text-slate-500">Usuária verificada</p>
-          </div>
-        </div>
-        <div class="flex text-yellow-400 mb-3">★★★★★</div>
-        <p class="text-slate-700 leading-relaxed">
-          “Nunca tinha recebido um plano tão completo assim! Amei o cuidado e a personalização. Valeu cada centavo!”
-        </p>
-      </div>
-
-      <!-- Depoimento 4 (Novo) -->
-      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft hover:shadow-md transition md:col-span-1">
-        <div class="flex items-center gap-4 mb-4">
-          <img src="https://i.pravatar.cc/150?img=32" class="w-14 h-14 rounded-full object-cover" alt="">
-          <div>
-            <h4 class="font-bold text-slate-900">Juliana Santos</h4>
-            <p class="text-sm text-slate-500">Usuária verificada</p>
-          </div>
-        </div>
-        <div class="flex text-yellow-400 mb-3">★★★★★</div>
-        <p class="text-slate-700 leading-relaxed">
-          “As receitas são perfeitas para quem não tem tempo! Fácil de preparar e muito gostosas. Minha rotina ficou muito mais leve.”
-        </p>
-      </div>
-
-      <!-- Depoimento 5 (Novo) -->
-      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft hover:shadow-md transition md:col-span-1">
-        <div class="flex items-center gap-4 mb-4">
-          <img src="https://i.pravatar.cc/150?img=15" class="w-14 h-14 rounded-full object-cover" alt="">
-          <div>
-            <h4 class="font-bold text-slate-900">Carlos Eduardo</h4>
-            <p class="text-sm text-slate-500">Usuário verificado</p>
-          </div>
-        </div>
-        <div class="flex text-yellow-400 mb-3">★★★★★</div>
-        <p class="text-slate-700 leading-relaxed">
-          “Comecei faz pouco tempo e já estou impressionado! Plano prático, claro, e as receitas me ajudam a não sair da dieta.”
-        </p>
-      </div>
-
+  <!-- Bloco de confiança -->
+  <div class="text-center mb-12 opacity-0 animate-fadeIn delay-300">
+    <div class="inline-block bg-slate-100 border border-slate-300 px-6 py-3 rounded-2xl shadow-sm">
+      <p class="font-semibold text-slate-700 text-lg">
+        ⭐ Mais de <span class="text-emerald-600 font-bold">4.200 clientes satisfeitos</span> em todo o Brasil!
+      </p>
     </div>
   </div>
+
+  <!-- Container do carrossel -->
+  <div class="max-w-4xl mx-auto relative">
+
+    <!-- Slides -->
+    <div id="carousel" class="overflow-hidden relative h-72">
+
+      <!-- Slide Wrapper -->
+      <div id="carouselWrapper" class="flex transition-all duration-700">
+
+        <!-- Depoimento 1 -->
+        <div class="min-w-full px-6 flex items-center justify-center">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft w-full max-w-md animate-slideUp">
+            <div class="flex items-center gap-4 mb-4">
+              <img src="https://i.pravatar.cc/150?img=47" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold text-slate-900">Mariana Oliveira</h4>
+                <p class="text-sm text-slate-500">Usuária verificada</p>
+              </div>
+            </div>
+            <div class="flex text-yellow-400 mb-3">★★★★★</div>
+            <p class="text-slate-700 leading-relaxed">
+              “O combo dieta + receitas mudou tudo pra mim! Agora consigo seguir firme e comendo bem.”
+            </p>
+          </div>
+        </div>
+
+        <!-- Depoimento 2 -->
+        <div class="min-w-full px-6 flex items-center justify-center">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft w-full max-w-md animate-slideUp">
+            <div class="flex items-center gap-4 mb-4">
+              <img src="https://i.pravatar.cc/150?img=55" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold text-slate-900">Rafael Gomes</h4>
+                <p class="text-sm text-slate-500">Usuário verificado</p>
+              </div>
+            </div>
+            <div class="flex text-yellow-400 mb-3">★★★★★</div>
+            <p class="text-slate-700 leading-relaxed">
+              “As receitas são fáceis, rápidas e gostosas. Agora não falho mais na dieta!”
+            </p>
+          </div>
+        </div>
+
+        <!-- Depoimento 3 -->
+        <div class="min-w-full px-6 flex items-center justify-center">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft w-full max-w-md animate-slideUp">
+            <div class="flex items-center gap-4 mb-4">
+              <img src="https://i.pravatar.cc/150?img=12" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold text-slate-900">Ana Beatriz</h4>
+                <p class="text-sm text-slate-500">Usuária verificada</p>
+              </div>
+            </div>
+            <div class="flex text-yellow-400 mb-3">★★★★★</div>
+            <p class="text-slate-700 leading-relaxed">
+              “Nunca recebi um plano tão completo. Material impecável e fácil de seguir!”
+            </p>
+          </div>
+        </div>
+
+        <!-- Depoimento 4 -->
+        <div class="min-w-full px-6 flex items-center justify-center">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft w-full max-w-md animate-slideUp">
+            <div class="flex items-center gap-4 mb-4">
+              <img src="https://i.pravatar.cc/150?img=32" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold text-slate-900">Juliana Santos</h4>
+                <p class="text-sm text-slate-500">Usuária verificada</p>
+              </div>
+            </div>
+            <div class="flex text-yellow-400 mb-3">★★★★★</div>
+            <p class="text-slate-700 leading-relaxed">
+              “As receitas são perfeitas! Muito práticas e ajudam demais na rotina corrida.”
+            </p>
+          </div>
+        </div>
+
+        <!-- Depoimento 5 -->
+        <div class="min-w-full px-6 flex items-center justify-center">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft w-full max-w-md animate-slideUp">
+            <div class="flex items-center gap-4 mb-4">
+              <img src="https://i.pravatar.cc/150?img=15" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold text-slate-900">Carlos Eduardo</h4>
+                <p class="text-sm text-slate-500">Usuário verificado</p>
+              </div>
+            </div>
+            <div class="flex text-yellow-400 mb-3">★★★★★</div>
+            <p class="text-slate-700 leading-relaxed">
+              “O plano é claro, prático e objetivo. Já senti diferença na primeira semana!”
+            </p>
+          </div>
+        </div>
+
+        <!-- Depoimento 6 -->
+        <div class="min-w-full px-6 flex items-center justify-center">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft w-full max-w-md animate-slideUp">
+            <div class="flex items-center gap-4 mb-4">
+              <img src="https://i.pravatar.cc/150?img=67" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold text-slate-900">Fernanda Ribeiro</h4>
+                <p class="text-sm text-slate-500">Usuária verificada</p>
+              </div>
+            </div>
+            <div class="flex text-yellow-400 mb-3">★★★★★</div>
+            <p class="text-slate-700 leading-relaxed">
+              “O melhor investimento que fiz! Plano completo e receitas deliciosas!”
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Controles -->
+    <div class="flex justify-center gap-4 mt-8">
+      <button id="prevBtn" class="bg-slate-200 hover:bg-slate-300 transition p-3 rounded-full">
+        ◀
+      </button>
+      <button id="nextBtn" class="bg-slate-200 hover:bg-slate-300 transition p-3 rounded-full">
+        ▶
+      </button>
+    </div>
+
+  </div>
 </section>
+
+<!-- Animações Tailwind personalizadas -->
+<style>
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(25px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slideUp {
+  animation: slideUp 0.8s ease forwards;
+}
+</style>
+
+<!-- SCRIPT DO CARROSSEL -->
+<script>
+let index = 0;
+const wrapper = document.getElementById("carouselWrapper");
+const slides = wrapper.children;
+const totalSlides = slides.length;
+
+function updateCarousel() {
+  wrapper.style.transform = `translateX(-${index * 100}%)`;
+}
+
+document.getElementById("nextBtn").onclick = () => {
+  index = (index + 1) % totalSlides;
+  updateCarousel();
+};
+
+document.getElementById("prevBtn").onclick = () => {
+  index = (index - 1 + totalSlides) % totalSlides;
+  updateCarousel();
+};
+
+// Auto-play
+setInterval(() => {
+  index = (index + 1) % totalSlides;
+  updateCarousel();
+}, 6000);
+</script>
+
 
 
   
