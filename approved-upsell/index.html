@@ -257,7 +257,7 @@ document.getElementById("btnEmail").addEventListener("click", async (e) => {
   console.groupEnd();
 
   try {
-    const res = await fetch('https://italomelo.com/server/send_email_plan.php', {
+    const res = await fetch('https://italomelo.com/server/send_email_upsell.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payloadEmail)
