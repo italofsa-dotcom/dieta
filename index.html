@@ -658,28 +658,12 @@
 
   
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-
-    const uid = "usr_" + Math.random().toString(36).substr(2);
-
-    // ENTER
-    fetch("https://italomelo.com/tracker_api.php?a=enter&u=" + uid)
-        .catch(()=>{});
-
-    // PING a cada 15s
-    setInterval(() => {
-        fetch("https://italomelo.com/tracker_api.php?a=ping&u=" + uid)
-            .catch(()=>{});
-    }, 15000);
-
-    // EXIT
-    window.addEventListener("beforeunload", function() {
-        navigator.sendBeacon("https://italomelo.com/tracker_api.php?a=exit&id=" + uid);
-    });
-});
+  (function() {
+    const ws = new WebSocket('ws://italomelo.com:7071'); // Ajuste o domínio/porto
+    ws.onopen = () => { console.log('Conectado ao monitor'); };
+    ws.onclose = () => { console.log('Desconectado'); };
+  })();
 </script>
-
-
 
 
   
