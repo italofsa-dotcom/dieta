@@ -658,22 +658,25 @@
 
   
 <script>
-(function(){
+document.addEventListener("DOMContentLoaded", function() {
+
     const uid = "usr_" + Math.random().toString(36).substr(2);
 
-    // entrar
-    fetch("https://italomelo.com/tracker_api.php?a=enter&u=" + uid);
+    // ENTER
+    fetch("https://italomelo.com/tracker_api.php?a=enter&u=" + uid)
+        .catch(()=>{});
 
-    // ping
+    // PING a cada 15s
     setInterval(() => {
-        fetch("https://italomelo.com/tracker_api.php?a=ping&u=" + uid);
+        fetch("https://italomelo.com/tracker_api.php?a=ping&u=" + uid)
+            .catch(()=>{});
     }, 15000);
 
-    // sair
-    window.addEventListener("beforeunload", () => {
-        navigator.sendBeacon("https://italomelo.com/tracker_api.php?a=exit&u=" + uid);
+    // EXIT
+    window.addEventListener("beforeunload", function() {
+        navigator.sendBeacon("https://italomelo.com/tracker_api.php?a=exit&id=" + uid);
     });
-})();
+});
 </script>
 
 
