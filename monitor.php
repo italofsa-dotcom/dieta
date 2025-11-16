@@ -1,4 +1,5 @@
 
+
 <?php
 // ===== PROTEÇÃO COM SENHA =====
 $senhaCorreta = "italo1607"; // ALTERE AQUI!
