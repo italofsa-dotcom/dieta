@@ -736,5 +736,61 @@ if (buyersEl) {
 }
 </script>
 
+
+// === Cadastro do quiz direto no banco admin ===
+
+  <script>
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const nome = localStorage.getItem('lead_nome') || '';
+    const email = localStorage.getItem('lead_email') || '';
+    const phone = localStorage.getItem('lead_whats') || '';
+    const diet_title = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || '';
+    const body_type = localStorage.getItem('body_type') || localStorage.getItem('quiz_body_type') || '';
+    const imc_value = localStorage.getItem('imc_value') || '';
+    const imc_label = localStorage.getItem('imc_label') || '';
+
+    // Evita duplicar o registro
+    if (localStorage.getItem('pre_checkout_sent') === '1') {
+      console.log("📭 Lead 'pre_checkout' já registrado anteriormente.");
+      return;
+    }
+
+    const ref = 'pre-' + Date.now() + '-' + Math.random().toString(36).substring(2, 8);
+
+    const payload = {
+      ref,
+      name: nome,
+      email,
+      phone,
+      diet_title,
+      body_type,
+      imc_value,
+      imc_label,
+      status: 'pre_checkout', // 👈 define o novo status
+      secret: '2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e'
+    };
+
+    const res = await fetch('https://italomelo.com/server/save_lead.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.ok) {
+      console.log("✅ Lead salvo automaticamente como 'pre_checkout':", data.ref);
+      localStorage.setItem('pre_checkout_sent', '1');
+      localStorage.setItem('pre_checkout_ref', data.ref);
+    } else {
+      console.warn("⚠️ Falha ao salvar 'pre_checkout':", data);
+    }
+  } catch (err) {
+    console.error("❌ Erro ao salvar lead 'pre_checkout':", err);
+  }
+});
+</script>
+
+
 </body>
 </html>
