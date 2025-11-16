@@ -1,5 +1,10 @@
 
 <?php
+
+header("Access-Control-Allow-Origin: https://italomelo.com");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: *");
+
 header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? '';
