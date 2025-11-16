@@ -683,6 +683,28 @@
 })();
 </script>
 
+
+  <script>
+(function(){
+    if (!window.dp_userId) {
+
+        window.dp_userId = "usr_" + Math.random().toString(36).substring(2);
+
+        // Registrar entrada
+        fetch("https://italomelo.com/contador.php?action=enter&id=" + window.dp_userId)
+            .catch(()=>{});
+
+        // Registrar saída
+        window.addEventListener("beforeunload", function () {
+            navigator.sendBeacon(
+              "https://italomelo.com/contador.php?action=exit&id=" + window.dp_userId
+            );
+        });
+    }
+})();
+</script>
+
+
 </body>
 </html>
 
