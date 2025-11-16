@@ -60,18 +60,6 @@
 
 
 
-  <script>
-const userId = "user_" + Math.random().toString(36).substring(2);
-
-// REGISTRAR ENTRADA
-fetch("https://italomelo.com/contador.php?action=enter&id=" + userId);
-
-// REGISTRAR SAÍDA
-window.addEventListener("beforeunload", () => {
-    navigator.sendBeacon("https://italomelo.com/contador.php?action=exit&id=" + userId);
-});
-</script>
-
 
   <script>
 const userId = "user_" + Math.random().toString(36).substring(2);
