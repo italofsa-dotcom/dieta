@@ -658,55 +658,41 @@
 
 
 
-...
-</script> <!-- seu último script existente -->
-
 <script>
 (function(){
-    let testId = "test_" + Math.random().toString(36).substring(2);
 
-    console.log("🟩 TESTE DE MONITORAMENTO — INICIADO");
-
-    fetch("https://italomelo.com/contador.php?action=enter&id=" + testId)
-      .then(res => res.text())
-      .then(txt => {
-         console.log("🟩 RESPOSTA DO ENTER:", txt);
-      })
-      .catch(err => {
-         console.error("❌ ERRO NO ENTER:", err);
-      });
-
-    window.addEventListener("beforeunload", () => {
-        console.log("🟨 ENVIANDO EXIT…");
-        navigator.sendBeacon("https://italomelo.com/contador.php?action=exit&id=" + testId);
-    });
-})();
-</script>
-
-
-  <script>
-(function(){
     if (!window.dp_userId) {
-
         window.dp_userId = "usr_" + Math.random().toString(36).substring(2);
 
-        // Registrar entrada
+        // ENTRADA
         fetch("https://italomelo.com/contador.php?action=enter&id=" + window.dp_userId)
             .catch(()=>{});
-
-        // Registrar saída
-        window.addEventListener("beforeunload", function () {
-            navigator.sendBeacon(
-              "https://italomelo.com/contador.php?action=exit&id=" + window.dp_userId
-            );
-        });
     }
+
+    // SAÍDA IMEDIATA ao mudar visibilidade
+    document.addEventListener("visibilitychange", function () {
+        if (document.hidden) {
+            navigator.sendBeacon(
+                "https://italomelo.com/contador.php?action=exit&id=" + window.dp_userId
+            );
+        }
+    });
+
+    // SAÍDA IMEDIATA ao fechar a aba
+    window.addEventListener("unload", function () {
+        navigator.sendBeacon(
+            "https://italomelo.com/contador.php?action=exit&id=" + window.dp_userId
+        );
+    });
+
+    // HEARTBEAT (mantém a presença ativa)
+    setInterval(function(){
+        fetch("https://italomelo.com/contador.php?action=ping&id=" + window.dp_userId)
+            .catch(()=>{});
+    }, 5000);
+
 })();
 </script>
-
-
-</body>
-</html>
 
 
 
