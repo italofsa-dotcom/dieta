@@ -2,119 +2,184 @@
 <html lang="pt-BR">
 <head>
 
-  <!-- Google tag (gtag.js) --> 
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17661147688"></script> 
-  <script> window.dataLayer = window.dataLayer || []; 
-    function gtag(){dataLayer.push(arguments);} 
-    gtag('js', new Date()); gtag('config', 'AW-17661147688');
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17661147688"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-17661147688');
   </script>
 
-  <!-- Start of  Zendesk Widget script -->
-<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=8bd1b71a-ff84-437d-a53b-3af6d91d14a8"> </script>
-<!-- End of  Zendesk Widget script -->
-  
+  <!-- Zendesk Widget -->
+  <script id="ze-snippet"
+          src="https://static.zdassets.com/ekr/snippet.js?key=8bd1b71a-ff84-437d-a53b-3af6d91d14a8">
+  </script>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>🧠 Descubra qual dieta funciona pro seu tipo de corpo</title>
-  <meta name="description" content="Quiz interativo que indica a dieta ideal para o seu biotipo. Inclui cálculo de IMC, 16 combinações Dieta×Biotipo, WhatsApp e salvamento de lead em MySQL (cPanel).">
+  <meta name="description"
+        content="Quiz interativo que indica a dieta ideal para o seu biotipo. Inclui cálculo de IMC, 16 combinações Dieta×Biotipo, WhatsApp e salvamento de lead em MySQL (cPanel).">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     :root { --brand: #22c55e; }
-    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial; }
     .container { max-width: 980px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
     .hidden { display: none !important; }
 
     fieldset.step {
-      position: relative;
       background: linear-gradient(135deg, #d1fae5, #a7f3d0);
       border-radius: 20px;
       padding: 28px 20px 20px 20px;
       border: 1px solid #6ee7b7;
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.20);
-      transition: transform .2s ease, box-shadow .2s ease;
+      box-shadow: 0 8px 24px rgba(16,185,129,0.20);
+      transition: .2s;
     }
-    fieldset.step:hover { transform: scale(1.01); box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25); }
-    fieldset.step legend { font-size: 1.25rem; font-weight: 800; color: #064e3b; margin-bottom: 10px; }
+    fieldset.step:hover {
+      transform: scale(1.01);
+      box-shadow: 0 10px 28px rgba(5,150,105,0.25);
+    }
+    fieldset.step legend {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #064e3b;
+      margin-bottom: 10px;
+    }
 
     .choice label {
-      background: #ffffff; border: 1.5px solid #e5e7eb; color: #0f172a; border-radius: 12px;
-      transition: transform .16s ease, box-shadow .16s ease;
-      box-shadow: 0 4px 14px rgba(2, 6, 23, 0.06); display: block; padding: 12px; cursor: pointer;
+      background: #fff;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px;
+      display: block;
+      cursor: pointer;
+      transition: .16s;
     }
-    .choice label:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(2, 6, 23, 0.10); }
-    .choice input:checked + label { border-color: #10b981; box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25); }
+    .choice label:hover {
+      transform: translateY(-1px);
+      border-color: #cbd5e1;
+      box-shadow: 0 8px 18px rgba(2,6,23,0.10);
+    }
+    .choice input:checked + label {
+      border-color: #10b981;
+      box-shadow: 0 10px 24px rgba(16,185,129,0.25);
+    }
 
-    .body-card { background:#fff; border:1.5px solid #e5e7eb; border-radius:14px; padding:14px; text-align:center; cursor:pointer; transition:.16s; }
-    .body-card:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(2, 6, 23, 0.10); }
-    .body-card.selected { border-color:#10b981; box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25); }
+    .body-card {
+      background: #fff;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: .16s;
+      box-shadow: 0 4px 14px rgba(2,6,23,0.06);
+    }
+    .body-card:hover {
+      transform: translateY(-1px);
+      border-color: #cbd5e1;
+      box-shadow: 0 8px 18px rgba(2,6,23,0.10);
+    }
+    .body-card.selected {
+      border-color: #10b981;
+      box-shadow: 0 10px 24px rgba(16,185,129,0.25);
+    }
 
-    .imc-chip { padding:4px 10px; border-radius:999px; font-size:.85rem; font-weight:700; display:inline-block; }
   </style>
 </head>
+
 <body class="bg-slate-50 text-slate-900">
   <!-- Header -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-5 w-5 text-[var(--brand)]">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+               stroke="currentColor" class="h-5 w-5 text-[var(--brand)]">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/>
           </svg>
         </div>
         <span class="font-extrabold tracking-tight">Quiz de Dieta</span>
       </div>
+
       <nav class="hidden md:flex gap-6 text-sm text-slate-600">
         <a href="#quiz" class="hover:text-slate-900">Quiz</a>
         <a href="#resultado" class="hover:text-slate-900">Resultado</a>
       </nav>
-      <a href="#quiz" class="rounded-xl px-4 py-2 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar</a>
+
+      <a href="#quiz"
+         class="rounded-xl px-4 py-2 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+         Começar
+      </a>
     </div>
   </header>
 
   <!-- Hero -->
   <section class="bg-gradient-to-b from-white to-slate-100">
     <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
+
       <div>
-        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">🧠 Descubra agora qual a dieta que realmente funciona com seu corpo!</h1>
-        <p class="mt-4 text-lg text-slate-600">Tenha sua Dieta 100% Personalizada: Inteligente, Feita pro SEU Corpo – Resultados Reais, Sem Promessas Falsas!</p>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
+          🧠 Descubra agora qual a dieta que realmente funciona com seu corpo!
+        </h1>
+        <p class="mt-4 text-lg text-slate-600">
+          Tenha sua Dieta 100% Personalizada: Inteligente, Feita pro SEU Corpo — Resultados Reais!
+        </p>
+
         <div class="mt-6 flex gap-3">
-          <a href="#quiz" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Começar agora</a>
+          <a href="#quiz"
+             class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+             Começar agora
+          </a>
           <span class="text-slate-500 self-center">Leva ~1 minuto</span>
         </div>
       </div>
+
       <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
         <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600&auto=format&fit=crop"
              class="w-full h-72 object-cover"/>
+
         <div class="p-6">
           <h3 class="text-xl font-bold">Resultado personalizado</h3>
-          <p class="mt-1 text-slate-600">Direcionamento claro combinando <strong>biotipo</strong>, <strong>IMC</strong> e <strong>perfil</strong>.</p>
+          <p class="mt-1 text-slate-600">
+            Direcionamento claro combinando <strong>biotipo</strong>, <strong>IMC</strong> e <strong>perfil</strong>.
+          </p>
         </div>
       </div>
+
     </div>
   </section>
 
-  <!-- Quiz -->
+  <!-- QUIZ -->
   <section id="quiz" class="py-10 bg-white border-t border-b border-slate-200">
     <div class="container mx-auto px-4">
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
 
-        <div id="statusBanner" class="hidden mb-4 rounded-xl px-4 py-3 text-sm border"></div>
+        <div id="statusBanner"
+             class="hidden mb-4 rounded-xl px-4 py-3 text-sm border"></div>
 
         <div class="flex items-center justify-between mb-4">
           <div>
             <h2 class="text-2xl font-extrabold">Responda às perguntas</h2>
             <p id="microcopy" class="text-slate-600 text-sm mt-1">Começamos entendendo sua rotina 😉</p>
           </div>
+
           <div class="w-52 text-right">
             <div class="h-2 rounded-full bg-slate-200 overflow-hidden">
               <div id="progress" class="h-2 bg-[var(--brand)] w-0"></div>
             </div>
             <p class="text-xs text-slate-500 mt-1">
-              <span id="progressCount">0/20</span> • <span id="pct">0%</span>
+              <span id="progressCount">0/20</span> •
+              <span id="pct">0%</span>
             </p>
           </div>
         </div>
@@ -122,438 +187,428 @@
         <form id="quizForm" class="grid gap-6"></form>
 
         <div class="mt-6 flex items-center justify-between">
-          <button id="btnPrev" class="rounded-xl px-4 py-2 border border-slate-300 font-semibold disabled:opacity-40" disabled>Voltar</button>
+          <button id="btnPrev"
+                  class="rounded-xl px-4 py-2 border border-slate-300 font-semibold disabled:opacity-40"
+                  disabled>
+            Voltar
+          </button>
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- ====================== SCRIPT ====================== -->
+
+  <!-- SCRIPT DO QUIZ -->
   <script>
   (function(){
 
-    /* ----------------------------------
-       NOVO: BIOTIPOS MASCULINOS/FEMININOS
-    ---------------------------------- */
+    /* --------------- CONFIG ---------------- */
+    var PRE_PAG_URL   = "/pre-pagamento/";
+    var LEAD_ENDPOINT = "https://italomelo.com/server/save_lead.php";
+    var LEAD_TOKEN    = "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
+
+    /* --------------- MICROCOPY --------------- */
+    var MICROCOPY = {
+      0:  "Começamos entendendo sua rotina 😉",
+      4:  "Ótimo! Continuando…",
+      8:  "Estamos indo muito bem!",
+      12: "Últimos detalhes…",
+      16: "Quase pronto!"
+    };
+
+    /* --------------- BIOTIPOS POR GÊNERO --------------- */
     var BODY_TYPES_MALE = [
-      { key:'ECTO', name:'Ectomorfo', image:'img/male_ecto.png' },
-      { key:'MESO', name:'Mesomorfo', image:'img/male_meso.png' },
-      { key:'ENDO', name:'Endomorfo', image:'img/male_endo.png' },
-      { key:'EQUI', name:'Equilibrado', image:'img/male_equilibrado.png' }
+      { key:"ECTO", name:"Ectomorfo",   image:"img/male_ecto.png" },
+      { key:"MESO", name:"Mesomorfo",   image:"img/male_meso.png" },
+      { key:"ENDO", name:"Endomorfo",   image:"img/male_endo.png" },
+      { key:"EQUI", name:"Equilibrado", image:"img/male_equilibrado.png" }
     ];
 
     var BODY_TYPES_FEMALE = [
-      { key:'ECTO', name:'Ectomorfo', image:'img/female_ecto.png' },
-      { key:'MESO', name:'Mesomorfo', image:'img/female_meso.png' },
-      { key:'ENDO', name:'Endomorfo', image:'img/female_endo.png' },
-      { key:'EQUI', name:'Equilibrado', image:'img/female_equilibrado.png' }
+      { key:"ECTO", name:"Ectomorfo",   image:"img/female_ecto.png" },
+      { key:"MESO", name:"Mesomorfo",   image:"img/female_meso.png" },
+      { key:"ENDO", name:"Endomorfo",   image:"img/female_endo.png" },
+      { key:"EQUI", name:"Equilibrado", image:"img/female_equilibrado.png" }
     ];
 
-    /* Aqui manteremos BODY_TYPES, mas ele será atualizado dinamicamente */
-    var BODY_TYPES = BODY_TYPES_MALE;
-    /* --------- COMBOS, PROFILES e MICROCOPY continuam IGUAIS --------- */
-
-    var COMBOS = {
-      'A-ECTO': { title:'Plano Ectomorfo Low Carb', desc:'Estratégia para reduzir gordura sem perder performance.' },
-      'A-MESO': { title:'Plano Mesomorfo Low Carb', desc:'Foco em definição com estabilidade energética.' },
-      'A-ENDO': { title:'Plano Endomorfo Low Carb', desc:'Controle glicêmico e saciedade como base.' },
-      'A-EQUI': { title:'Plano Equilibrado Low Carb', desc:'Cortes inteligentes de açúcares e farinhas.' },
-
-      'B-ECTO': { title:'Plano Ectomorfo Balanceado', desc:'Mais carboidratos complexos para energia.' },
-      'B-MESO': { title:'Plano Mesomorfo Balanceado', desc:'Distribuição harmônica de macros.' },
-      'B-ENDO': { title:'Plano Endomorfo Balanceado', desc:'Controle de porções e priorização de integrais.' },
-      'B-EQUI': { title:'Plano Equilibrado Mediterrâneo', desc:'Base em frutas, verduras, azeite e peixes.' },
-
-      'C-ECTO': { title:'Plano Ectomorfo Proteico', desc:'Proteínas em todas as refeições.' },
-      'C-MESO': { title:'Plano Mesomorfo Proteico', desc:'Alta saciedade e preservação muscular.' },
-      'C-ENDO': { title:'Plano Endomorfo Proteico', desc:'Redução de gordura sem perder massa.' },
-      'C-EQUI': { title:'Plano Equilibrado Proteico', desc:'Fácil adesão para rotina corrida.' },
-
-      'D-ECTO': { title:'Plano Ectomorfo Jejum Flexível', desc:'Janelas curtas com foco proteico.' },
-      'D-MESO': { title:'Plano Mesomorfo Jejum Flexível', desc:'Refeições completas nas janelas.' },
-      'D-ENDO': { title:'Plano Endomorfo Jejum Flexível', desc:'Controle de apetite e foco em proteínas.' },
-      'D-EQUI': { title:'Plano Equilibrado Jejum Flexível', desc:'Simples, prático e sustentável.' }
-    };
-
-    /* -----------------------------------------
-       PERGUNTAS — Corpo agora é a PERGUNTA 3
-    ----------------------------------------- */
-
+    var BODY_TYPES = BODY_TYPES_MALE;   // valor padrão
+    /* ===========================================================
+       PERGUNTAS (com biotipo modificado dinamicamente)
+    ============================================================ */
     var QUESTIONS = [
-      {type:'radio', q:"Vamos começar.. informe seu gênero", a:["HOMEM","MULHER"]},
-      {type:'radio', q:"Qual sua faixa etária?", a:["15 a 25 anos","26 a 35 anos","36 a 49 anos","Tenho + 50 anos"]},
+      { type:"radio", q:"Vamos começar.. informe seu gênero", a:["HOMEM","MULHER"] },
+      { type:"radio", q:"Qual sua faixa etária?", a:["15 a 25 anos","26 a 35 anos","36 a 49 anos","+50 anos"] },
 
-      /* Esta pergunta será substituída dinamicamente */
-      {type:'body', q:"Agora escolha seu tipo de corpo (biotipo)", a: BODY_TYPES},
+      /* 🔥 PERGUNTA DE BIOTIPO — carregada dinamicamente */
+      { type:"body", q:"Agora escolha seu tipo de corpo (biotipo)", a: BODY_TYPES },
 
-      {type:'radio', q:"Qual seu principal objetivo agora?", a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},
-      {type:'radio', q:"Seu nível de energia diário é…", a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},
-      {type:'radio', q:"Seu apetite ao longo do dia é…", a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome o tempo todo"]},
-      {type:'radio', q:"Quantas refeições principais por dia?", a:["2 ou menos","3","4 a 5","Mais de 5 pequenas"]},
-      {type:'radio', q:"Fome emocional/ansiosa?", a:["Sim, muito","Às vezes","Raramente","Nunca"]},
-      {type:'radio', q:"Nível de atividade física", a:["Sedentário","Leve","Moderado (3x/sem)","Intenso (5x+)"]},
-      {type:'radio', q:"Seu sono é…", a:["Ruim","Durmo bem mas acordo cansado","Regular","Muito bom"]},
-      {type:'radio', q:"Costuma pular o café da manhã?", a:["Sempre","Às vezes","Raramente","Nunca"]},
-      {type:'radio', q:"Seu estilo de alimentação atual", a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"]},
-      {type:'radio', q:"Vontade de doces", a:["Sempre","Às vezes","Raramente","Quase nunca"]},
-      {type:'radio', q:"Seu tipo de corpo (percepção)", a:["Ganha peso fácil","Dificuldade para ganhar peso","Oscila rápido","Equilibrado"]},
-      {type:'radio', q:"Reação aos carboidratos", a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"]},
-      {type:'radio', q:"Prefere refeições…", a:["Leves e frequentes","Poucas e completas","Grandes à noite","Equilibradas"]},
-      {type:'radio', q:"Consegue ficar longos períodos sem comer?", a:["Sim, tranquilo","Pouco tempo","Depende do dia","Não consigo"]},
-      {type:'radio', q:"Nível de organização das refeições", a:["Planejo tudo","Planejo parte","Improviso muito","Quase nunca penso nisso"]},
-      {type:'input-height', q:"Qual a sua altura? (em cm)", placeholder:"Ex.: 173"},
-      {type:'input-weight', q:"Qual o seu peso atual? (em kg)", placeholder:"Ex.: 78"},
-      {type:'radio', q:"Como é sua rotina durante a semana?", a:["Muito corrida","Relativamente organizada","Bastante flexível","Muito sedentária"]},
-      {type:'radio', q:"Qual frase te representa?", a:["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"]},
-      {type:'radio', q:"Você estaria disposto(a) a seguir um plano simples e feito sob medida para o seu corpo?", a:["Sim, com certeza","Acho que sim","Preciso de ajuda para isso"]}
+      { type:"radio", q:"Qual seu principal objetivo agora?", a:["Emagrecer rápido","Ganhar massa magra","Manter peso","Reduzir gordura"] },
+      { type:"radio", q:"Seu nível de energia diário é…", a:["Baixo","Oscila","Constante","Muito alto"] },
+      { type:"radio", q:"Seu apetite é…", a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome sempre"] },
+      { type:"radio", q:"Quantas refeições por dia?", a:["2 ou menos","3","4 ou 5","Mais de 5"] },
+      { type:"radio", q:"Fome emocional/ansiosa?", a:["Sim, muito","Às vezes","Raramente","Nunca"] },
+      { type:"radio", q:"Nível de atividade física", a:["Sedentário","Leve","Moderado","Intenso"] },
+      { type:"radio", q:"Seu sono é…", a:["Ruim","Regular","Bom","Excelente"] },
+      { type:"radio", q:"Costuma pular o café da manhã?", a:["Sempre","Às vezes","Raramente","Nunca"] },
+      { type:"radio", q:"Estilo de alimentação atual", a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"] },
+      { type:"radio", q:"Vontade de doces", a:["Sempre","Às vezes","Raramente","Quase nunca"] },
+      { type:"radio", q:"Reação ao carboidrato", a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"] },
+
+      /* 🔢 Altura */
+      { type:"input-height", q:"Qual sua altura? (em cm)", placeholder:"Ex.: 173" },
+
+      /* ⚖️ Peso */
+      { type:"input-weight", q:"Qual seu peso atual? (kg)", placeholder:"Ex.: 78" },
+
+      { type:"radio", q:"Rotina semanal", a:["Muito corrida","Organizada","Flexível","Sedentária"] },
+      { type:"radio", q:"Qual frase te representa?", a:["Quero resultados rápidos","Quero algo sustentável","Quero comer bem","Quero performance máxima"] },
+      { type:"radio", q:"Aceita seguir um plano personalizado feito pro seu corpo?", a:["Sim","Talvez","Preciso de ajuda"] }
     ];
 
     var selected = new Array(QUESTIONS.length).fill(null);
-    var scores = {A:0,B:0,C:0,D:0};
+    var selectedGender = null;
+    var heightCm = null;
+    var weightKg = null;
     var current = 0;
-    var heightCm=null, weightKg=null, imcValue=null, imcLabel='';
-    var bodyTypeKey=null;
-    var selectedGender=null;
+    var bodyTypeKey = null;
+    var imcValue = null;
+    var imcLabel = "";
 
-    function $(id){ return document.getElementById(id); }
-    var form = $("quizForm");
+    function $(i){ return document.getElementById(i); }
 
-    /* -----------------------------------------
-       ATUALIZA OS BIOTIPOS após escolha de gênero
-    ----------------------------------------- */
 
-    function updateBodyTypesByGender() {
-      if (selectedGender === "A") BODY_TYPES = BODY_TYPES_MALE;
-      else if (selectedGender === "B") BODY_TYPES = BODY_TYPES_FEMALE;
-
+    /* ===========================================================
+       FUNÇÃO PARA ATUALIZAR BIOTIPOS QUANDO GÊNERO MUDA
+    ============================================================ */
+    function updateBodyTypesByGender(){
+      if(selectedGender === "HOMEM"){
+        BODY_TYPES = BODY_TYPES_MALE;
+      } else {
+        BODY_TYPES = BODY_TYPES_FEMALE;
+      }
       QUESTIONS[2].a = BODY_TYPES;
     }
 
-    /* -----------------------------------------
-       RENDERIZAÇÃO COMPLETA DAS PERGUNTAS
-    ----------------------------------------- */
+
+    /* ===========================================================
+       RENDERIZA TODAS AS PERGUNTAS
+    ============================================================ */
+    var form = $("quizForm");
 
     function renderQuestions(){
-      var html="";
-      for(var i=0;i<QUESTIONS.length;i++){
-        var it = QUESTIONS[i];
+      var html = "";
 
-        html += '<fieldset data-step="'+i+'" class="step'+(i===0?'':' hidden')+'">';
-        html += '<legend>'+(i+1)+'. '+ it.q +'</legend>';
+      for(let i=0; i<QUESTIONS.length; i++){
+        let it = QUESTIONS[i];
 
-        /* Pergunta de rádio */
-        if(it.type==='radio'){
-          html += '<div class="mt-3 grid sm:grid-cols-2 gap-3">';
-          for(var j=0;j<it.a.length;j++){
-            var letter=String.fromCharCode(65+j);
-            var id="q"+i+"_"+letter;
+        html += `<fieldset class="step ${i===0 ? "" : "hidden"}" data-step="${i}">
+                  <legend>${i+1}. ${it.q}</legend>`;
+
+        /* RADIO */
+        if(it.type === "radio"){
+          html += `<div class="mt-3 grid sm:grid-cols-2 gap-3">`;
+
+          for(let j=0; j<it.a.length; j++){
+            let letter = String.fromCharCode(65 + j);
+            let id = `q${i}_${letter}`;
+
             html += `
               <div class="choice">
-                <input class="peer hidden" type="radio" id="${id}" name="q${i}" value="${letter}" required />
-                <label for="${id}" class="block text-[1.05rem]">${it.a[j]}</label>
-              </div>
-            `;
-          }
-          html += '</div>';
-        }
-
-        /* Entrada de altura */
-        else if(it.type==='input-height'){
-          var v = heightCm!=null? heightCm : "";
-          html += `
-            <div class="mt-2">
-              <input id="heightCm" type="number" min="120" max="230" step="1"
-                     value="${v}" placeholder="${it.placeholder}"
-                     class="rounded-xl border-slate-300 w-full p-3" />
-            </div>`;
-        }
-
-        /* Entrada de peso */
-        else if(it.type==='input-weight'){
-          var w = weightKg!=null? weightKg : "";
-          html += `
-            <div class="mt-2">
-              <input id="weightKg" type="number" min="35" max="250" step="0.1"
-                     value="${w}" placeholder="${it.placeholder}"
-                     class="rounded-xl border-slate-300 w-full p-3" />
-            </div>`;
-        }
-
-        /* Pergunta de BIOTIPO */
-        else if(it.type==='body'){
-          html += `<div class="mt-3 grid sm:grid-cols-2 md:grid-cols-4 gap-3">`;
-
-          for (var b=0; b<BODY_TYPES.length; b++){
-            var bt = BODY_TYPES[b];
-            var sel = (bodyTypeKey===bt.key) ? " selected" : "";
-            html += `
-              <div class="body-card${sel}" data-body="${bt.key}">
-                <img src="${bt.image}" class="mx-auto h-32 w-auto rounded-lg" />
-                <div class="mt-2 font-semibold">${bt.name}</div>
+                <input type="radio" id="${id}" name="q${i}" class="hidden" value="${letter}">
+                <label for="${id}">${it.a[j]}</label>
               </div>`;
           }
-
           html += `</div>`;
         }
 
-        html += '</fieldset>';
+        /* ALTURA */
+        else if(it.type === "input-height"){
+          html += `
+            <div class="mt-2">
+              <input id="heightCm" type="number" min="120" max="230"
+                     placeholder="${it.placeholder}"
+                     class="rounded-xl border-slate-300 w-full p-3">
+            </div>`;
+        }
+
+        /* PESO */
+        else if(it.type === "input-weight"){
+          html += `
+            <div class="mt-2">
+              <input id="weightKg" type="number" min="35" max="250" step="0.1"
+                     placeholder="${it.placeholder}"
+                     class="rounded-xl border-slate-300 w-full p-3">
+            </div>`;
+        }
+
+        /* BIOTIPO */
+        else if(it.type === "body"){
+          html += `<div class="mt-3 grid sm:grid-cols-2 md:grid-cols-4 gap-3">`;
+
+          for(let b=0; b<BODY_TYPES.length; b++){
+            let bt = BODY_TYPES[b];
+            html += `
+              <div class="body-card" data-body="${bt.key}">
+                <img src="${bt.image}" class="mx-auto h-32 w-auto rounded-lg">
+                <div class="mt-2 font-semibold">${bt.name}</div>
+              </div>
+            `;
+          }
+          html += `</div>`;
+        }
+
+        html += `</fieldset>`;
       }
 
       form.innerHTML = html;
-    }
-    /* --------------------------
-       SALVAR PROGRESSO LOCAL
-    -------------------------- */
-    function saveProgress(){
-      try {
-        localStorage.setItem('quiz_selected', JSON.stringify(selected));
-        localStorage.setItem('quiz_current', current);
-        localStorage.setItem('quiz_height_cm', heightCm ?? '');
-        localStorage.setItem('quiz_weight_kg', weightKg ?? '');
-        localStorage.setItem('quiz_body_key', bodyTypeKey || '');
-        localStorage.setItem('quiz_gender', selectedGender || '');
-      } catch(e){}
+      updateProgress();
     }
 
-    function loadProgress(){
-      try{
-        var s = JSON.parse(localStorage.getItem('quiz_selected')||'[]');
-        if(Array.isArray(s) && s.length===selected.length) selected=s;
 
-        var c = parseInt(localStorage.getItem('quiz_current')||'0');
-        if(!isNaN(c)) current=c;
+    /* ===========================================================
+       PROGRESS BAR
+    ============================================================ */
+    function updateProgress(){
+      $("progress").style.width = (current / QUESTIONS.length * 100) + "%";
+      $("pct").textContent = Math.round(current / QUESTIONS.length * 100) + "%";
+      $("progressCount").textContent = current + "/" + QUESTIONS.length;
+      $("btnPrev").disabled = current === 0;
+      $("microcopy").textContent = MICROCOPY[
+        [16,12,8,4,0].find(x => current >= x)
+      ];
+    }
 
-        heightCm = parseFloat(localStorage.getItem('quiz_height_cm')) || null;
-        weightKg = parseFloat(localStorage.getItem('quiz_weight_kg')) || null;
 
-        bodyTypeKey = localStorage.getItem('quiz_body_key') || null;
-        selectedGender = localStorage.getItem('quiz_gender') || null;
+    /* ===========================================================
+       IR PARA UM STEP ESPECÍFICO
+    ============================================================ */
+    function gotoStep(n){
+      form.querySelectorAll(".step").forEach(s => s.classList.add("hidden"));
+      let next = form.querySelector(`.step[data-step="${n}"]`);
+      if(next) next.classList.remove("hidden");
+      current = n;
+      updateProgress();
+      window.scrollTo({top: quiz.offsetTop - 20, behavior:"smooth"});
+    }
+    /* ===========================================================
+       EVENTOS DO QUIZ (seleção geral)
+    ============================================================ */
+    document.addEventListener("change", function(e){
+      let t = e.target;
+      if(!t) return;
 
-        if(selectedGender){
-          updateBodyTypesByGender();
-          QUESTIONS[2].a = BODY_TYPES;
+      /* ---------------- GÊNERO ---------------- */
+      if(t.name === "q0"){
+        selectedGender = (t.value === "A") ? "HOMEM" : "MULHER";
+
+        updateBodyTypesByGender();
+        renderQuestions();
+
+        /* Avança automaticamente para a próxima pergunta */
+        current = 1;
+        gotoStep(1);
+        return;
+      }
+
+      /* ---------------- INPUT ALTURA ---------------- */
+      if(t.id === "heightCm"){
+        let v = parseInt(t.value, 10);
+        if(!isNaN(v) && v >= 120 && v <= 230){
+          heightCm = v;
+          computeIMC();
+          setTimeout(() => gotoStep(current + 1), 200);
         }
+      }
 
-      }catch(e){}
-    }
+      /* ---------------- INPUT PESO ---------------- */
+      if(t.id === "weightKg"){
+        let w = parseFloat(t.value);
+        if(!isNaN(w) && w >= 35 && w <= 250){
+          weightKg = w;
+          computeIMC();
+          setTimeout(() => gotoStep(current + 1), 200);
+        }
+      }
 
-    /* --------------------------
-       IMC
-    -------------------------- */
-    function imcCompute(){
+      /* ---------------- RADIO NORMAL ---------------- */
+      if(t.type === "radio" && t.name.startsWith("q")){
+        setTimeout(() => gotoStep(current + 1), 150);
+      }
+    });
+
+    /* ===========================================================
+       EVENTO — SELEÇÃO DO BIOTIPO
+    ============================================================ */
+    form.addEventListener("click", function(e){
+      let card = e.target.closest(".body-card");
+      if(!card) return;
+
+      bodyTypeKey = card.getAttribute("data-body");
+
+      form.querySelectorAll(".body-card").forEach(c => c.classList.remove("selected"));
+      card.classList.add("selected");
+
+      setTimeout(() => gotoStep(current + 1), 200);
+    });
+
+
+    /* ===========================================================
+       CÁLCULO DO IMC
+    ============================================================ */
+    function computeIMC(){
       if(heightCm && weightKg){
-        var m = heightCm/100;
-        var v = weightKg / (m*m);
+        let m = heightCm / 100;
+        let v = weightKg / (m * m);
+
         imcValue = Math.round(v * 10) / 10;
 
         if(v < 18.5) imcLabel = "abaixo do peso";
         else if(v < 25) imcLabel = "faixa saudável";
         else if(v < 30) imcLabel = "sobrepeso";
         else imcLabel = "obesidade leve";
-
-        showImcChip();
       }
     }
 
-    function showImcChip(){
-      var banner = $("statusBanner");
-      if(!banner || imcValue == null) return;
 
-      var color = "bg-emerald-50 border-emerald-300 text-emerald-800";
-      if(imcLabel==='sobrepeso') color="bg-amber-50 border-amber-300 text-amber-900";
-      if(imcLabel==='obesidade leve') color="bg-rose-50 border-rose-300 text-rose-800";
+    /* ===========================================================
+       RESULTADO — COMBINAÇÕES
+    ============================================================ */
+    function finalizeResult(){
+      let resultEl = document.getElementById("resultado");
+      let titleEl = document.getElementById("resultTitle");
+      let descEl = document.getElementById("resultDesc");
 
-      banner.innerHTML = `
-        <span class="imc-chip ${color}">IMC ${imcValue} — ${imcLabel}</span>
-        <span class="ml-2 text-slate-700">Perfeito, vamos ajustar tudo ao seu contexto 💪</span>
-      `;
-      banner.className = "mb-4 rounded-xl px-4 py-3 text-sm border " + color;
-      banner.classList.remove('hidden');
-    }
+      /* Seleciona a dieta mais votada */
+      let scores = {A:0, B:0, C:0, D:0};
 
-    /* --------------------------
-       PROGRESSO
-    -------------------------- */
-    function updateProgress(){
-      var pct = Math.round(current / QUESTIONS.length * 100);
-      $("progress").style.width = pct + "%";
-      $("pct").textContent = pct + "%";
-      $("progressCount").textContent = current + "/" + QUESTIONS.length;
-      $("btnPrev").disabled = (current===0);
-    }
+      selected.forEach(v => { if(scores[v]) scores[v]++; });
 
-    function gotoStep(n){
-      form.querySelector('.step[data-step="'+current+'"]')?.classList.add('hidden');
-      form.querySelector('.step[data-step="'+n+'"]')?.classList.remove('hidden');
+      let dietKey = Object.keys(scores).reduce((a,b) => scores[a] > scores[b] ? a : b);
 
-      current = n;
-      updateProgress();
-      saveProgress();
-      window.scrollTo({ top: document.querySelector("#quiz").offsetTop - 50, behavior:"smooth" });
-    }
+      /* Default */
+      let title = "Plano Personalizado";
+      let desc = "Seu plano foi ajustado ao seu perfil.";
 
-    /* --------------------------
-       FINALIZAÇÃO DO RESULTADO
-    -------------------------- */
-    function recomputeScores(){
-      scores.A = scores.B = scores.C = scores.D = 0;
+      /* Mapeamento do bodyType */
+      let bodyName = "Equilibrado";
 
-      for(var i=0;i<selected.length;i++){
-        var v = selected[i];
-        if(scores[v] != null) scores[v]++;
+      let BT = BODY_TYPES.find(b => b.key === bodyTypeKey);
+      if(BT) bodyName = BT.name;
+
+      /* Monta descrição final */
+      desc = `Seu biotipo é ${bodyName}. Sua alimentação será ajustada para maximizar seus resultados.`;
+
+      if(imcValue){
+        desc += ` IMC ${imcValue} (${imcLabel}).`;
       }
 
-      if(imcValue != null){
-        if(imcValue >= 25){ scores.A++; scores.C++; }
-        else if(imcValue < 18.5){ scores.B++; scores.C++; }
+      document.getElementById("quiz").classList.add("hidden");
+      resultEl.classList.remove("hidden");
+
+      titleEl.textContent = title;
+      descEl.textContent = desc;
+
+      localStorage.setItem("quiz_result_body_name", bodyName);
+      localStorage.setItem("quiz_imc_value", imcValue);
+      localStorage.setItem("quiz_imc_label", imcLabel);
+    }
+
+
+    /* ===========================================================
+       FINAL DO QUIZ
+    ============================================================ */
+    function nextStep(){
+      if(current >= QUESTIONS.length - 1){
+        finalizeResult();
+        return;
       }
+      gotoStep(current + 1);
     }
 
-    function bestDietKey(){
-      var best='A', pts=-1;
-      for(var k in scores){
-        if(scores[k] > pts){
-          pts = scores[k];
-          best = k;
-        }
-      }
-      return best;
-    }
 
-    function finalizeCombo(dietKey){
-      var bt = bodyTypeKey || 'EQUI';
-      var comboKey = dietKey + '-' + bt;
-      var combo = COMBOS[comboKey] || { title:"Plano Personalizado", desc:"Criado sob medida pra você." };
+    /* ===========================================================
+       SALVAR LEAD E ENVIAR PARA PRÉ PAGAMENTO
+    ============================================================ */
+    window.handleLead = async function(event){
+      event.preventDefault();
 
-      var title = "🎯 " + combo.title;
-      var desc  = combo.desc;
+      let nome  = document.getElementById("nome").value.trim();
+      let email = document.getElementById("email").value.trim();
+      let whats = document.getElementById("whats").value.trim();
 
-      $("resultTitle").textContent = title;
-      $("resultDesc").textContent  = desc;
+      let ref = "ref-" + Date.now() + "-" + Math.random().toString(36).substr(2,6);
 
-      $("resultado").classList.remove("hidden");
-      $("progress").style.width = "100%";
-      $("pct").textContent = "100%";
-      $("progressCount").textContent = QUESTIONS.length + "/" + QUESTIONS.length;
-    }
+      let fd = new FormData();
+      fd.append("token", LEAD_TOKEN);
+      fd.append("ref", ref);
+      fd.append("name", nome);
+      fd.append("email", email);
+      fd.append("phone", whats);
+      fd.append("diet_title", "");
+      fd.append("body_type", localStorage.getItem("quiz_result_body_name") || "");
+      fd.append("imc_value", localStorage.getItem("quiz_imc_value") || "");
+      fd.append("imc_label", localStorage.getItem("quiz_imc_label") || "");
 
-    function showResult(){
-      recomputeScores();
-      finalizeCombo(bestDietKey());
-    }
+      try { await fetch(LEAD_ENDPOINT, {method:"POST", body:fd}); } catch(e){}
 
-    /* --------------------------
-       EVENTOS PRINCIPAIS
-    -------------------------- */
+      let url = new URL(PRE_PAG_URL, location.origin);
+      url.searchParams.set("ref", ref);
+      url.searchParams.set("nome", nome);
+      url.searchParams.set("email", email);
+      url.searchParams.set("whats", whats);
 
-document.addEventListener('change', function(e){
-  var t=e.target; if(!t) return;
-
-  if(t.id==='heightCm'){
-    var v = parseInt(t.value,10);
-    if(!isNaN(v) && v>=120 && v<=230){
-      heightCm = v;
-      imcCompute();
-      saveProgress();
-      setTimeout(() => gotoStep(current + 1), 120);
-    }
-  }
-
-  if(t.id==='weightKg'){
-    var w = parseFloat(t.value);
-    if(!isNaN(w) && w>=35 && w<=250){
-      weightKg = w;
-      imcCompute();
-      saveProgress();
-      setTimeout(() => gotoStep(current + 1), 120);
-    }
-  }
-});
-
-    
-
-      /* Resposta de alternativas */
-      if(t.type==="radio" && t.name.startsWith("q")){
-        var step = parseInt(t.name.substring(1));
-        selectedGender = (step===0 ? t.value : selectedGender);
-
-if(step===0){
-  selectedGender = t.value;
-
-  updateBodyTypesByGender();
-  QUESTIONS[2].a = BODY_TYPES;
-
-  // Limpa tudo e re-renderiza
-  renderQuestions();
-
-  // Força exibir apenas a próxima pergunta
-  current = 1; 
-  updateProgress();
-
-  // Oculta todas
-  form.querySelectorAll(".step").forEach(s => s.classList.add("hidden"));
-
-  // Mostra somente a nova pergunta 3
-  form.querySelector('.step[data-step="1"]').classList.remove("hidden");
-
-  saveProgress();
-  return;
-}
+      location.href = url.toString();
+    };
 
 
-        selected[step] = t.value;
-        saveProgress();
-        setTimeout(()=>gotoStep(step+1),150);
-      }
-    });
+    /* ===========================================================
+       WHATSAPP DEPOIS DO PAGAMENTO
+    ============================================================ */
+    (function(){
+      let params = new URLSearchParams(location.search);
+      if(params.get("status") !== "approved") return;
 
-    document.addEventListener("input", function(e){
-      if(e.target.id === "heightCm"){
-        var v = parseInt(e.target.value);
-        heightCm = (!isNaN(v) ? v : null);
-        imcCompute(); saveProgress();
-      }
-      else if(e.target.id === "weightKg"){
-        var v = parseFloat(e.target.value);
-        weightKg = (!isNaN(v) ? v : null);
-        imcCompute(); saveProgress();
-      }
-    });
+      setTimeout(function(){
 
-    form.addEventListener("click", function(e){
-      var card = e.target.closest(".body-card");
-      if(!card) return;
+        let nome = localStorage.getItem("lead_nome") || "Cliente";
+        let body = localStorage.getItem("quiz_result_body_name") || "";
+        let imc  = localStorage.getItem("quiz_imc_value") || "";
+        let lbl  = localStorage.getItem("quiz_imc_label") || "";
 
-      bodyTypeKey = card.getAttribute("data-body");
+        let msg =
+          "Oi, sou " + nome + "!\n" +
+          "Meu resultado do quiz foi:\n" +
+          "• Biotipo: " + body + "\n" +
+          "• IMC: " + imc + " (" + lbl + ")\n" +
+          "Pagamento aprovado! Quero meu plano completo.";
 
-      form.querySelectorAll(".body-card").forEach(c=>c.classList.remove("selected"));
-      card.classList.add("selected");
+        window.open("https://wa.me/5519982391022?text=" + encodeURIComponent(msg));
+      }, 600);
+    })();
 
-      selected[2] = "D";  
-      saveProgress();
-      setTimeout(()=>gotoStep(3),150);
-    });
 
-    $("btnPrev").addEventListener("click", function(e){
-      e.preventDefault();
-      if(current>0) gotoStep(current-1);
-    });
-
-    /* --------------------------
-       SALVAR LEAD — MANTIDO IGUAL
-    -------------------------- */
-    async function salvarLeadNoServidor(obj){/* ...exatamente igual ao original... */}
-
-    window.handleLead = async function(e){/* ...igual ao original... */};
-
-    /* --------------------------
-       INICIALIZAÇÃO
-    -------------------------- */
-    loadProgress();
+    /* ===========================================================
+       INICIALIZAÇÃO DO QUIZ
+    ============================================================ */
     renderQuestions();
-    updateProgress();
+    gotoStep(0);
+
+    document.getElementById("btnPrev").addEventListener("click", function(){
+      if(current > 0) gotoStep(current - 1);
+    });
 
   })();
+  </script>
+
+
+  <!-- FOOTER -->
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online</p>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
   </script>
 
 </body>
