@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17661147688"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-17661147688');
+  </script>
+</head>
+
+
+
+
+  
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pagamento Aprovado | Dieta Pronta Online</title>
@@ -39,17 +55,6 @@
 <!-- End of  Zendesk Widget script -->
 
   
-
-<!-- Event snippet for Compra conversion page -->
-<script>
-  gtag('event', 'conversion', {
-      'send_to': 'AW-17661147688/q7jPCMKArLQbEKj0vuVB',
-      'value': 1.0,
-      'currency': 'BRL',
-      'transaction_id': ''
-  });
-</script>
-
 
   
 </head>
@@ -304,6 +309,34 @@ document.getElementById("btnEmail").addEventListener("click", async (e) => {
   }
 });
 </script>
+
+
+
+
+
+  <!-- Event snippet for Compra conversion page -->
+<script>
+  // Captura parâmetros da URL
+  function getParam(p) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(p);
+  }
+
+  // Usa external_reference como transaction_id (melhor opção)
+  const transactionId =
+    getParam('external_reference') ||
+    getParam('payment_id') ||
+    'fallback_' + Date.now(); // segurança caso tudo falhe
+
+  gtag('event', 'conversion', {
+      'send_to': 'AW-17661147688/q7jPCMKArLQbEKj0vuVB',
+      'value': 19.90,
+      'currency': 'BRL',
+      'transaction_id': transactionId
+  });
+</script>
+  
+  
 
 </body>
 </html>
