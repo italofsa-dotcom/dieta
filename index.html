@@ -446,9 +446,31 @@
        EVENTOS PRINCIPAIS
     -------------------------- */
 
-    document.addEventListener("change", function(e){
-      var t=e.target;
-      if(!t) return;
+document.addEventListener('change', function(e){
+  var t=e.target; if(!t) return;
+
+  if(t.id==='heightCm'){
+    var v = parseInt(t.value,10);
+    if(!isNaN(v) && v>=120 && v<=230){
+      heightCm = v;
+      imcCompute();
+      saveProgress();
+      setTimeout(() => gotoStep(current + 1), 120);
+    }
+  }
+
+  if(t.id==='weightKg'){
+    var w = parseFloat(t.value);
+    if(!isNaN(w) && w>=35 && w<=250){
+      weightKg = w;
+      imcCompute();
+      saveProgress();
+      setTimeout(() => gotoStep(current + 1), 120);
+    }
+  }
+});
+
+    
 
       /* Resposta de alternativas */
       if(t.type==="radio" && t.name.startsWith("q")){
