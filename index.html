@@ -460,6 +460,8 @@
           updateBodyTypesByGender();
           QUESTIONS[2].a = BODY_TYPES;
           renderQuestions();
+          setTimeout(()=>gotoStep(1),50);     // <-- faz avançar automaticamente!
+          return;                             // <-- evita abrir pergunta duplicada
         }
 
         selected[step] = t.value;
