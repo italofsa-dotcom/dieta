@@ -2,630 +2,825 @@
 <html lang="pt-BR">
 <head>
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17661147688"></script>
+  <!-- Google tag -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17661147688"></script> 
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    window.dataLayer = window.dataLayer || []; 
+    function gtag(){dataLayer.push(arguments);} 
     gtag('js', new Date());
     gtag('config', 'AW-17661147688');
   </script>
 
-  <!-- Zendesk Widget -->
-  <script id="ze-snippet"
-          src="https://static.zdassets.com/ekr/snippet.js?key=8bd1b71a-ff84-437d-a53b-3af6d91d14a8">
-  </script>
+  <!-- Zendesk -->
+  <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=8bd1b71a-ff84-437d-a53b-3af6d91d14a8"></script>
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>🧠 Descubra qual dieta funciona pro seu tipo de corpo</title>
-  <meta name="description"
-        content="Quiz interativo que indica a dieta ideal para o seu biotipo. Inclui cálculo de IMC, 16 combinações Dieta×Biotipo, WhatsApp e salvamento de lead em MySQL (cPanel).">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     :root { --brand: #22c55e; }
-    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
     .container { max-width: 980px; }
-    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2,6,23,0.08); }
     .hidden { display: none !important; }
-
     fieldset.step {
+      position: relative;
       background: linear-gradient(135deg, #d1fae5, #a7f3d0);
       border-radius: 20px;
-      padding: 28px 20px 20px 20px;
+      padding: 28px 20px 20px;
       border: 1px solid #6ee7b7;
       box-shadow: 0 8px 24px rgba(16,185,129,0.20);
-      transition: .2s;
-    }
-    fieldset.step:hover {
-      transform: scale(1.01);
-      box-shadow: 0 10px 28px rgba(5,150,105,0.25);
     }
     fieldset.step legend {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: #064e3b;
-      margin-bottom: 10px;
+      font-size: 1.25rem; font-weight: 800; color: #064e3b; margin-bottom: 10px;
     }
-
     .choice label {
-      background: #fff;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 12px;
-      display: block;
-      cursor: pointer;
+      background: white; border: 1.5px solid #e5e7eb;
+      border-radius: 12px; padding: 12px; cursor:pointer;
       transition: .16s;
-    }
-    .choice label:hover {
-      transform: translateY(-1px);
-      border-color: #cbd5e1;
-      box-shadow: 0 8px 18px rgba(2,6,23,0.10);
     }
     .choice input:checked + label {
       border-color: #10b981;
       box-shadow: 0 10px 24px rgba(16,185,129,0.25);
     }
-
     .body-card {
-      background: #fff;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 14px;
-      text-align: center;
-      cursor: pointer;
-      transition: .16s;
-      box-shadow: 0 4px 14px rgba(2,6,23,0.06);
-    }
-    .body-card:hover {
-      transform: translateY(-1px);
-      border-color: #cbd5e1;
-      box-shadow: 0 8px 18px rgba(2,6,23,0.10);
+      background:#fff; border:1.5px solid #e5e7eb;
+      border-radius:14px; padding:14px; text-align:center;
+      cursor:pointer; transition: .16s;
     }
     .body-card.selected {
-      border-color: #10b981;
-      box-shadow: 0 10px 24px rgba(16,185,129,0.25);
+      border-color:#10b981;
+      box-shadow:0 10px 24px rgba(16,185,129,0.25);
     }
-
   </style>
 </head>
 
 <body class="bg-slate-50 text-slate-900">
-  <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
-    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-               stroke="currentColor" class="h-5 w-5 text-[var(--brand)]">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/>
-          </svg>
-        </div>
-        <span class="font-extrabold tracking-tight">Quiz de Dieta</span>
+
+<!-- ====================== HEADER ========================== -->
+<header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+  <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-9 w-9 rounded-2xl bg-[var(--brand)]/10 flex items-center justify-center">
+        <svg viewBox="0 0 24 24" class="h-5 w-5 text-[var(--brand)]" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/>
+        </svg>
       </div>
-
-      <nav class="hidden md:flex gap-6 text-sm text-slate-600">
-        <a href="#quiz" class="hover:text-slate-900">Quiz</a>
-        <a href="#resultado" class="hover:text-slate-900">Resultado</a>
-      </nav>
-
-      <a href="#quiz"
-         class="rounded-xl px-4 py-2 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
-         Começar
-      </a>
+      <span class="font-extrabold">Quiz de Dieta</span>
     </div>
-  </header>
+    <a href="#quiz" class="rounded-xl px-4 py-2 bg-[var(--brand)] text-white font-semibold">Começar</a>
+  </div>
+</header>
 
-  <!-- Hero -->
-  <section class="bg-gradient-to-b from-white to-slate-100">
-    <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
-
-      <div>
-        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
-          🧠 Descubra agora qual a dieta que realmente funciona com seu corpo!
-        </h1>
-        <p class="mt-4 text-lg text-slate-600">
-          Tenha sua Dieta 100% Personalizada: Inteligente, Feita pro SEU Corpo — Resultados Reais!
-        </p>
-
-        <div class="mt-6 flex gap-3">
-          <a href="#quiz"
-             class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
-             Começar agora
-          </a>
-          <span class="text-slate-500 self-center">Leva ~1 minuto</span>
-        </div>
+<!-- ========================================================= -->
+<!-- ===================== HERO ============================== -->
+<!-- ========================================================= -->
+<section class="bg-gradient-to-b from-white to-slate-100">
+  <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
+    <div>
+      <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
+        🧠 Descubra agora qual a dieta que realmente funciona com seu corpo!
+      </h1>
+      <p class="mt-4 text-lg text-slate-600">
+        Plano inteligente e 100% personalizado com base em IMC, biotipo e rotina.
+      </p>
+      <div class="mt-6 flex gap-3">
+        <a href="#quiz" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold">
+          Começar agora
+        </a>
+        <span class="text-slate-500 self-center">Leva ~1 minuto</span>
       </div>
+    </div>
 
-      <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
-        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600&auto=format&fit=crop"
-             class="w-full h-72 object-cover"/>
+    <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
+      <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600" class="w-full h-72 object-cover">
+      <div class="p-6">
+        <h3 class="text-xl font-bold">Resultado personalizado</h3>
+        <p class="mt-1 text-slate-600">
+          Combinação perfeita entre biotipo, IMC e objetivo.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <div class="p-6">
-          <h3 class="text-xl font-bold">Resultado personalizado</h3>
-          <p class="mt-1 text-slate-600">
-            Direcionamento claro combinando <strong>biotipo</strong>, <strong>IMC</strong> e <strong>perfil</strong>.
+<!-- ========================================================= -->
+<!-- ====================== QUIZ ============================= -->
+<!-- ========================================================= -->
+<section id="quiz" class="py-10 bg-white border-t border-b border-slate-200">
+  <div class="container mx-auto px-4">
+
+    <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+
+      <div id="statusBanner" class="hidden mb-4 rounded-xl px-4 py-3 text-sm border"></div>
+
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-2xl font-extrabold">Responda às perguntas</h2>
+          <p id="microcopy" class="text-slate-600 text-sm mt-1">Começando agora…</p>
+        </div>
+        <div class="w-52 text-right">
+          <div class="h-2 rounded-full bg-slate-200 overflow-hidden">
+            <div id="progress" class="h-2 bg-[var(--brand)] w-0"></div>
+          </div>
+          <p class="text-xs text-slate-500 mt-1">
+            <span id="progressCount">0/20</span> • <span id="pct">0%</span>
           </p>
         </div>
       </div>
 
-    </div>
-  </section>
+      <form id="quizForm" class="grid gap-6">
+        <noscript>Ative o JavaScript para visualizar o quiz.</noscript>
+      </form>
 
-  <!-- QUIZ -->
-  <section id="quiz" class="py-10 bg-white border-t border-b border-slate-200">
-    <div class="container mx-auto px-4">
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
-
-        <div id="statusBanner"
-             class="hidden mb-4 rounded-xl px-4 py-3 text-sm border"></div>
-
-        <div class="flex items-center justify-between mb-4">
-          <div>
-            <h2 class="text-2xl font-extrabold">Responda às perguntas</h2>
-            <p id="microcopy" class="text-slate-600 text-sm mt-1">Começamos entendendo sua rotina 😉</p>
-          </div>
-
-          <div class="w-52 text-right">
-            <div class="h-2 rounded-full bg-slate-200 overflow-hidden">
-              <div id="progress" class="h-2 bg-[var(--brand)] w-0"></div>
-            </div>
-            <p class="text-xs text-slate-500 mt-1">
-              <span id="progressCount">0/20</span> •
-              <span id="pct">0%</span>
-            </p>
-          </div>
-        </div>
-
-        <form id="quizForm" class="grid gap-6"></form>
-
-        <div class="mt-6 flex items-center justify-between">
-          <button id="btnPrev"
-                  class="rounded-xl px-4 py-2 border border-slate-300 font-semibold disabled:opacity-40"
-                  disabled>
-            Voltar
-          </button>
-        </div>
-
+      <div class="mt-6 flex items-center justify-between">
+        <button id="btnPrev" class="rounded-xl px-4 py-2 border border-slate-300 font-semibold disabled:opacity-40" disabled>
+          Voltar
+        </button>
       </div>
+
     </div>
-  </section>
+  </div>
+</section>
 
+<!-- ========================================================= -->
+<!-- Agora começa o JS que vai até a parte 4 -->
+<script>
+(function(){
 
-  <!-- SCRIPT DO QUIZ -->
-  <script>
-  (function(){
+/* ========================================================= */
+/* =============== CONFIG + BODY_TYPES ===================== */
+/* ========================================================= */
 
-    /* --------------- CONFIG ---------------- */
-    var PRE_PAG_URL   = "/pre-pagamento/";
-    var LEAD_ENDPOINT = "https://italomelo.com/server/save_lead.php";
-    var LEAD_TOKEN    = "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
+var PRE_PAG_URL = "/pre-pagamento/";
+var LEAD_ENDPOINT = "https://italomelo.com/server/save_lead.php";
+var LEAD_TOKEN = "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
 
-    /* --------------- MICROCOPY --------------- */
-    var MICROCOPY = {
-      0:  "Começamos entendendo sua rotina 😉",
-      4:  "Ótimo! Continuando…",
-      8:  "Estamos indo muito bem!",
-      12: "Últimos detalhes…",
-      16: "Quase pronto!"
-    };
+/* 💚 Tipos de corpo masculinos (originais) */
+var BODY_TYPES_MALE = [
+  { key:'ECTO', name:'Ectomorfo', image:'URL_MASC_ECTO' },
+  { key:'MESO', name:'Mesomorfo', image:'URL_MASC_MESO' },
+  { key:'ENDO', name:'Endomorfo', image:'URL_MASC_ENDO' },
+  { key:'EQUI', name:'Equilibrado', image:'URL_MASC_EQUI' }
+];
 
-    /* --------------- BIOTIPOS POR GÊNERO --------------- */
-    var BODY_TYPES_MALE = [
-      { key:"ECTO", name:"Ectomorfo",   image:"img/male_ecto.png" },
-      { key:"MESO", name:"Mesomorfo",   image:"img/male_meso.png" },
-      { key:"ENDO", name:"Endomorfo",   image:"img/male_endo.png" },
-      { key:"EQUI", name:"Equilibrado", image:"img/male_equilibrado.png" }
-    ];
+/* 💜 Tipos de corpo femininos */
+var BODY_TYPES_FEM = [
+  { key:'ECTO', name:'Ectomorfo', image:'URL_FEM_ECTO' },
+  { key:'MESO', name:'Mesomorfo', image:'URL_FEM_MESO' },
+  { key:'ENDO', name:'Endomorfo', image:'URL_FEM_ENDO' },
+  { key:'EQUI', name:'Equilibrado', image:'URL_FEM_EQUI' }
+];
 
-    var BODY_TYPES_FEMALE = [
-      { key:"ECTO", name:"Ectomorfo",   image:"img/female_ecto.png" },
-      { key:"MESO", name:"Mesomorfo",   image:"img/female_meso.png" },
-      { key:"ENDO", name:"Endomorfo",   image:"img/female_endo.png" },
-      { key:"EQUI", name:"Equilibrado", image:"img/female_equilibrado.png" }
-    ];
+/* Variável dinâmica */
+var BODY_TYPES = BODY_TYPES_MALE;
 
-    var BODY_TYPES = BODY_TYPES_MALE;   // valor padrão
-    /* ===========================================================
-       PERGUNTAS (com biotipo modificado dinamicamente)
-    ============================================================ */
-    var QUESTIONS = [
-      { type:"radio", q:"Vamos começar.. informe seu gênero", a:["HOMEM","MULHER"] },
-      { type:"radio", q:"Qual sua faixa etária?", a:["15 a 25 anos","26 a 35 anos","36 a 49 anos","+50 anos"] },
+/* ========================================================= */
+/* ===================== QUESTIONS ========================== */
+/* ========================================================= */
 
-      /* 🔥 PERGUNTA DE BIOTIPO — carregada dinamicamente */
-      { type:"body", q:"Agora escolha seu tipo de corpo (biotipo)", a: BODY_TYPES },
+var QUESTIONS = [
+  {type:'radio', q:"Vamos começar.. informe seu gênero", a:["HOMEM","MULHER"]},
 
-      { type:"radio", q:"Qual seu principal objetivo agora?", a:["Emagrecer rápido","Ganhar massa magra","Manter peso","Reduzir gordura"] },
-      { type:"radio", q:"Seu nível de energia diário é…", a:["Baixo","Oscila","Constante","Muito alto"] },
-      { type:"radio", q:"Seu apetite é…", a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome sempre"] },
-      { type:"radio", q:"Quantas refeições por dia?", a:["2 ou menos","3","4 ou 5","Mais de 5"] },
-      { type:"radio", q:"Fome emocional/ansiosa?", a:["Sim, muito","Às vezes","Raramente","Nunca"] },
-      { type:"radio", q:"Nível de atividade física", a:["Sedentário","Leve","Moderado","Intenso"] },
-      { type:"radio", q:"Seu sono é…", a:["Ruim","Regular","Bom","Excelente"] },
-      { type:"radio", q:"Costuma pular o café da manhã?", a:["Sempre","Às vezes","Raramente","Nunca"] },
-      { type:"radio", q:"Estilo de alimentação atual", a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"] },
-      { type:"radio", q:"Vontade de doces", a:["Sempre","Às vezes","Raramente","Quase nunca"] },
-      { type:"radio", q:"Reação ao carboidrato", a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"] },
+  /* Aqui será alterado automaticamente quando MULHER for escolhido */
+  {type:'body', q:"Agora escolha seu tipo de corpo (biotipo)", a: BODY_TYPES},
 
-      /* 🔢 Altura */
-      { type:"input-height", q:"Qual sua altura? (em cm)", placeholder:"Ex.: 173" },
+  {type:'radio', q:"Qual sua faixa etária?", a:["15 a 25 anos","26 a 35 anos","36 a 49 anos","+50 anos"]},
+  {type:'radio', q:"Qual seu principal objetivo agora?", a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},
+  
+  {type:'radio', q:"Seu nível de energia diário é…", a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},
+  {type:'radio', q:"Seu apetite ao longo do dia é…", a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome o tempo todo"]},
+  {type:'radio', q:"Quantas refeições principais por dia?", a:["2 ou menos","3","4 a 5","Mais de 5 pequenas"]},
+  {type:'radio', q:"Fome emocional/ansiosa?", a:["Sim, muito","Às vezes","Raramente","Nunca"]},
+  {type:'radio', q:"Nível de atividade física", a:["Sedentário","Leve","Moderado (3x/sem)","Intenso (5x+)"]},
+  {type:'radio', q:"Seu sono é…", a:["Ruim","Durmo bem mas acordo cansado","Regular","Muito bom"]},
+  {type:'radio', q:"Costuma pular o café da manhã?", a:["Sempre","Às vezes","Raramente","Nunca"]},
+  {type:'radio', q:"Seu estilo de alimentação atual", a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"]},
+  {type:'radio', q:"Vontade de doces", a:["Sempre","Às vezes","Raramente","Quase nunca"]},
+  {type:'radio', q:"Reação aos carboidratos", a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"]},
+  {type:'radio', q:"Prefere refeições…", a:["Leves e frequentes","Poucas e completas","Grandes à noite","Equilibradas"]},
+  {type:'radio', q:"Consegue ficar longos períodos sem comer?", a:["Sim, tranquilo","Pouco tempo","Depende do dia","Não consigo"]},
+  {type:'radio', q:"Nível de organização das refeições", a:["Planejo tudo","Planejo parte","Improviso muito","Quase nunca penso nisso"]},
 
-      /* ⚖️ Peso */
-      { type:"input-weight", q:"Qual seu peso atual? (kg)", placeholder:"Ex.: 78" },
+  {type:'input-height', q:"Qual a sua altura? (em centímetros)", placeholder:"Ex.: 173"},
+  {type:'input-weight', q:"Qual o seu peso atual? (em kg)", placeholder:"Ex.: 78"},
 
-      { type:"radio", q:"Rotina semanal", a:["Muito corrida","Organizada","Flexível","Sedentária"] },
-      { type:"radio", q:"Qual frase te representa?", a:["Quero resultados rápidos","Quero algo sustentável","Quero comer bem","Quero performance máxima"] },
-      { type:"radio", q:"Aceita seguir um plano personalizado feito pro seu corpo?", a:["Sim","Talvez","Preciso de ajuda"] }
-    ];
+  {type:'radio', q:"Como é sua rotina durante a semana?", a:["Muito corrida","Relativamente organizada","Bastante flexível","Muito sedentária"]},
+  {type:'radio', q:"Qual frase te representa?", a:["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"]},
+  {type:'radio', q:"Você estaria disposto(a) a seguir um plano simples e feito sob medida para o seu corpo?", a:["Sim, com certeza","Acho que sim","Preciso de ajuda para isso"]}
+];
 
-    var selected = new Array(QUESTIONS.length).fill(null);
-    var selectedGender = null;
-    var heightCm = null;
-    var weightKg = null;
-    var current = 0;
-    var bodyTypeKey = null;
-    var imcValue = null;
-    var imcLabel = "";
+/* ========================================================= */
+/* ================== VARIÁVEIS DO QUIZ ===================== */
+/* ========================================================= */
 
-    function $(i){ return document.getElementById(i); }
+var selected = new Array(QUESTIONS.length).fill(null);
+var scores = {A:0,B:0,C:0,D:0};
+var current = 0;
+var heightCm = null, weightKg = null, imcValue = null, imcLabel = '';
+var bodyTypeKey = null;
 
+function $(id){ return document.getElementById(id); }
+var form = $("quizForm");
 
-    /* ===========================================================
-       FUNÇÃO PARA ATUALIZAR BIOTIPOS QUANDO GÊNERO MUDA
-    ============================================================ */
-    function updateBodyTypesByGender(){
-      if(selectedGender === "HOMEM"){
-        BODY_TYPES = BODY_TYPES_MALE;
-      } else {
-        BODY_TYPES = BODY_TYPES_FEMALE;
-      }
-      QUESTIONS[2].a = BODY_TYPES;
-    }
+/* ========================================================= */
+/* ==================== MICROCOPY ========================== */
+/* ========================================================= */
 
+var MICROCOPY = {
+  0: "Começamos entendendo sua rotina. Responda com sinceridade 😉",
+  4: "Ótimo! Já conseguimos captar seu ritmo. Continuando…",
+  8: "Metade do caminho! Essas próximas ajudam a refinar seu perfil.",
+  12: "Estamos quase lá. Ajustes finos fazem diferença.",
+  16: "Seu plano está praticamente pronto. Últimos detalhes!"
+};
 
-    /* ===========================================================
-       RENDERIZA TODAS AS PERGUNTAS
-    ============================================================ */
-    var form = $("quizForm");
+/* ========================================================= */
+/* ================== PERFIS DE DIETA ====================== */
+/* ========================================================= */
 
-    function renderQuestions(){
-      var html = "";
+var PROFILES = {
+  A:{title:"🥑 Low Carb / Cetogênica",desc:"Foco em proteínas magras, gorduras boas e carboidratos controlados.",
+  tips:["Priorize ovos, peixes, carnes magras, abacate e azeite","Troque refrigerantes por água com limão","Inclua verduras para saciedade"],
+  menu:["Café: omelete com queijo + abacate","Almoço: frango grelhado + salada","Jantar: salmão + legumes"]},
 
-      for(let i=0; i<QUESTIONS.length; i++){
-        let it = QUESTIONS[i];
+  B:{title:"🍚 Balanceada / Mediterrânea",desc:"Equilíbrio entre carboidratos complexos, proteínas e gorduras boas.",
+  tips:["Prato colorido e variado","Integrais, frutas e verduras","Azeite e oleaginosas"],
+  menu:["Café: iogurte + granola","Almoço: arroz integral + peixe","Jantar: sopa de legumes + frango"]},
 
-        html += `<fieldset class="step ${i===0 ? "" : "hidden"}" data-step="${i}">
-                  <legend>${i+1}. ${it.q}</legend>`;
+  C:{title:"🥩 Proteica",desc:"Alta ingestão de proteína com carboidratos ajustados para definição.",
+  tips:["Proteína em todas as refeições","Whey com orientação","Hidrate-se bem"],
+  menu:["Café: ovos mexidos","Almoço: patinho + salada","Jantar: omelete + legumes"]},
 
-        /* RADIO */
-        if(it.type === "radio"){
-          html += `<div class="mt-3 grid sm:grid-cols-2 gap-3">`;
+  D:{title:"🕒 Jejum Intermitente / Flexível",desc:"Janelas de alimentação organizadas e eficientes.",
+  tips:["Defina sua janela (ex.: 16/8)","Proteína na primeira refeição","Chás durante o jejum"],
+  menu:["1ª refeição: bowl proteico","2ª: frango + legumes","3ª: sopa opcional"]}
+};
 
-          for(let j=0; j<it.a.length; j++){
-            let letter = String.fromCharCode(65 + j);
-            let id = `q${i}_${letter}`;
+/* ========================================================= */
+/* ===================== COMBOS IMC + DIETA ================= */
+/* ========================================================= */
 
-            html += `
-              <div class="choice">
-                <input type="radio" id="${id}" name="q${i}" class="hidden" value="${letter}">
-                <label for="${id}">${it.a[j]}</label>
-              </div>`;
-          }
-          html += `</div>`;
-        }
+var COMBOS = {
+  "A-ECTO":{title:"Plano Ectomorfo Low Carb",desc:"Low carb moderado com suporte energético."},
+  "A-MESO":{title:"Plano Mesomorfo Low Carb",desc:"Definição com ciclos estratégicos de carbo."},
+  "A-ENDO":{title:"Plano Endomorfo Low Carb",desc:"Controle glicêmico e saciedade reforçada."},
+  "A-EQUI":{title:"Plano Equilibrado Low Carb",desc:"Abordagem leve e moderada."},
 
-        /* ALTURA */
-        else if(it.type === "input-height"){
-          html += `
-            <div class="mt-2">
-              <input id="heightCm" type="number" min="120" max="230"
-                     placeholder="${it.placeholder}"
-                     class="rounded-xl border-slate-300 w-full p-3">
-            </div>`;
-        }
+  "B-ECTO":{title:"Plano Ectomorfo Balanceado",desc:"Carbo complexo e energia constante."},
+  "B-MESO":{title:"Plano Mesomorfo Balanceado",desc:"Performance e manutenção."},
+  "B-ENDO":{title:"Plano Endomorfo Balanceado",desc:"Porções controladas sem fome exagerada."},
+  "B-EQUI":{title:"Plano Equilibrado Mediterrâneo",desc:"Azeite, peixes e variedade."},
 
-        /* PESO */
-        else if(it.type === "input-weight"){
-          html += `
-            <div class="mt-2">
-              <input id="weightKg" type="number" min="35" max="250" step="0.1"
-                     placeholder="${it.placeholder}"
-                     class="rounded-xl border-slate-300 w-full p-3">
-            </div>`;
-        }
+  "C-ECTO":{title:"Plano Ectomorfo Proteico",desc:"Ganho limpo e saciedade."},
+  "C-MESO":{title:"Plano Mesomorfo Proteico",desc:"Manutenção muscular."},
+  "C-ENDO":{title:"Plano Endomorfo Proteico",desc:"Proteína alta e fibras."},
+  "C-EQUI":{title:"Plano Equilibrado Proteico",desc:"Sustentável e eficiente."},
 
-        /* BIOTIPO */
-        else if(it.type === "body"){
-          html += `<div class="mt-3 grid sm:grid-cols-2 md:grid-cols-4 gap-3">`;
+  "D-ECTO":{title:"Plano Ectomorfo Jejum Flexível",desc:"Proteção muscular nas janelas."},
+  "D-MESO":{title:"Plano Mesomorfo Jejum Flexível",desc:"Refeições poderosas nas janelas."},
+  "D-ENDO":{title:"Plano Endomorfo Jejum Flexível",desc:"Controle de apetite eficaz."},
+  "D-EQUI":{title:"Plano Equilibrado Jejum Flexível",desc:"Simples e sustentável."}
+};
 
-          for(let b=0; b<BODY_TYPES.length; b++){
-            let bt = BODY_TYPES[b];
-            html += `
-              <div class="body-card" data-body="${bt.key}">
-                <img src="${bt.image}" class="mx-auto h-32 w-auto rounded-lg">
-                <div class="mt-2 font-semibold">${bt.name}</div>
-              </div>
-            `;
-          }
-          html += `</div>`;
-        }
+/* ========================================================= */
+/* =================== PERSISTÊNCIA LOCAL ================== */
+/* ========================================================= */
 
-        html += `</fieldset>`;
-      }
-
-      form.innerHTML = html;
-      updateProgress();
-    }
-
-
-    /* ===========================================================
-       PROGRESS BAR
-    ============================================================ */
-    function updateProgress(){
-      $("progress").style.width = (current / QUESTIONS.length * 100) + "%";
-      $("pct").textContent = Math.round(current / QUESTIONS.length * 100) + "%";
-      $("progressCount").textContent = current + "/" + QUESTIONS.length;
-      $("btnPrev").disabled = current === 0;
-      $("microcopy").textContent = MICROCOPY[
-        [16,12,8,4,0].find(x => current >= x)
-      ];
-    }
-
-
-    /* ===========================================================
-       IR PARA UM STEP ESPECÍFICO
-    ============================================================ */
-    function gotoStep(n){
-      form.querySelectorAll(".step").forEach(s => s.classList.add("hidden"));
-      let next = form.querySelector(`.step[data-step="${n}"]`);
-      if(next) next.classList.remove("hidden");
-      current = n;
-      updateProgress();
-      window.scrollTo({top: quiz.offsetTop - 20, behavior:"smooth"});
-    }
-    /* ===========================================================
-       EVENTOS DO QUIZ (seleção geral)
-    ============================================================ */
-    document.addEventListener("change", function(e){
-      let t = e.target;
-      if(!t) return;
-
-      /* ---------------- GÊNERO ---------------- */
-      if(t.name === "q0"){
-        selectedGender = (t.value === "A") ? "HOMEM" : "MULHER";
-
-        updateBodyTypesByGender();
-        renderQuestions();
-
-        /* Avança automaticamente para a próxima pergunta */
-        current = 1;
-        gotoStep(1);
-        return;
-      }
-
-      /* ---------------- INPUT ALTURA ---------------- */
-      if(t.id === "heightCm"){
-        let v = parseInt(t.value, 10);
-        if(!isNaN(v) && v >= 120 && v <= 230){
-          heightCm = v;
-          computeIMC();
-          setTimeout(() => gotoStep(current + 1), 200);
-        }
-      }
-
-      /* ---------------- INPUT PESO ---------------- */
-      if(t.id === "weightKg"){
-        let w = parseFloat(t.value);
-        if(!isNaN(w) && w >= 35 && w <= 250){
-          weightKg = w;
-          computeIMC();
-          setTimeout(() => gotoStep(current + 1), 200);
-        }
-      }
-
-      /* ---------------- RADIO NORMAL ---------------- */
-      if(t.type === "radio" && t.name.startsWith("q")){
-        setTimeout(() => gotoStep(current + 1), 150);
-      }
-    });
-
-    /* ===========================================================
-       EVENTO — SELEÇÃO DO BIOTIPO
-    ============================================================ */
-    form.addEventListener("click", function(e){
-      let card = e.target.closest(".body-card");
-      if(!card) return;
-
-      bodyTypeKey = card.getAttribute("data-body");
-
-      form.querySelectorAll(".body-card").forEach(c => c.classList.remove("selected"));
-      card.classList.add("selected");
-
-      setTimeout(() => gotoStep(current + 1), 200);
-    });
-
-
-    /* ===========================================================
-       CÁLCULO DO IMC
-    ============================================================ */
-    function computeIMC(){
-      if(heightCm && weightKg){
-        let m = heightCm / 100;
-        let v = weightKg / (m * m);
-
-        imcValue = Math.round(v * 10) / 10;
-
-        if(v < 18.5) imcLabel = "abaixo do peso";
-        else if(v < 25) imcLabel = "faixa saudável";
-        else if(v < 30) imcLabel = "sobrepeso";
-        else imcLabel = "obesidade leve";
-      }
-    }
-
-
-    /* ===========================================================
-       RESULTADO — COMBINAÇÕES
-    ============================================================ */
-    function finalizeResult(){
-  let resultSection = document.getElementById("resultado");
-  let titleEl = document.getElementById("resultTitle");
-  let descEl = document.getElementById("resultDesc");
-
-  /* Seleciona a dieta mais votada (mantido) */
-  let scores = {A:0,B:0,C:0,D:0};
-  selected.forEach(v => { if(scores[v]) scores[v]++; });
-
-  let dietKey = Object.keys(scores).reduce((a,b)=>
-    scores[a] > scores[b] ? a : b
-  );
-
-  /* Nome do biotipo */
-  let BT = BODY_TYPES.find(b => b.key === bodyTypeKey);
-  let bodyName = BT ? BT.name : "Equilibrado";
-
-  /* Mensagem */
-  let desc = `Seu biotipo é ${bodyName}.`;
-  if(imcValue){
-    desc += ` Seu IMC é ${imcValue} (${imcLabel}).`;
+try {
+  var _c = parseInt(localStorage.getItem("quiz_current")||"0",10);
+  if (isNaN(_c) || _c < 0 || _c >= QUESTIONS.length) {
+    localStorage.removeItem("quiz_current");
   }
-  desc += ` Seu plano será ajustado exatamente ao seu perfil.`;
+} catch(_) {}
 
-  /* Salva tudo */
-  localStorage.setItem("quiz_result_body_name", bodyName);
-  localStorage.setItem("quiz_imc_value", imcValue);
-  localStorage.setItem("quiz_imc_label", imcLabel);
+function saveProgress(){
+  try{
+    localStorage.setItem("quiz_selected", JSON.stringify(selected));
+    localStorage.setItem("quiz_current", String(current));
+    localStorage.setItem("quiz_height_cm", heightCm==null ? "" : String(heightCm));
+    localStorage.setItem("quiz_weight_kg", weightKg==null ? "" : String(weightKg));
+    localStorage.setItem("quiz_body_key", bodyTypeKey || "");
+    if(imcValue!=null) localStorage.setItem("quiz_imc_value", String(imcValue));
+    if(imcLabel) localStorage.setItem("quiz_imc_label", imcLabel);
+  } catch(_){}
+}
 
-  /* MOSTRA O RESULTADO + FORMULÁRIO */
-  document.getElementById("quiz").classList.add("hidden");
-  resultSection.classList.remove("hidden");
+function loadProgress(){
+  try{
+    var s = JSON.parse(localStorage.getItem("quiz_selected")||"[]");
+    if(Array.isArray(s) && s.length===selected.length) selected=s;
 
-  titleEl.textContent = "🎯 Plano Personalizado para Você";
-  descEl.textContent = desc;
+    var c = parseInt(localStorage.getItem("quiz_current")||"0",10);
+    if(!isNaN(c) && c>=0 && c<selected.length) current=c;
 
-  /* (IMPORTANTE) Mostra o formulário */
-  let leadForm = document.getElementById("leadForm");
-  if(leadForm){
-    leadForm.classList.remove("hidden");
+    var h = localStorage.getItem("quiz_height_cm"); if(h) heightCm=parseFloat(h);
+    var w = localStorage.getItem("quiz_weight_kg"); if(w) weightKg=parseFloat(w);
+    var b = localStorage.getItem("quiz_body_key"); if(b) bodyTypeKey=b;
+
+    var iv = localStorage.getItem("quiz_imc_value"); if(iv) imcValue=parseFloat(iv);
+    var il = localStorage.getItem("quiz_imc_label"); if(il) imcLabel=il;
+  }catch(_){}
+}
+
+
+/* ========================================================= */
+/* =============== FUNÇÕES DE CÁLCULO DE IMC ================= */
+/* ========================================================= */
+
+function scrollToQuizTop(){
+  var box = document.querySelector('#quiz .p-6');
+  var top = box ? box.getBoundingClientRect().top + window.scrollY - 80 : 0;
+  window.scrollTo({ top, behavior: 'smooth' });
+}
+
+function imcCompute(){
+  if(heightCm && weightKg){
+    var m = heightCm / 100;
+    var v = weightKg / (m*m);
+    imcValue = Math.round(v*10)/10;
+
+    if(v < 18.5) imcLabel = 'abaixo do peso';
+    else if(v < 25) imcLabel = 'faixa saudável';
+    else if(v < 30) imcLabel = 'sobrepeso';
+    else imcLabel = 'obesidade leve';
+
+    showImcChip();
+  }
+}
+
+function showImcChip(){
+  var banner = $("statusBanner"); 
+  if(!banner) return;
+
+  if(imcValue == null){
+    banner.classList.add("hidden");
+    return;
+  }
+
+  var color = "bg-emerald-50 border-emerald-300 text-emerald-800";
+  if(imcLabel === "sobrepeso") color = "bg-amber-50 border-amber-300 text-amber-900";
+  if(imcLabel === "obesidade leve") color = "bg-rose-50 border-rose-300 text-rose-800";
+
+  banner.innerHTML =
+    "<span class='imc-chip "+color+"'>IMC "+imcValue+" — "+imcLabel+"</span> " +
+    "<span class='ml-2 text-slate-700'>Perfeito, vamos ajustar tudo pensando no seu contexto. 💪</span>";
+
+  banner.className = "mb-4 rounded-xl px-4 py-3 text-sm border " + color;
+  banner.classList.remove("hidden");
+}
+
+
+/* ========================================================= */
+/* ================== RENDERIZAÇÃO DO QUIZ ================== */
+/* ========================================================= */
+
+function renderQuestions(){
+  var html = "";
+
+  for(var i=0; i<QUESTIONS.length; i++){
+    var it = QUESTIONS[i];
+
+    html += '<fieldset data-step="'+i+'" class="step'+(i===0?'':' hidden')+'">';
+    html += '<legend>'+(i+1)+'. '+ it.q +'</legend>';
+
+    /* RADIO */
+    if(it.type === "radio"){
+      html += '<div class="mt-3 grid sm:grid-cols-2 gap-3">';
+
+      for(var j=0; j<it.a.length; j++){
+        var letter = String.fromCharCode(65+j);
+        var id = "q"+i+"_"+letter;
+
+        html += `
+          <div class="choice">
+            <input class="peer hidden" type="radio" id="${id}" name="q${i}" value="${letter}" required />
+            <label for="${id}" class="block text-[1.05rem]">${it.a[j]}</label>
+          </div>`;
+      }
+
+      html += '</div>';
+    }
+
+    /* ALTURA */
+    else if(it.type === "input-height"){
+      var v = heightCm != null ? String(heightCm) : "";
+      html += `
+        <div class="mt-2">
+          <input id="heightCm" type="number" min="120" max="230" step="1"
+            value="${v}" placeholder="${it.placeholder}"
+            class="rounded-xl border-slate-300 w-full p-3" />
+          <p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p>
+        </div>`;
+    }
+
+    /* PESO */
+    else if(it.type === "input-weight"){
+      var wv = weightKg != null ? String(weightKg) : "";
+      html += `
+        <div class="mt-2">
+          <input id="weightKg" type="number" min="35" max="250" step="0.1"
+            value="${wv}" placeholder="${it.placeholder}"
+            class="rounded-xl border-slate-300 w-full p-3" />
+          <p class="text-xs text-slate-600 mt-2">Use quilogramas. Ex.: 78.5</p>
+        </div>`;
+    }
+
+    /* BIOTIPO COM IMAGEM */
+    else if(it.type === "body"){
+      html += '<div class="mt-3 grid sm:grid-cols-2 md:grid-cols-4 gap-3">';
+
+      for(var b=0; b<BODY_TYPES.length; b++){
+        var bt = BODY_TYPES[b];
+        var sel = (bodyTypeKey === bt.key) ? ' selected' : '';
+
+        html += `
+        <div class="body-card${sel}" data-body="${bt.key}">
+            <img src="${bt.image}" class="mx-auto h-32 w-auto rounded-lg" />
+            <div class="mt-2 font-semibold">${bt.name}</div>
+        </div>`;
+      }
+
+      html += "</div>";
+    }
+
+    html += "</fieldset>";
+  }
+
+  form.innerHTML = html;
+
+  /* RESTAURA OPÇÕES SELECIONADAS */
+  for(var i=0; i<selected.length; i++){
+    var v = selected[i];
+    if(!v) continue;
+    var input = document.getElementById("q"+i+"_"+v);
+    if(input) input.checked = true;
+  }
+
+  if(heightCm != null){
+    var h = $("heightCm");
+    if(h) h.value = String(heightCm);
+  }
+
+  if(weightKg != null){
+    var w = $("weightKg");
+    if(w) w.value = String(weightKg);
+  }
+
+  if(bodyTypeKey){
+    var cards = form.querySelectorAll(".body-card");
+    cards.forEach(c => {
+      if(c.getAttribute("data-body") === bodyTypeKey)
+        c.classList.add("selected");
+    });
+  }
+
+  updateProgress();
+}
+
+/* ========================================================= */
+/* ================== PROGRESSO DO QUIZ ===================== */
+/* ========================================================= */
+
+function updateProgress(){
+  var pct = Math.round((current) / QUESTIONS.length * 100);
+
+  $("progress").style.width = pct + "%";
+  $("pct").textContent = pct + "%";
+  $("progressCount").textContent = current + "/" + QUESTIONS.length;
+
+  $("btnPrev").disabled = (current === 0);
+
+  var k = [16,12,8,4,0].find(x => current >= x);
+  $("microcopy").textContent = MICROCOPY[k];
+}
+
+
+/* ========================================================= */
+/* ==================== NAVEGAÇÃO ENTRE STEPS =============== */
+/* ========================================================= */
+
+function gotoStep(n){
+  var cur = form.querySelector('.step[data-step="'+current+'"]');
+  var nxt = form.querySelector('.step[data-step="'+n+'"]');
+
+  if(cur) cur.classList.add("hidden");
+  if(nxt) nxt.classList.remove("hidden");
+
+  current = n;
+  updateProgress();
+  saveProgress();
+  scrollToQuizTop();
+}
+
+function nextStep(){
+  if(current < QUESTIONS.length - 1){
+    gotoStep(current + 1);
+    return;
+  }
+  /* Final do quiz → mostra resultado */
+  document.getElementById('quiz').classList.add('hidden');
+  showResult();
+}
+
+function prevStep(){
+  if(current > 0) gotoStep(current - 1);
+}
+
+
+/* ========================================================= */
+/* =============== RECOMPUTAR PERFIL DA DIETA =============== */
+/* ========================================================= */
+
+function recomputeScores(){
+  scores.A = scores.B = scores.C = scores.D = 0;
+
+  for(var i=0; i<selected.length; i++){
+    var v = selected[i];
+    if(!v) continue;
+    if(scores[v] != null) scores[v]++;
+  }
+
+  /* IMC ajusta perfil */
+  if(imcValue != null){
+    if(imcValue >= 25){ scores.A++; scores.C++; }
+    else if(imcValue < 18.5){ scores.B++; scores.C++; }
   }
 }
 
 
-      document.getElementById("quiz").classList.add("hidden");
-      resultEl.classList.remove("hidden");
+/* ========================================================= */
+/* ================ SELECIONAR MELHOR DIETA ================= */
+/* ========================================================= */
 
-      titleEl.textContent = title;
-      descEl.textContent = desc;
+function bestDietKey(){
+  var bestKey = "A";
+  var best = -1;
 
-      localStorage.setItem("quiz_result_body_name", bodyName);
-      localStorage.setItem("quiz_imc_value", imcValue);
-      localStorage.setItem("quiz_imc_label", imcLabel);
+  for(var k in scores){
+    if(scores[k] > best){
+      best = scores[k];
+      bestKey = k;
     }
+  }
 
+  return bestKey;
+}
+/* ========================================================= */
+/* ======================= RESULTADO FINAL ================= */
+/* ========================================================= */
 
-    /* ===========================================================
-       FINAL DO QUIZ
-    ============================================================ */
-    function nextStep(){
-      if(current >= QUESTIONS.length - 1){
-        finalizeResult();
-        return;
-      }
-      gotoStep(current + 1);
-    }
+function bodyKeyToName(k){
+  var bt = BODY_TYPES.find(x => x.key === k);
+  return bt ? bt.name : "Equilibrado";
+}
 
+function finalizeCombo(dietKey){
+  var bt = bodyTypeKey || "EQUI";
+  var comboKey = dietKey + "-" + bt;
+  var combo = COMBOS[comboKey] || {
+    title: "Plano Personalizado",
+    desc: "Combinação adaptada ao seu contexto."
+  };
 
-    /* ===========================================================
-       SALVAR LEAD E ENVIAR PARA PRÉ PAGAMENTO
-    ============================================================ */
-    window.handleLead = async function(event){
-      event.preventDefault();
-
-      let nome  = document.getElementById("nome").value.trim();
-      let email = document.getElementById("email").value.trim();
-      let whats = document.getElementById("whats").value.trim();
-
-      let ref = "ref-" + Date.now() + "-" + Math.random().toString(36).substr(2,6);
-
-      let fd = new FormData();
-      fd.append("token", LEAD_TOKEN);
-      fd.append("ref", ref);
-      fd.append("name", nome);
-      fd.append("email", email);
-      fd.append("phone", whats);
-      fd.append("diet_title", "");
-      fd.append("body_type", localStorage.getItem("quiz_result_body_name") || "");
-      fd.append("imc_value", localStorage.getItem("quiz_imc_value") || "");
-      fd.append("imc_label", localStorage.getItem("quiz_imc_label") || "");
-
-      try { await fetch(LEAD_ENDPOINT, {method:"POST", body:fd}); } catch(e){}
-
-      let url = new URL(PRE_PAG_URL, location.origin);
-      url.searchParams.set("ref", ref);
-      url.searchParams.set("nome", nome);
-      url.searchParams.set("email", email);
-      url.searchParams.set("whats", whats);
-
-      location.href = url.toString();
+  var imcMsg = "";
+  if(imcValue != null){
+    var tone = {
+      "abaixo do peso": "Vamos reforçar densidade nutricional.",
+      "faixa saudável": "Excelente! Vamos manter seu bem-estar.",
+      "sobrepeso": "Vamos reduzir gordura com segurança.",
+      "obesidade leve": "Foco em conforto, regularidade e progresso."
     };
 
+    imcMsg = "Seu IMC é " + imcValue + " (" + imcLabel + "). " +
+             (tone[imcLabel] || "");
+  }
 
-    /* ===========================================================
-       WHATSAPP DEPOIS DO PAGAMENTO
-    ============================================================ */
-    (function(){
-      let params = new URLSearchParams(location.search);
-      if(params.get("status") !== "approved") return;
+  var prof = PROFILES[dietKey];
+  var title = "🎯 " + combo.title;
+  var desc = (imcMsg ? imcMsg : "") +
+             (combo.desc || "") +
+             " " +
+             (prof ? prof.desc : "");
 
-      setTimeout(function(){
+  var bodyName = bodyKeyToName(bt);
+  var dietTitle = prof ? prof.title.replace(/^[^A-Za-z0-9]+/, "").trim() : "Plano alimentar";
 
-        let nome = localStorage.getItem("lead_nome") || "Cliente";
-        let body = localStorage.getItem("quiz_result_body_name") || "";
-        let imc  = localStorage.getItem("quiz_imc_value") || "";
-        let lbl  = localStorage.getItem("quiz_imc_label") || "";
+  /* SALVA RESULTADOS NO LOCALSTORAGE */
+  try {
+    localStorage.setItem("quiz_result_diet_key", dietKey);
+    localStorage.setItem("quiz_result_diet_title", dietTitle);
+    localStorage.setItem("quiz_result_body_key", bt);
+    localStorage.setItem("quiz_result_body_name", bodyName);
+    localStorage.setItem("quiz_result_title", title);
+    localStorage.setItem("quiz_result_desc", desc);
+  } catch (_) {}
 
-        let msg =
-          "Oi, sou " + nome + "!\n" +
-          "Meu resultado do quiz foi:\n" +
-          "• Biotipo: " + body + "\n" +
-          "• IMC: " + imc + " (" + lbl + ")\n" +
-          "Pagamento aprovado! Quero meu plano completo.";
+  /* EXIBE NA TELA */
+  $("resultTitle").textContent = title;
+  $("resultDesc").textContent = desc;
 
-        window.open("https://wa.me/5519982391022?text=" + encodeURIComponent(msg));
-      }, 600);
-    })();
+  var tips = prof ? prof.tips : ["Hidrate-se", "Evite ultraprocessados"];
+  $("tips").innerHTML = tips.map(x => "<li>"+x+"</li>").join("");
+
+  var menu = prof ? prof.menu : ["Café: ovo + fruta", "Almoço: grelhado + salada"];
+  $("menu").innerHTML = menu.map(x => "<li>"+x+"</li>").join("");
+
+  $("resultado").classList.remove("hidden");
+
+  $("progress").style.width = "100%";
+  $("pct").textContent = "100%";
+  $("progressCount").textContent = QUESTIONS.length + "/" + QUESTIONS.length;
+}
+
+function showResult(){
+  recomputeScores();
+  var dietKey = bestDietKey();
+  finalizeCombo(dietKey);
+}
 
 
-    /* ===========================================================
-       INICIALIZAÇÃO DO QUIZ
-    ============================================================ */
-    renderQuestions();
-    gotoStep(0);
+/* ========================================================= */
+/* ================== FORMULÁRIO DE LEAD ==================== */
+/* ========================================================= */
 
-    document.getElementById("btnPrev").addEventListener("click", function(){
-      if(current > 0) gotoStep(current - 1);
+async function salvarLeadNoServidor({ref, nome, email, whats}){
+  var dietTitle = localStorage.getItem("quiz_result_diet_title") || "";
+  var bodyName  = localStorage.getItem("quiz_result_body_name")  || "";
+  var imcVal    = localStorage.getItem("quiz_imc_value") || "";
+  var imcLbl    = localStorage.getItem("quiz_imc_label") || "";
+
+  var fd = new FormData();
+  fd.append("token",      LEAD_TOKEN);
+  fd.append("ref",        ref || "");
+  fd.append("name",       nome || "");
+  fd.append("email",      email || "");
+  fd.append("phone",      whats || "");
+  fd.append("diet_title", dietTitle);
+  fd.append("body_type",  bodyName);
+  fd.append("imc_value",  imcVal);
+  fd.append("imc_label",  imcLbl);
+
+  try {
+    const ctrl = new AbortController();
+    const tm = setTimeout(() => ctrl.abort(), 2500);
+
+    await fetch(LEAD_ENDPOINT, {
+      method: "POST",
+      body: fd,
+      signal: ctrl.signal,
+      credentials: "same-origin"
     });
 
-  })();
-  </script>
+    clearTimeout(tm);
+  } catch (_) {}
+}
+
+function uuidRef(){
+  return "ref-" + Date.now() + "-" + Math.random().toString(36).slice(2,8);
+}
+
+window.handleLead = async function(e){
+  e.preventDefault();
+
+  var nome  = $("nome").value.trim();
+  var email = $("email").value.trim();
+  var whats = $("whats").value.trim();
+
+  try {
+    localStorage.setItem("lead_nome", nome);
+    localStorage.setItem("lead_email", email);
+    localStorage.setItem("lead_whats", whats);
+  } catch (_) {}
+
+  $("leadOk").classList.remove("hidden");
+
+  var ref = uuidRef();
+  try { localStorage.setItem("mp_external_ref", ref); } catch(_){}
+
+  await salvarLeadNoServidor({ ref, nome, email, whats });
+
+  var u = new URL(PRE_PAG_URL, location.origin);
+  u.searchParams.set("ref", ref);
+  u.searchParams.set("nome", nome);
+  u.searchParams.set("email", email);
+  u.searchParams.set("whats", whats);
+
+  location.href = u.toString();
+  return false;
+};
 
 
-  <!-- FOOTER -->
-  <footer class="py-10 text-center text-sm text-slate-500">
-    <p>© <span id="year"></span> Dieta Pronta Online</p>
-  </footer>
+/* ========================================================= */
+/* =============== PÓS PAGAMENTO → WHATSAPP ================= */
+/* ========================================================= */
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+(function detectarStatus(){
+  var p = new URLSearchParams(location.search);
+  var status = p.get("status");
+  var banner = $("statusBanner");
 
-</body>
-</html>
+  function showBanner(msg, classes){
+    banner.textContent = msg;
+    banner.className = "mb-4 rounded-xl px-4 py-3 text-sm border " + classes;
+    banner.classList.remove("hidden");
+  }
+
+  function abrirWhatsAppComResultado(){
+    var nome = $("nome") ? $("nome").value.trim() : (localStorage.getItem("lead_nome") || "");
+
+    var result = localStorage.getItem("quiz_result_title") ||
+                 ($("resultTitle") ? $("resultTitle").textContent : "") ||
+                 "Plano de dieta";
+
+    var desc = localStorage.getItem("quiz_result_desc") ||
+               ($("resultDesc") ? $("resultDesc").textContent : "") ||
+               "";
+
+    var dietTitle = localStorage.getItem("quiz_result_diet_title") || "";
+    var bodyName  = localStorage.getItem("quiz_result_body_name")  || "";
+    var imcVal    = localStorage.getItem("quiz_imc_value") || "";
+    var imcLbl    = localStorage.getItem("quiz_imc_label") || "";
+
+    var linhas = [];
+    linhas.push("Oi, sou "+(nome || "cliente")+".");
+    linhas.push("Meu resultado no Quiz foi: "+result+".");
+    if(dietTitle || bodyName){
+      linhas.push("• Biotipo: "+(bodyName||"-")+" • Dieta: "+(dietTitle||"-"));
+    }
+    if(imcVal){
+      linhas.push("• IMC: "+imcVal + (imcLbl ? " ("+imcLbl+")" : ""));
+    }
+    if(desc){
+      linhas.push("Resumo: "+desc);
+    }
+    linhas.push("Pagamento confirmado. Quero receber meu plano completo.");
+
+    var link = "https://wa.me/5519982391022?text=" + encodeURIComponent(linhas.join("\n"));
+    window.open(link, "_blank");
+  }
+
+  if(status === "approved"){
+    setTimeout(abrirWhatsAppComResultado, 300);
+    return;
+  }
+
+  if(status === "failure"){
+    showBanner(
+      "Não foi possível validar seu resultado agora. Tente novamente em alguns minutos.",
+      "bg-rose-50 border-rose-300 text-rose-800"
+    );
+    return;
+  }
+
+  if(status === "pending"){
+    showBanner(
+      "Estamos preparando seu resultado personalizado. Em instantes você poderá acessar.",
+      "bg-amber-50 border-amber-300 text-amber-800"
+    );
+  }
+})();
+
+
+/* ========================================================= */
+/* ==================== REVER RESPOSTAS ===================== */
+/* ========================================================= */
+
+$("btnReview").addEventListener("click", function(e){
+  e.preventDefault();
+  $("resultado").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  gotoStep(Math.min(current, QUESTIONS.length - 1));
+});
+
+
+/* ========================================================= */
+/* ==================== INICIALIZAÇÃO ======================= */
+/* ========================================================= */
+
+$("year").textContent = (new Date()).getFullYear();
+
+loadProgress();
+renderQuestions();
+
+if(current > 0){
+  for(var i=0; i<current; i++){
+    var prev = form.querySelector('.step[data-step="'+i+'"]');
+    if(prev) prev.classList.add("hidden");
+  }
+  var on = form.querySelector('.step[data-step="'+current+'"]');
+  if(on) on.classList.remove("hidden");
+  updateProgress();
+  scrollToQuizTop();
+  showImcChip();
+}
+
 
