@@ -390,44 +390,29 @@
   }
   /* =================== EVENTOS =================== */
 
- // Seleção de gênero — troca biotipos e avança corretamente
+// Seleção de gênero — apenas troca a lista de biotipos e avança
 document.addEventListener("change", function(e){
   const t = e.target;
   if(!t) return;
 
   if(t.type === "radio" && t.name === "q0"){  // pergunta 0 = gênero
-    // Captura texto real da opção
-    const generoTxt = t.nextElementSibling?.innerText?.trim().toUpperCase() || "";
 
-    // Ajusta lista de biotipos conforme gênero
-    if(generoTxt === "HOMEM"){
-      selectedGender = "HOMEM";
+    const labelTxt = t.nextElementSibling?.innerText?.trim().toUpperCase() || "";
+
+    if(labelTxt === "HOMEM"){
       CURRENT_BODY_TYPES = BODY_TYPES_MASC;
     } else {
-      selectedGender = "MULHER";
       CURRENT_BODY_TYPES = BODY_TYPES_FEM;
     }
 
-    // Atualiza pergunta de biotipo
-    QUESTIONS[18].a = CURRENT_BODY_TYPES;
+    // NÃO re-renderiza o quiz.
+    // A pergunta 18 vai usar CURRENT_BODY_TYPES quando chegar lá.
 
-    // Salva a resposta antes de recriar tudo
-    selected[0] = t.value;
-
-    // Re-renderiza mantendo progresso
-    renderQuestions();
-
-    // Marca novamente o gênero selecionado (pois foi recriado)
-    const id = "q0_" + t.value;
-    const novo = document.getElementById(id);
-    if(novo){
-      novo.checked = true;
-    }
-
-    // Avança após gênero
-    setTimeout(()=> nextStep(), 100);
+    // Avança normalmente
+    setTimeout(()=> nextStep(), 80);
   }
 });
+
 
   // Avanço automático para qualquer pergunta radio
   document.addEventListener("change", function(e){
