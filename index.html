@@ -455,14 +455,29 @@
         var step = parseInt(t.name.substring(1));
         selectedGender = (step===0 ? t.value : selectedGender);
 
-        if(step===0){
-          /* Atualiza BIOTIPOS */
-          updateBodyTypesByGender();
-          QUESTIONS[2].a = BODY_TYPES;
-          renderQuestions();
-          setTimeout(()=>gotoStep(1),50);     // <-- faz avançar automaticamente!
-          return;                             // <-- evita abrir pergunta duplicada
-        }
+if(step===0){
+  selectedGender = t.value;
+
+  updateBodyTypesByGender();
+  QUESTIONS[2].a = BODY_TYPES;
+
+  // Limpa tudo e re-renderiza
+  renderQuestions();
+
+  // Força exibir apenas a próxima pergunta
+  current = 1; 
+  updateProgress();
+
+  // Oculta todas
+  form.querySelectorAll(".step").forEach(s => s.classList.add("hidden"));
+
+  // Mostra somente a nova pergunta 3
+  form.querySelector('.step[data-step="1"]').classList.remove("hidden");
+
+  saveProgress();
+  return;
+}
+
 
         selected[step] = t.value;
         saveProgress();
