@@ -390,22 +390,36 @@
   }
   /* =================== EVENTOS =================== */
 
-  // Ao selecionar gênero → troca os body-types e avança
-  document.addEventListener("change", function(e){
-    const t = e.target;
-    if(!t) return;
-    if(t.type === "radio" && t.name === "q0"){   // pergunta 0 = gênero
-      selectedGender = t.value; // A = HOMEM, B = MULHER
+ // Selecionou gênero → troca body-types e avança
+document.addEventListener("change", function(e){
+  const t = e.target;
+  if(!t) return;
 
-      if(selectedGender === "A"){ CURRENT_BODY_TYPES = BODY_TYPES_MASC; }
-      else { CURRENT_BODY_TYPES = BODY_TYPES_FEM; }
+  // Só dispara na pergunta 0
+  if(t.type === "radio" && t.name === "q0"){  
 
-      QUESTIONS[18].a = CURRENT_BODY_TYPES;
+    // A = letra da opção (primeira opção)
+    // Precisamos ler o texto correto (HOMEM ou MULHER)
+    const label = t.nextElementSibling?.innerText?.trim() || "";
 
-      renderQuestions();   // re-renderiza com novos biotipos
-      setTimeout(()=> nextStep(), 120);
+    if(label.toUpperCase() === "HOMEM"){
+      selectedGender = "HOMEM";
+      CURRENT_BODY_TYPES = BODY_TYPES_MASC;
+    } else {
+      selectedGender = "MULHER";
+      CURRENT_BODY_TYPES = BODY_TYPES_FEM;
     }
-  });
+
+    // Atualiza o item de biotipo com a lista correta
+    QUESTIONS[18].a = CURRENT_BODY_TYPES;
+
+    // Re-renderiza
+    renderQuestions();
+
+    // Avança automaticamente
+    setTimeout(()=> nextStep(), 50);
+  }
+});
 
   // Avanço automático para qualquer pergunta radio
   document.addEventListener("change", function(e){
