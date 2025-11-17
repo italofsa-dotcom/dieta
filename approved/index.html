@@ -302,13 +302,26 @@ document.getElementById("btnEmail").addEventListener("click", async (e) => {
 
   <!-- Event snippet for Compra conversion page -->
 <script>
+  // Captura parâmetros da URL
+  function getParam(p) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(p);
+  }
+
+  // Usa external_reference como transaction_id (melhor opção)
+  const transactionId =
+    getParam('external_reference') ||
+    getParam('payment_id') ||
+    'fallback_' + Date.now(); // segurança caso tudo falhe
+
   gtag('event', 'conversion', {
       'send_to': 'AW-17661147688/q7jPCMKArLQbEKj0vuVB',
       'value': 19.90,
       'currency': 'BRL',
-      'transaction_id': ''
+      'transaction_id': transactionId
   });
 </script>
+
 
   
 
