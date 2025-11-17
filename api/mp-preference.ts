@@ -117,6 +117,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           currency_id: 'BRL'
         }
       ],
+      
+      payment_methods: {
+      excluded_payment_types: [
+      { id: 'ticket' }, // 🚫 bloqueia boleto
+      { id: 'atm' }     // 🚫 bloqueia caixa eletrônico
+      ],
+      installments: 1 // opcional: pagamento à vista
+      },
+      
       back_urls: {
         success: 'https://dietapronta.online/approved',
         failure: 'https://dietapronta.online/failure',
