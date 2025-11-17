@@ -475,33 +475,48 @@
        RESULTADO — COMBINAÇÕES
     ============================================================ */
     function finalizeResult(){
-      let resultEl = document.getElementById("resultado");
-      let titleEl = document.getElementById("resultTitle");
-      let descEl = document.getElementById("resultDesc");
+  let resultSection = document.getElementById("resultado");
+  let titleEl = document.getElementById("resultTitle");
+  let descEl = document.getElementById("resultDesc");
 
-      /* Seleciona a dieta mais votada */
-      let scores = {A:0, B:0, C:0, D:0};
+  /* Seleciona a dieta mais votada (mantido) */
+  let scores = {A:0,B:0,C:0,D:0};
+  selected.forEach(v => { if(scores[v]) scores[v]++; });
 
-      selected.forEach(v => { if(scores[v]) scores[v]++; });
+  let dietKey = Object.keys(scores).reduce((a,b)=>
+    scores[a] > scores[b] ? a : b
+  );
 
-      let dietKey = Object.keys(scores).reduce((a,b) => scores[a] > scores[b] ? a : b);
+  /* Nome do biotipo */
+  let BT = BODY_TYPES.find(b => b.key === bodyTypeKey);
+  let bodyName = BT ? BT.name : "Equilibrado";
 
-      /* Default */
-      let title = "Plano Personalizado";
-      let desc = "Seu plano foi ajustado ao seu perfil.";
+  /* Mensagem */
+  let desc = `Seu biotipo é ${bodyName}.`;
+  if(imcValue){
+    desc += ` Seu IMC é ${imcValue} (${imcLabel}).`;
+  }
+  desc += ` Seu plano será ajustado exatamente ao seu perfil.`;
 
-      /* Mapeamento do bodyType */
-      let bodyName = "Equilibrado";
+  /* Salva tudo */
+  localStorage.setItem("quiz_result_body_name", bodyName);
+  localStorage.setItem("quiz_imc_value", imcValue);
+  localStorage.setItem("quiz_imc_label", imcLabel);
 
-      let BT = BODY_TYPES.find(b => b.key === bodyTypeKey);
-      if(BT) bodyName = BT.name;
+  /* MOSTRA O RESULTADO + FORMULÁRIO */
+  document.getElementById("quiz").classList.add("hidden");
+  resultSection.classList.remove("hidden");
 
-      /* Monta descrição final */
-      desc = `Seu biotipo é ${bodyName}. Sua alimentação será ajustada para maximizar seus resultados.`;
+  titleEl.textContent = "🎯 Plano Personalizado para Você";
+  descEl.textContent = desc;
 
-      if(imcValue){
-        desc += ` IMC ${imcValue} (${imcLabel}).`;
-      }
+  /* (IMPORTANTE) Mostra o formulário */
+  let leadForm = document.getElementById("leadForm");
+  if(leadForm){
+    leadForm.classList.remove("hidden");
+  }
+}
+
 
       document.getElementById("quiz").classList.add("hidden");
       resultEl.classList.remove("hidden");
