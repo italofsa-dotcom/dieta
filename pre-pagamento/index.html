@@ -696,7 +696,7 @@ if ($('countdown')) {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
-          valor: 19.90,
+          valor: 4.90,
           titulo: "Plano de Dieta Completo",
           external_reference: ref,
           customer_name: nome,
@@ -715,7 +715,7 @@ if ($('countdown')) {
       mp.checkout({
         preference: { id: data.id },
         autoOpen: true,
-        render: { container: "#mp-checkout", label: "Pagar R$ 19,90" }
+        render: { container: "#mp-checkout", label: "Pagar R$ 4,90" }
       });
 
       btn.textContent = "Abrindo pagamento...";
