@@ -82,10 +82,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ref: upsellRef,
       name: customer_name,
       email: customer_email,
-      phone: customer_whatsapp,
+
+      // 🔥 Garante criação de novo registro SEM mexer no PHP
+      phone: customer_whatsapp ? customer_whatsapp + "-upsell" : "",
+
       diet_title: "200 Receitas Saudáveis",
       body_type: "Upsell",
-      amount: Number(valor) || 9.9, // ✅ Envia o valor da compra
+      amount: Number(valor) || 9.9,
+
+      // Mantém fluxo natural do webhook/polling
+      status: "pending",
+
       secret: LEAD_TOKEN,
     };
 
