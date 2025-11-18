@@ -166,14 +166,14 @@
 
         <!-- BOX DE PAGAMENTO -->
         <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft text-center relative">
-          <div id="countdownBox" class="mx-auto">⏰ <span>Oferta expira em:</span> <span id="countdown">08:45:00</span></div>
+          <div id="countdownBox" class="mx-auto">⏰ <span>Oferta expira em:</span> <span id="countdown">05:00</span></div>
       <!--    <h3 class="text-xl font-extrabold mt-1">Liberar acesso agora</h3> -->
           <h4 class="text-2xl font-extrabold mt-3 text-emerald-600">
-            <span class="text-amber-600 text-sm uppercase font-semibold block mb-1">🔥 Restam 32 Vagas de 500 disponibilizadas</span>
-            De <span class="text-red-500 line-through">R$ 149,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 4,90</span>
+            <span class="text-amber-600 text-sm uppercase font-semibold block mb-1">🔥 Somente hoje</span>
+            De <span class="text-red-500 line-through">R$ 349,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 19,90</span>
           </h4>
           <p class="mt-3 text-slate-700 text-sm leading-relaxed">
-            <strong>⚠️ ESSA PROMOÇÃO É LIBERADA SOMENTE UMA VEZ NO ANO! NÃO NOS RESPONSABILIZAMOS CASO AO TENTAR EFETUAR SEU PAGAMENTO AS VAGAS TENHAM SE ESGOTADO!</strong>  
+            Você deve estar se perguntando.. porque tudo isso por somente R$ 19,90? ... verdade o valor está extremamente baixo, porem tem um motivo pra isso... <strong>somente uma vez no ano</strong> nós liberamos vagas com este preço simbólico, com intuito de ajudar o maior número de mulheres e homens que já tentaram de tudo, porem sem o plano correto não conseguiam chegar ao seu objetivo! Sua oportunidade é agora! 
           </p>
           <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Acesso Vitalício</div>
           <div id="mp-checkout" class="mt-6"></div>
@@ -182,6 +182,12 @@
           <div id="buyersCount" class="mt-4 text-amber-600 font-semibold text-lg">
             🔥 <span id="buyersNumber">37</span> pessoas compraram na última hora!
             
+          <div class="flex flex-col items-center text-center">
+             <img src="https://ederprado.com/wp-content/uploads/2021/06/selo-garantia-7-dias-small.png" 
+         alt="7 dias de garantia" 
+         class="w-28 h-28 drop-shadow-lg">
+
+           </div> 
             
           </div>
         </aside>
@@ -617,34 +623,37 @@ document.addEventListener("DOMContentLoaded", function() {
     titulo.innerHTML = `${nome ? nome + ',' : ''} sua dieta personalizada está pronta 🎉`;
   }
 
-  // === Contagem regressiva ===
- <script>
-  // Tempo inicial: 8h 45min 0s → convertido para segundos
-  let totalSeconds = (8 * 60 * 60) + (45 * 60);
 
-  function updateCountdown() {
-    let hours = Math.floor(totalSeconds / 3600);
-    let minutes = Math.floor((totalSeconds % 3600) / 60);
-    let seconds = totalSeconds % 60;
+// === Contagem regressiva ===
+if ($('countdown')) {
 
-    // Formatar com dois dígitos
-    const format = (n) => (n < 10 ? "0" + n : n);
+  // 8 horas, 45 minutos → converter para segundos
+  let timeLeft = (8 * 60 * 60) + (45 * 60); // 31500 segundos
 
-    document.getElementById("countdown").textContent =
-      `${format(hours)}:${format(minutes)}:${format(seconds)}`;
+  const countdownEl = $('countdown');
+  const countdownBox = $('countdownBox');
 
-    // Evita números negativos
-    if (totalSeconds > 0) {
-      totalSeconds--;
+  setInterval(() => {
+
+    // Converter para horas, minutos e segundos
+    const h = String(Math.floor(timeLeft / 3600)).padStart(2, '0');
+    const m = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, '0');
+    const s = String(timeLeft % 60).padStart(2, '0');
+
+    countdownEl.textContent = `${h}:${m}:${s}`;
+
+    // Pulse quando faltar menos de 1 minuto
+    if (timeLeft <= 60) countdownBox.classList.add("pulse");
+
+    if (timeLeft <= 0) {
+      countdownEl.textContent = "00:00:00";
+      return;
     }
-  }
 
-  // Atualiza imediatamente ao carregar
-  updateCountdown();
+    timeLeft--;
 
-  // Atualiza a cada segundo
-  setInterval(updateCountdown, 1000);
-</script>
+  }, 1000);
+}
 
 
   // === Pagamento Mercado Pago ===
