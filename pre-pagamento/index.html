@@ -1,3 +1,796 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Seu Plano Personalizado está pronto ✅</title>
+  <meta name="description" content="Pré-pagamento: página de confirmação com personalização automática de nome, IMC e biotipo.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <style>
+    :root { --brand:#22c55e; --gold:#fbbf24; }
+    body{ font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,sans-serif; }
+    .container{ max-width:980px; }
+    .shadow-soft{ box-shadow:0 10px 25px rgba(2,6,23,.08); }
+    .badge{ display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;font-size:.8rem; }
+    #countdownBox{background:linear-gradient(90deg,#fbbf24,#f59e0b,#facc15);color:#fff;font-weight:800;font-size:1.4rem;padding:.6rem 1.8rem;border-radius:.8rem;display:inline-flex;align-items:center;gap:.5rem;box-shadow:0 0 25px rgba(245,158,11,.5);animation:gradientMove 3s linear infinite;background-size:200% 200%;margin-bottom:1rem;}
+    @keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    #countdownBox.pulse{animation:pulse 1s infinite,gradientMove 3s linear infinite}
+    @keyframes pulse{0%{transform:scale(1);box-shadow:0 0 25px rgba(245,158,11,.5)}50%{transform:scale(1.05);box-shadow:0 0 45px rgba(245,158,11,.8)}100%{transform:scale(1);box-shadow:0 0 25px rgba(245,158,11,.5)}}
+
+    /* === Botão Dourado com brilho === */
+    #btnResultados {
+      background: linear-gradient(90deg, #fbbf24, #facc15, #fbbf24);
+      background-size: 200% 200%;
+      color: white;
+      font-weight: 600;
+      padding: 0.8rem 2rem;
+      border-radius: 0.8rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(251,191,36,0.4);
+      animation: shimmer 4s linear infinite;
+    }
+    #btnResultados:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(251,191,36,0.6);
+    }
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* === Galeria === */
+    .galeria img{
+      transition:transform .4s ease, box-shadow .4s ease;
+      border-radius:1rem;
+    }
+    .galeria img:hover{
+      transform:scale(1.05);
+      box-shadow:0 10px 25px rgba(0,0,0,.25);
+    }
+  </style>
+
+
+
+  <!-- Start of  Zendesk Widget script -->
+<script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=8bd1b71a-ff84-437d-a53b-3af6d91d14a8"> </script>
+<!-- End of  Zendesk Widget script -->
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17661147688">
+</script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-17661147688');
+</script>
+  
+
+  
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-emerald-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l4 2"/></svg>
+        </div>
+        <span class="font-extrabold tracking-tight">Dieta Pronta Online</span>
+      </div>
+      <div class="text-sm text-slate-500 hidden md:block">Plano personalizado pronto para você</div>
+    </div>
+  </header>
+
+  <!-- Hero com Personalização -->
+  <section class="bg-gradient-to-b from-white to-slate-100">
+    <div class="container mx-auto px-4 py-10 grid lg:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Seu plano personalizado está pronto 🎉</h1>
+        <br>
+        <div id="personalizacao" class="mb-4 text-emerald-700 font-semibold leading-relaxed text-lg"></div>
+        <p id="intro" class="mt-4 text-lg text-slate-600">
+          Com base nas suas respostas, montamos um <strong>PLANO COMPLETO</strong> e 100% ajustado ao seu corpo e rotina.
+        </p>
+        <div id="imcInfo" class="mt-4 hidden"></div>
+        <div class="mt-6 flex gap-3">
+          <a id="btnContinuarTop" href="#oferta" class="rounded-xl px-6 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+            Ver o que você vai receber
+          </a>
+          <span class="text-slate-500 self-center">Envio imediato!</span>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="rounded-2xl overflow-hidden shadow-soft border border-slate-200 bg-white">
+          <img src="https://dietapronta.online/nutri2.jpg" alt="Alimentos saudáveis" class="w-full h-72 object-cover"/> 
+          <div class="p-6">
+            <h3 class="text-xl font-bold">Plano realmente aplicável</h3>
+            <p class="mt-1 text-slate-600">
+             Olá, ficamos felizes em poder te ajudar! preparamos com muito carinho uma dieta 100% personalizada para seu IMC e Biotipo! Vamos trabalhar com o simples que funciona! combinações inteligentes e foco! Já ajudamos milhares de pessoas com o perfil igual ao seu, e temos plena confiança que você irá se sair super bem! 
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Oferta  ORIGINAL --> 
+  
+  <section id="oferta" class="py-10">
+         
+    <div class="container mx-auto px-4">
+      <div class="grid lg:grid-cols-3 gap-6 items-start">
+        <div class="lg:col-span-2 p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+          <div class="flex items-center gap-2 text-sm text-slate-500">
+            <span class="badge bg-emerald-100 text-emerald-800">Personalizado</span> Plano baseado no seu biotipo e IMC
+          </div>
+          <h2 class="mt-2 text-2xl font-extrabold">✨ Tudo pronto! O que já está disponível para você</h2>
+
+          <ul class="mt-4 space-y-3 text-slate-700">
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>DIETA semanal COMPLETA!</strong> — 3 opções para cada uma das 5 refeições diarias, café da manhã, almoço, lanche, janta e ceia! ajustadas ao seu perfil.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Livro digital com 200+ receitas</strong> — fáceis, econômicas e saborosas.<strong>(OPCIONAL)</strong></span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Suplementação recomendada</strong> — alinhada ao seu objetivo e biotipo.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Estratégias complementares</strong> — hábitos e ajustes que aceleram o resultado.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Explicação do seu metabolismo e tipo de corpo</strong> — entenda como usar isso ao seu favor.</span></li>
+            <li class="flex gap-3"><span class="mt-1">✅</span><span><strong>Acesso VITALÍCIO</strong> — acesso ao conteúdo é exclusivo e 100% vitalício.</span></li>
+          
+          </ul>
+
+         <div class="mt-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
+            <p id="resumoPlano" class="font-semibold">⭐ Seu plano está com: <span id="planoSpan">Liberação Imediata e 🛡️ RISCO ZERO (7 dias de garantia)</span>.      
+                 
+            </p>
+            <p id="descSpan" class="mt-1 text-slate-800"></p>
+          </div>
+
+
+          <div class="text-center mt-6">
+            <button id="btnResultados">📸 Veja os resultados de nossos pacientes</button>
+          </div>
+        </div>
+
+  
+
+
+
+
+  
+
+        <!-- BOX DE PAGAMENTO -->
+        <aside class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft text-center relative">
+          <div id="countdownBox" class="mx-auto">⏰ <span>Oferta expira em:</span> <span id="countdown">3:42:00</span></div>
+      <!--    <h3 class="text-xl font-extrabold mt-1">Liberar acesso agora</h3> -->
+          <h4 class="text-2xl font-extrabold mt-3 text-emerald-600">
+            <span class="text-amber-600 text-sm uppercase font-semibold block mb-1">🔥 Somente hoje</span>
+            De <span class="text-red-500 line-through">R$ 149,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 4,90</span>
+          </h4>
+          <p class="mt-3 text-slate-700 text-sm leading-relaxed">
+            <strong>ATENÇÃO!ESTA PROMOÇÃO É ABERTA SOMENTE UMA VEZ NO ANO! PEDIMOS A COMPREENSÃO CASO AS VAGAS JÁ TENHAM SE ESGOTADO AO TENTAR EFETUAR SEU PAGAMENTO!</strong>
+          </p>
+          <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Acesso Vitalício</div>
+          <div id="mp-checkout" class="mt-6"></div>
+          <a id="btnPagamento" href="#" class="mt-4 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Quero meu plano agora</a>
+         
+          <div id="buyersCount" class="mt-4 text-amber-600 font-semibold text-lg">
+            🔥 <span id="buyersNumber">37</span> pessoas compraram na última hora!
+            
+ 
+            
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERIA -->
+  <section class="bg-white py-12 border-t border-slate-200">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-extrabold text-emerald-600 mb-6">Resultados Reais de Alguns dos Nossos Pacientes 💪</h2>
+      <div class="galeria grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <img src="https://dietapronta.online/upload/9kg%20em%205%20semanas.jpg" alt="Fernanda Costa" class="w-full object-cover shadow-md">
+        <img src="https://dietapronta.online/upload/mariele%20queiroz.jpg" alt="Mariele Queiroz" class="w-full object-cover shadow-md">
+        <img src="https://dietapronta.online/upload/dieta.jpg" alt="Claudia Silva" class="w-full object-cover shadow-md">
+        <img src="https://dietapronta.online/upload/Julia%20andrade.jpg" alt="Julia Andrade" class="w-full object-cover shadow-md">
+        <img src="https://dietapronta.online/upload/cibele%20almeida.jpg" alt="Cibele Almeida" class="w-full object-cover shadow-md">
+        <img src="https://dietapronta.online/upload/Luciana%20Martins.jpg" alt="Luciana Martins" class="w-full object-cover shadow-md">
+      </div>
+    </div>
+  </section>
+
+
+
+
+
+
+<!-- Prova Social - Prints WhatsApp -->
+<section class="py-12 bg-white">
+  <div class="container mx-auto px-4 text-center">
+
+    <h2 class="text-3xl font-extrabold text-emerald-600 mb-6">
+      Prova Social dos Pacientes 📱💬
+    </h2>
+    <p class="text-slate-600 max-w-2xl mx-auto mb-10">
+      Veja o que nossos clientes estão dizendo após receberem o plano personalizado e colocarem em prática:
+    </p>
+
+    <div class="grid md:grid-cols-4 gap-6">
+
+      <!-- PRINT 1 -->
+      <div class="rounded-2xl border border-slate-200 shadow-soft overflow-hidden bg-slate-50">
+        
+        <!-- Mantém proporção 363x675 -->
+        <div class="w-full" style="aspect-ratio: 363 / 675;">
+          <img src="https://dietapronta.online/upload/what-01.png"
+               class="w-full h-full object-contain rounded-lg shadow-lg">
+        </div>
+
+        <div class="p-4 text-left">
+          <p class="text-slate-700 text-sm italic">
+            “Gente, estou chocada! Em 7 dias já desinchei demais!! Obrigada pelo plano, ficou perfeito pra minha rotina!”
+          </p>
+          <p class="mt-2 text-emerald-600 font-semibold">— Cliente verificada</p>
+        </div>
+      </div>
+
+      <!-- PRINT 2 -->
+      <div class="rounded-2xl border border-slate-200 shadow-soft overflow-hidden bg-slate-50">
+
+        <div class="w-full" style="aspect-ratio: 363 / 675;">
+          <img src="https://dietapronta.online/upload/what-02.png"
+               class="w-full h-full object-contain rounded-lg shadow-lg">
+        </div>
+
+        <div class="p-4 text-left">
+          <p class="text-slate-700 text-sm italic">
+            “Gostei das opções do cardápio! Muito melhor do que qualquer dieta pronta que já comprei.”
+          </p>
+          <p class="mt-2 text-emerald-600 font-semibold">— Cliente verificado</p>
+        </div>
+      </div>
+
+      <!-- PRINT 3 -->
+      <div class="rounded-2xl border border-slate-200 shadow-soft overflow-hidden bg-slate-50">
+
+        <div class="w-full" style="aspect-ratio: 363 / 675;">
+          <img src="https://dietapronta.online/upload/what-03.png"
+               class="w-full h-full object-contain rounded-lg shadow-lg">
+        </div>
+
+        <div class="p-4 text-left">
+          <p class="text-slate-700 text-sm italic">
+            “Seguindo certinho como veio no plano! Já perdi 3,2kg em 12 dias 😍”
+          </p>
+          <p class="mt-2 text-emerald-600 font-semibold">— Cliente verificado</p>
+        </div>
+      </div>
+
+
+      <div class="rounded-2xl border border-slate-200 shadow-soft overflow-hidden bg-slate-50">
+
+        <div class="w-full" style="aspect-ratio: 363 / 675;">
+          <img src="https://dietapronta.online/upload/what-04.png"
+               class="w-full h-full object-contain rounded-lg shadow-lg">
+        </div>
+
+        <div class="p-4 text-left">
+          <p class="text-slate-700 text-sm italic">
+            “Seguindo certinho como veio no plano! Já perdi 3,2kg em 12 dias 😍”
+          </p>
+          <p class="mt-2 text-emerald-600 font-semibold">— Cliente verificado</p>
+        </div>
+      </div>
+      
+
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<!-- ================================ -->
+<!--   CARROSSEL DE 12 DEPOIMENTOS   -->
+<!--   ROSTOS 100% BRASILEIROS       -->
+<!--   3 VISÍVEIS / PASSA 1 POR VEZ  -->
+<!-- ================================ -->
+
+<section class="py-16 bg-white relative overflow-hidden">
+
+  <!-- Selo -->
+  <div class="text-center mb-8">
+    <span class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full font-semibold text-sm shadow">
+      ✔ Clientes Reais Verificados
+    </span>
+  </div>
+
+  <h2 class="text-3xl md:text-4xl font-extrabold text-center text-emerald-600 mb-3">
+    O que nossos clientes dizem 💬✨
+  </h2>
+
+  <p class="text-center text-slate-600 max-w-2xl mx-auto mb-10">
+    Resultados reais de brasileiros que transformaram seus hábitos com nossos planos personalizados.
+  </p>
+
+  <!-- Bloco confiança -->
+  <div class="text-center mb-12">
+    <div class="inline-block bg-slate-100 border border-slate-300 px-6 py-3 rounded-2xl shadow-sm">
+      <p class="font-semibold text-slate-700 text-lg">
+        ⭐ Mais de <span class="text-emerald-600 font-bold">4.200 clientes satisfeitos</span> em todo o Brasil!
+      </p>
+    </div>
+  </div>
+
+  <!-- CARROSSEL -->
+  <div class="relative max-w-6xl mx-auto px-4 select-none">
+
+    <div class="overflow-hidden relative">
+      <div id="carouselWrapper" class="flex transition-transform duration-700">
+
+
+        <!-- ======================= -->
+        <!--  12 CARDS (3 por vez)   -->
+        <!-- ======================= -->
+
+        <!-- CARD 1 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/women/75.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Mariana Oliveira</h4>
+                <p class="text-sm text-slate-500">Usuária verificada</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"Nunca foi tão fácil seguir uma dieta! O plano é perfeito."</p>
+          </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Rafael Martins</h4>
+                <p class="text-sm text-slate-500">Usuário verificado</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"As receitas salvaram minha rotina! Muito práticas."</p>
+          </div>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/women/67.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Eduarda Santos</h4>
+                <p class="text-sm text-slate-500">Usuária verificada</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"Finalmente receitas saudáveis que dão vontade de comer!"</p>
+          </div>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/men/83.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Gustavo Moreira</h4>
+                <p class="text-sm text-slate-500">Usuário verificado</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"Perdi peso sem sofrimento. Muito bom mesmo!"</p>
+          </div>
+        </div>
+
+        <!-- CARD 5 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/women/22.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Ana Beatriz</h4>
+                <p class="text-sm text-slate-500">Usuária verificada</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"Material de altíssima qualidade. Recomendo demais!"</p>
+          </div>
+        </div>
+
+        <!-- CARD 6 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/men/14.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Carlos Eduardo</h4>
+                <p class="text-sm text-slate-500">Usuário verificado</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"Simples, direto e extremamente útil!"</p>
+          </div>
+        </div>
+
+        <!-- CARD 7 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/women/12.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Fernanda Ribeiro</h4>
+                <p class="text-sm text-slate-500">Usuária verificada</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"As receitas são maravilhosas, não parece dieta!"</p>
+          </div>
+        </div>
+
+        <!-- CARD 8 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/men/45.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">André Lima</h4>
+                <p class="text-sm text-slate-500">Usuário verificado</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"Plano super organizado e fácil de seguir."</p>
+          </div>
+        </div>
+
+        <!-- CARD 9 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/women/9.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Letícia Duarte</h4>
+                <p class="text-sm text-slate-500">Usuária verificada</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"Resultados muito rápidos. Amei!"</p>
+          </div>
+        </div>
+
+        <!-- CARD 10 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/men/55.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Pedro Henrique</h4>
+                <p class="text-sm text-slate-500">Usuário verificado</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"Foi o melhor investimento na minha saúde."</p>
+          </div>
+        </div>
+
+        <!-- CARD 11 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/women/41.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Camila Rodrigues</h4>
+                <p class="text-sm text-slate-500">Usuária verificada</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"Os planos são completos e muito bonitos!”</p>
+          </div>
+        </div>
+
+        <!-- CARD 12 -->
+        <div class="w-1/3 px-4 shrink-0">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 shadow-soft h-full">
+            <div class="flex items-center gap-4 mb-3">
+              <img src="https://randomuser.me/api/portraits/men/23.jpg" class="w-14 h-14 rounded-full object-cover">
+              <div>
+                <h4 class="font-bold">Lucas Ferreira</h4>
+                <p class="text-sm text-slate-500">Usuário verificado</p>
+              </div>
+            </div>
+            <div class="text-yellow-400">★★★★★</div>
+            <p class="text-slate-700 mt-2">"Fácil de seguir e totalmente adaptado pra mim!”</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Botões -->
+    <div class="flex justify-center gap-4 mt-8">
+      <button id="prevBtn" class="bg-slate-200 hover:bg-slate-300 transition p-3 rounded-full">◀</button>
+      <button id="nextBtn" class="bg-slate-200 hover:bg-slate-300 transition p-3 rounded-full">▶</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- SCRIPT DO CARROSSEL -->
+<script>
+const wrapper = document.getElementById("carouselWrapper");
+const cards = wrapper.children;
+let index = 0;
+
+function getCardWidth() {
+  return cards[0].offsetWidth;
+}
+
+function updateCarousel() {
+  const cardWidth = getCardWidth();
+  wrapper.style.transform = `translateX(-${index * cardWidth}px)`;
+}
+
+document.getElementById("nextBtn").onclick = () => {
+  index = (index + 1) % cards.length;
+  updateCarousel();
+};
+
+document.getElementById("prevBtn").onclick = () => {
+  index = index > 0 ? index - 1 : cards.length - 1;
+  updateCarousel();
+};
+
+// Auto play
+setInterval(() => {
+  index = (index + 1) % cards.length;
+  updateCarousel();
+}, 6000);
+
+// Ajusta caso a tela seja redimensionada
+window.addEventListener("resize", updateCarousel);
+</script>
+
+
+
+
+  
+
+  <footer class="py-10 text-center text-sm text-slate-500">
+    <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
+  const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference";
+  const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
+  const HOME_UPSELL   = "https://dietapronta.online/upsell/?ref=";
+  const $ = id => document.getElementById(id);
+
+  // === Personalização dinâmica ===
+  const nome = localStorage.getItem('lead_nome') || '';
+  const imc = localStorage.getItem('quiz_imc_value') || '';
+  const biotipo = localStorage.getItem('quiz_result_body_name') || '';
+  const diet_title = localStorage.getItem('quiz_result_title') || localStorage.getItem('diet_title') || 'Plano de Dieta Completo';
+  const imc_label = localStorage.getItem('quiz_imc_label') || '';
+
+  const personalizacao = document.getElementById('personalizacao');
+  const titulo = document.querySelector('h1');
+
+  if (personalizacao) {
+    personalizacao.innerHTML = `
+      ${nome ? `<strong></strong>` : ''}
+      De acordo com seu <strong>IMC ${imc || '—'}</strong> e seu 
+      <strong>biotipo ${biotipo || '—'}</strong>, 
+      criamos o plano ideal para você alcançar excelentes resultados! 💪
+    `;
+  }
+
+  if (titulo) {
+    titulo.innerHTML = `${nome ? nome + ',' : ''} sua dieta personalizada está pronta 🎉`;
+  }
+
+  // === Contagem regressiva ===
+  if ($('countdown')) {
+    let timeLeft = 5 * 60;
+    const countdownEl = $('countdown');
+    const countdownBox = $('countdownBox');
+    setInterval(() => {
+      const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+      const s = String(timeLeft % 60).padStart(2, '0');
+      countdownEl.textContent = `${m}:${s}`;
+      if (timeLeft <= 60) countdownBox.classList.add("pulse");
+      if (timeLeft <= 0) countdownEl.textContent = "00:00";
+      timeLeft--;
+    }, 1000);
+  }
+
+  // === Pagamento Mercado Pago ===
+  const ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+  try { localStorage.setItem('mp_external_ref', ref); } catch(e){}
+
+  $('btnPagamento')?.addEventListener('click', async ev => {
+    ev.preventDefault();
+    const btn = $('btnPagamento');
+    btn.disabled = true;
+    btn.textContent = "Gerando pagamento...";
+    try {
+      const r = await fetch(MP_ENDPOINT, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          valor: 19.90,
+          titulo: "Plano de Dieta Completo",
+          external_reference: ref,
+          customer_name: nome,
+          customer_email: localStorage.getItem('lead_email') || '',
+          customer_whatsapp: localStorage.getItem('lead_whats') || '',
+          body_type: biotipo,
+          diet_title: diet_title,
+          imc_value: imc,
+          imc_label: imc_label
+        })
+      });
+      const data = await r.json();
+      if (!data || !data.id) throw new Error("Falha ao criar preferência.");
+
+      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+      mp.checkout({
+        preference: { id: data.id },
+        autoOpen: true,
+        render: { container: "#mp-checkout", label: "Pagar R$ 19,90" }
+      });
+
+      btn.textContent = "Abrindo pagamento...";
+      startPolling(ref, btn);
+    } catch (e) {
+      console.error(e);
+      btn.textContent = "Erro, tente novamente";
+    }
+    btn.disabled = false;
+  });
+
+  // ✅ Nova função de verificação aprimorada
+  function startPolling(ref, btn) {
+    let tries = 0;
+    const localRef = localStorage.getItem('mp_external_ref') || ref;
+    console.log("[Polling] Iniciando verificação do ref:", localRef);
+
+    const timer = setInterval(async () => {
+      tries++;
+      try {
+        const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(localRef)}&t=${Date.now()}`);
+        const data = await res.json();
+        console.log("[Polling]", data);
+
+        if (data && data.found) {
+          const st = (data.status || "").toLowerCase();
+          if (st === "approved") {
+            clearInterval(timer);
+            btn.textContent = "✅ Pagamento aprovado! Redirecionando...";
+            setTimeout(() => {
+              window.location.href = HOME_UPSELL + encodeURIComponent(localRef);
+            }, 2000);
+          } else if (["rejected", "cancelled", "canceled"].includes(st)) {
+            clearInterval(timer);
+            btn.textContent = "❌ Pagamento não aprovado. Tente novamente.";
+          }
+        }
+      } catch (e) {
+        console.warn("[Polling erro]", e);
+      }
+
+      if (tries > 36) clearInterval(timer);
+    }, 5000);
+  }
+
+  // === Rolagem suave até a galeria ===
+  document.getElementById('btnResultados')?.addEventListener('click', () => {
+    document.querySelector('.galeria')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// === Pessoas comprando (contador dinâmico) ===
+const buyersEl = document.getElementById('buyersNumber');
+if (buyersEl) {
+  let buyers = 30 + Math.floor(Math.random() * 8);
+  buyersEl.textContent = buyers;
+  setInterval(() => {
+    const change = Math.random() < 0.5 ? -1 : 1;
+    buyers = Math.max(20, buyers + change);
+    buyersEl.textContent = buyers;
+  }, 7000);
+}
+</script>
+
+
+// === Cadastro do quiz direto no banco admin ===
+
+  <script>
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const nome = localStorage.getItem('lead_nome') || '';
+    const email = localStorage.getItem('lead_email') || '';
+    const phone = localStorage.getItem('lead_whats') || '';
+    const diet_title = localStorage.getItem('diet_title') || localStorage.getItem('quiz_result_title') || '';
+    const body_type = localStorage.getItem('body_type') || localStorage.getItem('quiz_body_type') || '';
+    const imc_value = localStorage.getItem('imc_value') || '';
+    const imc_label = localStorage.getItem('imc_label') || '';
+
+    // Evita duplicar o registro
+    if (localStorage.getItem('pre_checkout_sent') === '1') {
+      console.log("📭 Lead 'pre_checkout' já registrado anteriormente.");
+      return;
+    }
+
+    const ref = 'pre-' + Date.now() + '-' + Math.random().toString(36).substring(2, 8);
+
+    const payload = {
+      ref,
+      name: nome,
+      email,
+      phone,
+      diet_title,
+      body_type,
+      imc_value,
+      imc_label,
+      status: 'quiz', // 👈 define o novo status
+      secret: '2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e'
+    };
+
+    const res = await fetch('https://italomelo.com/server/save_lead.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.ok) {
+      console.log("✅ Lead salvo automaticamente como 'pre_checkout':", data.ref);
+      localStorage.setItem('pre_checkout_sent', '1');
+      localStorage.setItem('pre_checkout_ref', data.ref);
+    } else {
+      console.warn("⚠️ Falha ao salvar 'pre_checkout':", data);
+    }
+  } catch (err) {
+    console.error("❌ Erro ao salvar lead 'pre_checkout':", err);
+  }
+});
+</script>
+
+
+</body>
+</html>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
