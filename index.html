@@ -348,60 +348,89 @@
       return MICROCOPY[k] || MICROCOPY[0];
     }
 
-    function renderQuestions(){
-      var html="";
-      for(var i=0;i<QUESTIONS.length;i++){
-        var it = QUESTIONS[i];
-        html += '<fieldset data-step="'+i+'" class="step'+(i===0?'':' hidden')+'">';
-        html += '<legend>'+(i+1)+'. '+ it.q +'</legend>';
-        if(it.type==='radio'){
-          html += '<div class="mt-3 grid sm:grid-cols-2 gap-3">';
-          for(var j=0;j<it.a.length;j++){
-            var letter=String.fromCharCode(65+j);
-            var id="q"+i+"_"+letter;
-            html += '<div class="choice">';
-            html += '<input class="peer hidden" type="radio" id="'+id+'" name="q'+i+'" value="'+letter+'" required />';
-            html += '<label for="'+id+'" class="block text-[1.05rem]">'+ it.a[j] +'</label>';
-            html += '</div>';
-          }
-          html += '</div>';
-        } else if(it.type==='input-height'){
-          var v = heightCm!=null? String(heightCm):'';
-          html += '<div class="mt-2">';
-          html += '<input id="heightCm" type="number" min="120" max="230" step="1" value="'+v+'" placeholder="'+(it.placeholder||'Ex.: 170')+'" class="rounded-xl border-slate-300 w-full p-3" />';
-          html += '<p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p>';
-          html += '</div>';
-        } else if(it.type==='input-weight'){
-          var wv = weightKg!=null? String(weightKg):'';
-          html += '<div class="mt-2">';
-          html += '<input id="weightKg" type="number" min="35" max="250" step="0.1" value="'+wv+'" placeholder="'+(it.placeholder||'Ex.: 78')+'" class="rounded-xl border-slate-300 w-full p-3" />';
-          html += '<p class="text-xs text-slate-600 mt-2">Use quilogramas. Ex.: 78.5</p>';
-          html += '</div>';
-        } else if(it.type==='body'){
-          html += '<div class="mt-3 grid sm:grid-cols-2 md:grid-cols-4 gap-3">';
-          for(var b=0;b<BODY_TYPES.length;b++){
-            var bt = BODY_TYPES[b];
-            var sel = (bodyTypeKey===bt.key)? ' selected':'';
-            html += '<div class="body-card'+sel+'" data-body="'+bt.key+'">'+bt.svg+'<div class="mt-2 font-semibold">'+bt.name+'</div></div>';
-          }
-          html += '</div>';
-        }
-        html += '</fieldset>';
-      }
-      form.innerHTML = html;
+   function renderQuestions(){
+  var html="";
+  for(var i=0;i<QUESTIONS.length;i++){
+    var it = QUESTIONS[i];
+    html += '<fieldset data-step="'+i+'" class="step'+(i===0?'':' hidden')+'">';
+    html += '<legend>'+(i+1)+'. '+ it.q +'</legend>';
 
-      for(var i=0;i<selected.length;i++){
-        var v = selected[i]; if(!v) continue;
-        var input = document.getElementById('q'+i+'_'+v);
-        if(input) input.checked = true;
+    /* === PERGUNTAS TIPO RADIO === */
+    if(it.type==='radio'){
+      html += '<div class="mt-3 grid sm:grid-cols-2 gap-3">';
+      for(var j=0;j<it.a.length;j++){
+        var letter=String.fromCharCode(65+j);
+        var id="q"+i+"_"+letter;
+        html += '<div class="choice">';
+        html += '<input class="peer hidden" type="radio" id="'+id+'" name="q'+i+'" value="'+letter+'" required />';
+        html += '<label for="'+id+'" class="block text-[1.05rem]">'+ it.a[j] +'</label>';
+        html += '</div>';
       }
-      if(heightCm!=null){ var h=$('heightCm'); if(h){ h.value = String(heightCm); } }
-      if(weightKg!=null){ var w=$('weightKg'); if(w){ w.value = String(weightKg); } }
-      if(bodyTypeKey){
-        var cards = form.querySelectorAll('.body-card');
-        cards.forEach(function(c){ if(c.getAttribute('data-body')===bodyTypeKey) c.classList.add('selected'); });
+      html += '</div>';
+    }
+
+    /* === PERGUNTA DE ALTURA === */
+    else if(it.type==='input-height'){
+      var v = heightCm!=null? String(heightCm):'';
+      html += '<div class="mt-2">';
+      html += '<input id="heightCm" type="number" min="120" max="230" step="1" value="'+v+'" placeholder="'+(it.placeholder||'Ex.: 170')+'" class="rounded-xl border-slate-300 w-full p-3" />';
+      html += '<p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p>';
+
+      /* 🔥 BOTÃO PRÓXIMO AQUI */
+      html += '<button type="button" onclick="nextStep()" class="mt-4 w-full rounded-xl px-4 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">';
+      html += 'Próximo';
+      html += '</button>';
+
+      html += '</div>';
+    }
+
+    /* === PERGUNTA DE PESO === */
+    else if(it.type==='input-weight'){
+      var wv = weightKg!=null? String(weightKg):'';
+      html += '<div class="mt-2">';
+      html += '<input id="weightKg" type="number" min="35" max="250" step="0.1" value="'+wv+'" placeholder="'+(it.placeholder||'Ex.: 78')+'" class="rounded-xl border-slate-300 w-full p-3" />';
+      html += '<p class="text-xs text-slate-600 mt-2">Use quilogramas. Ex.: 78.5</p>';
+
+      /* 🔥 BOTÃO PRÓXIMO AQUI */
+      html += '<button type="button" onclick="nextStep()" class="mt-4 w-full rounded-xl px-4 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">';
+      html += 'Próximo';
+      html += '</button>';
+
+      html += '</div>';
+    }
+
+    /* === CARDS DE BIOTIPO === */
+    else if(it.type==='body'){
+      html += '<div class="mt-3 grid sm:grid-cols-2 md:grid-cols-4 gap-3">';
+      for(var b=0;b<BODY_TYPES.length;b++){
+        var bt = BODY_TYPES[b];
+        var sel = (bodyTypeKey===bt.key)? ' selected':'';
+        html += '<div class="body-card'+sel+'" data-body="'+bt.key+'">'+bt.svg+'<div class="mt-2 font-semibold">'+bt.name+'</div></div>';
       }
-      updateProgress();
+      html += '</div>';
+    }
+
+    html += '</fieldset>';
+  }
+
+  form.innerHTML = html;
+
+  /* Mantém seleções anteriores */
+  for(var i=0;i<selected.length;i++){
+    var v = selected[i]; 
+    if(!v) continue;
+    var input = document.getElementById('q'+i+'_'+v);
+    if(input) input.checked = true;
+  }
+  if(heightCm!=null){ var h=$('heightCm'); if(h){ h.value = String(heightCm); } }
+  if(weightKg!=null){ var w=$('weightKg'); if(w){ w.value = String(weightKg); } }
+  if(bodyTypeKey){
+    var cards = form.querySelectorAll('.body-card');
+    cards.forEach(function(c){ if(c.getAttribute('data-body')===bodyTypeKey) c.classList.add('selected'); });
+  }
+
+  updateProgress();
+
     }
 
     function recomputeScores(){
