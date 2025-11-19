@@ -432,27 +432,33 @@ fieldset.step legend {
 
     } else if(it.type==='input-height'){
       var v = heightCm!=null? String(heightCm):'';
-      html += '<div class="mt-2">';
-      html += '<input id="heightCm" type="number" min="120" max="230" step="1" value="'+v+'" placeholder="'+(it.placeholder||"Ex.: 170")+'" class="rounded-xl border-slate-300 w-full p-3" />';
-      html += '<p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p>';
+html += '<div class="mt-2">';
+html += '<input id="heightCm" type="number" min="120" max="230" step="1" value="'+v+'" placeholder="'+(it.placeholder||"Ex.: 170")+'" class="rounded-xl border-slate-300 w-full p-3" />';
+html += '<p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p>';
 
-      // 🔵 Botão Próximo
-      html += '<button type="button" onclick="nextStep()" class="mt-4 rounded-xl px-4 py-2 border border-slate-300 font-semibold text-slate-700 hover:bg-slate-100 transition">';
-      html += 'Próximo →</button>';
+// 🔵 Botão alinhado à direita
+html += '<div class="flex justify-end">';
+html += '<button type="button" onclick="nextStep()" class="mt-4 rounded-xl px-4 py-2 border border-slate-300 font-semibold text-slate-700 hover:bg-slate-100 transition">';
+html += 'Próximo →</button>';
+html += '</div>';
 
-      html += '</div>';
+html += '</div>';
+
 
     } else if(it.type==='input-weight'){
       var wv = weightKg!=null? String(weightKg):'';
-      html += '<div class="mt-2">';
-      html += '<input id="weightKg" type="number" min="35" max="250" step="0.1" value="'+wv+'" placeholder="'+(it.placeholder||"Ex.: 78")+'" class="rounded-xl border-slate-300 w-full p-3" />';
-      html += '<p class="text-xs text-slate-600 mt-2">Use quilogramas. Ex.: 78.5</p>';
+html += '<div class="mt-2">';
+html += '<input id="weightKg" type="number" min="35" max="250" step="0.1" value="'+wv+'" placeholder="'+(it.placeholder||"Ex.: 78")+'" class="rounded-xl border-slate-300 w-full p-3" />';
+html += '<p class="text-xs text-slate-600 mt-2">Use quilogramas. Ex.: 78.5</p>';
 
-      // 🔵 Botão Próximo
-      html += '<button type="button" onclick="nextStep()" class="mt-4 rounded-xl px-4 py-2 border border-slate-300 font-semibold text-slate-700 hover:bg-slate-100 transition">';
-      html += 'Próximo →</button>';
+// 🔵 Botão alinhado à direita
+html += '<div class="flex justify-end">';
+html += '<button type="button" onclick="nextStep()" class="mt-4 rounded-xl px-4 py-2 border border-slate-300 font-semibold text-slate-700 hover:bg-slate-100 transition">';
+html += 'Próximo →</button>';
+html += '</div>';
 
-      html += '</div>';
+html += '</div>';
+
 
     } else if(it.type==='body'){
       html += '<div class="mt-3 grid sm:grid-cols-2 md:grid-cols-4 gap-3">';
