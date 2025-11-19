@@ -46,26 +46,33 @@
   /* === QUIZ PREMIUM 2025 === */
 
 /* Caixa da pergunta */
+/* Box das perguntas — Laranja Claro Premium */
 fieldset.step {
   position: relative;
-  backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.45);
+  background: linear-gradient(135deg, #FFECD2, #FDE4B8); /* laranja leve */
   border-radius: 20px;
-  padding: 28px 20px 20px;
-  border: 1px solid rgba(255,255,255,0.4);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  padding: 28px 20px 20px 20px;
+  border: 1px solid #FBC98C; /* borda suave */
+  
+  /* sombra suave moderna */
+  box-shadow: 0 8px 24px rgba(249, 168, 38, 0.22);
+  
   transition: transform .2s ease, box-shadow .2s ease;
 }
+
 fieldset.step:hover {
   transform: scale(1.01);
-  box-shadow: 0 14px 40px rgba(0,0,0,0.16);
+  box-shadow: 0 12px 32px rgba(251, 146, 60, 0.26);
 }
+
 fieldset.step legend {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #8A4B16; /* marrom queimado elegante */
   margin-bottom: 10px;
+  padding: 0 4px;
 }
+
 
 
 
