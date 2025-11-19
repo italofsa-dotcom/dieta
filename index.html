@@ -31,6 +31,11 @@
    display: none !important;
   }
 
+  .hidden-progress {
+  display: none !important;
+}
+
+
     
     :root { --brand: #22c55e; }
     body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
@@ -121,7 +126,7 @@
             <h2 class="text-2xl font-extrabold">Responda às perguntas</h2>
             <p id="microcopy" class="text-slate-600 text-sm mt-1">Começamos entendendo sua rotina. Dica: responda com sinceridade 😉</p>
           </div>
-         <div class="w-52 text-right">
+         <div class="w-52 text-right hidden-progress">
             <div class="h-2 rounded-full bg-slate-200 overflow-hidden" aria-hidden="true">
               <div id="progress" class="h-2 bg-[var(--brand)] w-0"></div>
             </div>
