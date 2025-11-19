@@ -43,27 +43,82 @@
     .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
     .hidden { display: none !important; }
 
-    /* Box da pergunta (degradê verde) */
-    fieldset.step {
-      position: relative;
-      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-      border-radius: 20px;
-      padding: 28px 20px 20px 20px;
-      border: 1px solid #6ee7b7;
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.20);
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-    fieldset.step:hover { transform: scale(1.01); box-shadow: 0 10px 28px rgba(5, 150, 105, 0.25); }
-    fieldset.step legend { font-size: 1.25rem; font-weight: 800; color: #064e3b; margin-bottom: 10px; padding: 0 4px; }
+  /* === QUIZ PREMIUM 2025 === */
 
-    /* Opções (respostas) em branco */
-    .choice label {
-      background: #ffffff; border: 1.5px solid #e5e7eb; color: #0f172a; border-radius: 12px;
-      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
-      box-shadow: 0 4px 14px rgba(2, 6, 23, 0.06); display: block; padding: 12px; cursor: pointer;
-    }
-    .choice label:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(2, 6, 23, 0.10); border-color: #cbd5e1; }
-    .choice input:checked + label { border-color: #10b981; box-shadow: 0 10px 24px rgba(16, 185, 129, 0.25); }
+/* Caixa da pergunta */
+fieldset.step {
+  position: relative;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 30px 22px 26px 22px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+fieldset.step:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.10);
+}
+fieldset.step legend {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 14px;
+}
+
+/* Opções */
+.choice label {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #0f172a;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 1.05rem;
+  transition: all .18s ease;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+}
+.choice label:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  border-color: var(--brand);
+}
+.choice input:checked + label {
+  border-color: var(--brand);
+  box-shadow: 0 8px 24px rgba(34,197,94,0.20);
+  background: #ecfdf5;
+}
+
+/* Botões NEXT */
+.btn-next {
+  margin-top: 20px;
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--brand);
+  color: white;
+  font-weight: 700;
+  font-size: 1.05rem;
+  transition: background .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.btn-next:hover {
+  background: #16a34a;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(16,185,129,0.30);
+}
+
+/* Botão voltar */
+#btnPrev {
+  border-radius: 14px;
+  padding: 10px 18px !important;
+  border: 1.5px solid #cbd5e1;
+  font-weight: 600;
+  transition: all .18s ease;
+}
+#btnPrev:hover {
+  background: #f1f5f9;
+}
+
 
     /* Cartões do biotipo */
     .body-card { background:#fff; border:1.5px solid #e5e7eb; border-radius:14px; padding:14px; text-align:center; cursor:pointer; transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease; box-shadow: 0 4px 14px rgba(2, 6, 23, 0.06); }
