@@ -370,34 +370,47 @@
     }
 
     /* === PERGUNTA DE ALTURA === */
-    else if(it.type==='input-height'){
-      var v = heightCm!=null? String(heightCm):'';
-      html += '<div class="mt-2">';
-      html += '<input id="heightCm" type="number" min="120" max="230" step="1" value="'+v+'" placeholder="'+(it.placeholder||'Ex.: 170')+'" class="rounded-xl border-slate-300 w-full p-3" />';
-      html += '<p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p>';
+} else if(it.type==='input-height'){
+  var v = heightCm != null ? String(heightCm) : '';
+  html += `
+    <div class="mt-2">
+      <input id="heightCm" type="number" min="120" max="230" step="1"
+        value="${v}"
+        placeholder="${it.placeholder || 'Ex.: 170'}"
+        class="rounded-xl border-slate-300 w-full p-3" />
 
-      /* 🔥 BOTÃO PRÓXIMO AQUI */
-      html += '<button type="button" onclick="nextStep()" class="mt-4 w-full rounded-xl px-4 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">';
-      html += 'Próximo';
-      html += '</button>';
+      <p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p>
 
-      html += '</div>';
-    }
+      <button type="button"
+        class="btn-next mt-4"
+        onclick="validarAltura()">
+        Próximo
+      </button>
+    </div>
+  `;
+}
 
     /* === PERGUNTA DE PESO === */
-    else if(it.type==='input-weight'){
-      var wv = weightKg!=null? String(weightKg):'';
-      html += '<div class="mt-2">';
-      html += '<input id="weightKg" type="number" min="35" max="250" step="0.1" value="'+wv+'" placeholder="'+(it.placeholder||'Ex.: 78')+'" class="rounded-xl border-slate-300 w-full p-3" />';
-      html += '<p class="text-xs text-slate-600 mt-2">Use quilogramas. Ex.: 78.5</p>';
+  } else if(it.type==='input-weight'){
+  var wv = weightKg != null ? String(weightKg) : '';
+  html += `
+    <div class="mt-2">
+      <input id="weightKg" type="number" min="35" max="250" step="0.1"
+        value="${wv}"
+        placeholder="${it.placeholder || 'Ex.: 78'}"
+        class="rounded-xl border-slate-300 w-full p-3" />
 
-      /* 🔥 BOTÃO PRÓXIMO AQUI */
-      html += '<button type="button" onclick="nextStep()" class="mt-4 w-full rounded-xl px-4 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">';
-      html += 'Próximo';
-      html += '</button>';
+      <p class="text-xs text-slate-600 mt-2">Use quilogramas. Ex.: 78.5</p>
 
-      html += '</div>';
-    }
+      <button type="button"
+        class="btn-next mt-4"
+        onclick="validarPeso()">
+        Próximo
+      </button>
+    </div>
+  `;
+}
+
 
     /* === CARDS DE BIOTIPO === */
     else if(it.type==='body'){
@@ -697,6 +710,34 @@
       showImcChip();
     }
   })();
+
+
+window.validarAltura = function () {
+  var h = parseInt(document.getElementById("heightCm").value);
+  if (!h || h < 120 || h > 230) {
+    alert("Por favor, informe uma altura válida entre 120 e 230 cm.");
+    return;
+  }
+
+  heightCm = h;
+  imcCompute();
+  saveProgress();
+  nextStep();
+};
+
+window.validarPeso = function () {
+  var w = parseFloat(document.getElementById("weightKg").value);
+  if (!w || w < 35 || w > 250) {
+    alert("Por favor, informe um peso válido entre 35 e 250 kg.");
+    return;
+  }
+
+  weightKg = w;
+  imcCompute();
+  saveProgress();
+  nextStep();
+};
+
   </script>
 </body>
 </html>
