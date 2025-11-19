@@ -428,12 +428,20 @@ fieldset.step legend {
             html += '</div>';
           }
           html += '</div>';
-        } else if(it.type==='input-height'){
-          var v = heightCm!=null? String(heightCm):'';
-          html += '<div class="mt-2">';
-          html += '<input id="heightCm" type="number" min="120" max="230" step="1" value="'+v+'" placeholder="'+(it.placeholder||'Ex.: 170')+'" class="rounded-xl border-slate-300 w-full p-3" />';
-          html += '<p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p>';
-          html += '</div>';
+} else if(it.type==='input-height'){
+  var v = heightCm!=null? String(heightCm):'';
+  html += '<div class="mt-2">';
+  html += '<input id="heightCm" type="number" min="120" max="230" step="1" value="'+v+'" placeholder="'+(it.placeholder||'Ex.: 170')+'" class="rounded-xl border-slate-300 w-full p-3" />';
+  html += '<p class="text-xs text-slate-600 mt-2">Use centímetros. Ex.: 173</p>';
+
+  // 🔵 Botão Próximo (igual ao botão Voltar)
+  html += '<button type="button" onclick="nextStep()" ';
+  html += 'class="mt-4 rounded-xl px-4 py-2 border border-slate-300 font-semibold text-slate-700 hover:bg-slate-100 transition">';
+  html += 'Próximo →</button>';
+
+  html += '</div>';
+}
+
         } else if(it.type==='input-weight'){
           var wv = weightKg!=null? String(weightKg):'';
           html += '<div class="mt-2">';
