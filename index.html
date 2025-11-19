@@ -308,31 +308,35 @@ fieldset.step legend {
     };
 
     // 20 perguntas (17 rádio + altura + peso + biotipo)
-    var QUESTIONS = [
-      {type:'radio', q:"Vamos começar.. informe seu gênero", a:["HOMEM","MULHER"]},
-      {type:'radio', q:"Qual sua faixa etária?", a:["15 a 25 anos","26 a 35 anos","36 a 49 anos","tenho + 50 anos"]},
-      {type:'radio', q:"Qual seu principal objetivo agora?", a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},
-      {type:'radio', q:"Seu nível de energia diário é…", a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},
-      {type:'radio', q:"Seu apetite ao longo do dia é…", a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome o tempo todo"]},
-      {type:'radio', q:"Quantas refeições principais por dia?", a:["2 ou menos","3","4 a 5","Mais de 5 pequenas"]},
-      {type:'radio', q:"Fome emocional/ansiosa?", a:["Sim, muito","Às vezes","Raramente","Nunca"]},
-      {type:'radio', q:"Nível de atividade física", a:["Sedentário","Leve","Moderado (3x/sem)","Intenso (5x+)"]},
-      {type:'radio', q:"Seu sono é…", a:["Ruim","Durmo bem mas acordo cansado","Regular","Muito bom"]},
-      {type:'radio', q:"Costuma pular o café da manhã?", a:["Sempre","Às vezes","Raramente","Nunca"]},
-      {type:'radio', q:"Seu estilo de alimentação atual", a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"]},
-      {type:'radio', q:"Vontade de doces", a:["Sempre","Às vezes","Raramente","Quase nunca"]},
-      {type:'radio', q:"Seu tipo de corpo (percepção)", a:["Ganha peso fácil","Dificuldade para ganhar peso","Oscila rápido","Equilibrado"]},
-      {type:'radio', q:"Reação aos carboidratos", a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"]},
-      {type:'radio', q:"Prefere refeições…", a:["Leves e frequentes","Poucas e completas","Grandes à noite","Equilibradas"]},
-      {type:'radio', q:"Consegue ficar longos períodos sem comer?", a:["Sim, tranquilo","Pouco tempo","Depende do dia","Não consigo"]},
-      {type:'radio', q:"Nível de organização das refeições", a:["Planejo tudo","Planejo parte","Improviso muito","Quase nunca penso nisso"]},
-      {type:'input-height', q:"Qual a sua altura? (em centímetros)", placeholder:"Ex.: 173"},
-      {type:'input-weight', q:"Qual o seu peso atual? (em kg)", placeholder:"Ex.: 78"},
-      {type:'body', q:"Agora escolha seu tipo de corpo (biotipo)", a: BODY_TYPES},
-      {type:'radio', q:"Como é sua rotina durante a semana?", a:["Muito corrida","Relativamente organizada","Bastante flexível","Muito sedentária"]},
-      {type:'radio', q:"Qual frase te representa?", a:["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"]},
-      {type:'radio', q:"Nossa última pergunta pra finalizar! Você estaria disposto(a) a seguir um plano simples e feito sob medida para o seu corpo? ", a:["Sim, com certeza","Acho que sim","Preciso de ajuda para isso"]}
-    ];
+   var QUESTIONS = [
+  {type:'radio', q:"👤 Vamos começar… qual é o seu gênero?", a:["HOMEM","MULHER"]},
+  {type:'radio', q:"🎂 Qual sua faixa etária?", a:["15 a 25 anos","26 a 35 anos","36 a 49 anos","Tenho + 50 anos"]},
+  {type:'radio', q:"🎯 Qual é seu principal objetivo agora?", a:["Emagrecer rápido","Ganhar massa magra","Manter peso e saúde","Reduzir gordura localizada"]},
+  {type:'radio', q:"⚡ Como está seu nível de energia no dia a dia?", a:["Sempre cansado","Oscila muito","Constante","Muito alto"]},
+  {type:'radio', q:"🍽️ Como funciona seu apetite ao longo do dia?", a:["Forte de manhã","Mais fome à noite","Pouco apetite","Muita fome o tempo todo"]},
+  {type:'radio', q:"⏱️ Quantas refeições principais você faz por dia?", a:["2 ou menos","3","4 a 5","Mais de 5 pequenas"]},
+  {type:'radio', q:"😥 Você sente fome emocional/ansiosa?", a:["Sim, muito","Às vezes","Raramente","Nunca"]},
+  {type:'radio', q:"🏋️ Como é seu nível de atividade física?", a:["Sedentário","Leve","Moderado (3x/sem)","Intenso (5x+)"]},
+  {type:'radio', q:"😴 Como é seu sono?", a:["Ruim","Durmo bem mas acordo cansado","Regular","Muito bom"]},
+  {type:'radio', q:"☕ Você costuma pular o café da manhã?", a:["Sempre","Às vezes","Raramente","Nunca"]},
+  {type:'radio', q:"🥗 Como você descreveria sua alimentação hoje?", a:["Muito carboidrato","Equilibrada","Rica em proteína","Desorganizada"]},
+  {type:'radio', q:"🍫 Como é sua vontade por doces?", a:["Sempre","Às vezes","Raramente","Quase nunca"]},
+  {type:'radio', q:"🧍‍♂️🧍‍♀️ Como você percebe seu tipo de corpo?", a:["Ganha peso fácil","Dificuldade para ganhar peso","Oscila rápido","Equilibrado"]},
+  {type:'radio', q:"🍞 Como seu corpo reage aos carboidratos?", a:["Engordo rápido","Sem efeito","Dá energia","Fico inchado"]},
+  {type:'radio', q:"🍛 Prefere refeições…", a:["Leves e frequentes","Poucas e completas","Grandes à noite","Equilibradas"]},
+  {type:'radio', q:"⏳ Consegue ficar longos períodos sem comer?", a:["Sim, tranquilo","Pouco tempo","Depende do dia","Não consigo"]},
+  {type:'radio', q:"📅 Como é sua organização alimentar?", a:["Planejo tudo","Planejo parte","Improviso muito","Quase nunca penso nisso"]},
+
+  {type:'input-height', q:"📏 Qual a sua altura? (em centímetros)", placeholder:"Ex.: 173"},
+  {type:'input-weight', q:"⚖️ Qual o seu peso atual? (em kg)", placeholder:"Ex.: 78"},
+
+  {type:'body', q:"💪 Escolha seu tipo de corpo (biotipo)", a: BODY_TYPES},
+
+  {type:'radio', q:"🏃 Como é sua rotina durante a semana?", a:["Muito corrida","Relativamente organizada","Bastante flexível","Muito sedentária"]},
+  {type:'radio', q:"💬 Qual frase combina mais com você?", a:["Quero resultados rápidos","Prefiro algo sustentável","Quero comer bem e perder peso","Quero performance máxima"]},
+  {type:'radio', q:"🎉 Última pergunta! Você seguiria um plano simples feito pra você?", a:["Sim, com certeza","Acho que sim","Preciso de ajuda para isso"]}
+];
+
 
     var selected = new Array(QUESTIONS.length).fill(null);
     var scores = {A:0,B:0,C:0,D:0};
