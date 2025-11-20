@@ -4,11 +4,14 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 const MP_API = "https://api.mercadopago.com";
 const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 
-// 🔐 Server PHP
+// 🔐 Servidor PHP (lead)
 const LEAD_URL = "https://italomelo.com/server/save_lead.php";
 const LEAD_TOKEN =
   "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
 
+// ==========================================================================
+// LOG
+// ==========================================================================
 function log(tag: string, data: any) {
   console.log(
     `[mp-preference-upsell] ${tag}:`,
@@ -16,6 +19,9 @@ function log(tag: string, data: any) {
   );
 }
 
+// ==========================================================================
+// 🔹 Envia lead para PHP
+// ==========================================================================
 async function createLeadInPHP(payload: any) {
   try {
     const response = await fetch(LEAD_URL, {
@@ -31,47 +37,46 @@ async function createLeadInPHP(payload: any) {
     log("Retorno PHP", data);
     return data;
   } catch (err: any) {
-    log("Erro ao comunicar com PHP", err.message || err);
+    log("Erro ao contactar PHP", err.message || err);
     return { ok: false, error: "erro_comunicacao_php" };
   }
 }
 
+// ==========================================================================
+// HANDLER PRINCIPAL
+// ==========================================================================
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== "POST")
+  if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
+  }
 
-  if (!ACCESS_TOKEN)
+  if (!ACCESS_TOKEN) {
     return res.status(500).json({ error: "MP_ACCESS_TOKEN ausente" });
+  }
 
   try {
-    const bodyData: any = req.body || {};
-    log("Body recebido", bodyData);
+    const body: any = req.body || {};
+    log("Body recebido", body);
 
     const {
       valor = 9.9,
       customer_name = "",
       customer_email = "",
       customer_whatsapp = "",
-      external_reference = "",
       parent_reference = "",
-    } = bodyData;
+    } = body;
 
-    // ===========================================================
-    // 🔥 VALIDAR REF vindo do frontend
-    // ===========================================================
-    if (!external_reference || external_reference.trim().length < 8) {
-      log("Erro REF", external_reference);
-      return res
-        .status(400)
-        .json({ error: "external_reference inválido ou ausente" });
-    }
+    // ======================================================================
+    // 🔹 Criar REF exclusivo para o UPSELL
+    // ======================================================================
+    const upsellRef =
+      "upsell-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
 
-    const upsellRef = external_reference.trim();
-    log("REF USADO (frontend)", upsellRef);
+    log("Ref upsell criado", upsellRef);
 
-    // ===========================================================
-    // 🔹 Passo 1 — Criar lead no PHP
-    // ===========================================================
+    // ======================================================================
+    // 🔹 Enviar LEAD para o servidor PHP
+    // ======================================================================
     const leadPayload = {
       ref: upsellRef,
       name: customer_name,
@@ -83,7 +88,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       amount: Number(valor),
 
       order_type: "upsell",
-      status: "pending",
+      status: "pending", // 🔥 importantíssimo!
 
       parent_ref: parent_reference || null,
       secret: LEAD_TOKEN,
@@ -91,9 +96,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     await createLeadInPHP(leadPayload);
 
-    // ===========================================================
-    // 🔹 SAFE MODE — external_reference completo
-    // ===========================================================
+    // ======================================================================
+    // SAFE MODE — Backup garantido
+    // ======================================================================
     const safeMeta = {
       ref: upsellRef,
       parent_reference,
@@ -105,13 +110,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     };
 
     const externalRefSafe =
-      `${upsellRef}##${Buffer.from(JSON.stringify(safeMeta)).toString(
-        "base64"
-      )}`;
+      `${upsellRef}##${Buffer.from(JSON.stringify(safeMeta)).toString("base64")}`;
 
-    // ===========================================================
-    // 🔹 Passo 2 — Criar preferência Mercado Pago
-    // ===========================================================
+    // ======================================================================
+    // 🔹 Criar preferência Mercado Pago
+    // ======================================================================
     const prefBody = {
       items: [
         {
@@ -123,7 +126,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       ],
 
       payment_methods: {
-        excluded_payment_types: [{ id: "ticket" }, { id: "atm" }],
+        excluded_payment_types: [
+          { id: "ticket" },
+          { id: "atm" }
+        ],
         installments: 1,
       },
 
@@ -136,15 +142,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       auto_return: "approved",
       notification_url: "https://dietapronta.online/api/mp-webhook",
 
-      // 🔥 SAFE MODE + REF DO FRONT
-      external_reference: externalRefSafe,
+      external_reference: externalRefSafe, // SAFE MODE
 
       payer: {
         name: customer_name || "Cliente",
         email: customer_email || "cliente@suaempresa.com",
         identification: {
           type: "CPF",
-          number: "00000000000",
+          number: "00000000000", // obrigatório para PIX
         },
       },
 
@@ -169,18 +174,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const data = await resp.json();
     log("Preferência Mercado Pago", data);
 
-    if (!resp.ok) return res.status(resp.status).json({ error: data });
+    if (!resp.ok) {
+      return res.status(resp.status).json({ error: data });
+    }
 
+    // ======================================================================
+    // SUCESSO
+    // ======================================================================
     return res.status(200).json({
       id: data.id,
       init_point: data.init_point,
       external_reference: upsellRef,
       order_type: "upsell",
     });
+
   } catch (err: any) {
-    console.error("[mp-preference-upsell] Erro geral:", err);
-    return res
-      .status(500)
-      .json({ error: "Erro interno ao criar preferência do upsell" });
+    console.error("[mp-preference-upsell] ERRO GERAL:", err);
+    return res.status(500).json({
+      error: "Erro interno ao criar preferência do upsell",
+    });
   }
 }
