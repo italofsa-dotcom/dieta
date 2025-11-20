@@ -6,7 +6,8 @@ const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 
 // 🔐 Server PHP
 const LEAD_URL = "https://italomelo.com/server/save_lead.php";
-const LEAD_TOKEN = "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
+const LEAD_TOKEN =
+  "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
 
 function log(tag: string, data: any) {
   console.log(
@@ -28,6 +29,7 @@ async function createLeadInPHP(payload: any) {
       },
       body: JSON.stringify(payload),
     });
+
     const data = await response.json();
     log("Retorno PHP", data);
     return data;
@@ -40,7 +42,10 @@ async function createLeadInPHP(payload: any) {
 // ===========================================================
 // 🔹 Handler principal
 // ===========================================================
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(
+  req: VercelRequest,
+  res: VercelResponse
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -58,11 +63,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       customer_name = "",
       customer_email = "",
       customer_whatsapp = "",
-      parent_reference = "", // ref do pagamento principal (opcional)
+      parent_reference = "",
     } = bodyData;
 
     // ===========================================================
-    // 🔹 Gera novo ref único para o upsell
+    // 🔹 Criar REF único
     // ===========================================================
     const upsellRef =
       "upsell-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
@@ -70,34 +75,46 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     log("Ref upsell gerado", upsellRef);
 
     // ===========================================================
-    // 🔹 Passo 1 — Criar lead do Upsell
+    // 🔹 Passo 1 — Criar lead no PHP
     // ===========================================================
     const leadPayload = {
       ref: upsellRef,
       name: customer_name,
       email: customer_email,
-      phone: customer_whatsapp, // 🔥 Correção: sem "-upsell"
+      phone: customer_whatsapp,
 
       diet_title: "200 Receitas Saudáveis",
       body_type: "Upsell",
 
-      amount: Number(valor) || 9.9,
+      amount: Number(valor),
       order_type: "upsell",
 
-      // 🔥 status inicial correto
-      status: "created",
+      // 🔥 STATUS INICIAL CORRETO
+      status: "pending",
 
       parent_ref: parent_reference || null,
-
       secret: LEAD_TOKEN,
     };
 
-    const leadResponse = await createLeadInPHP(leadPayload);
-    if (!leadResponse.ok) {
-      log("Falha ao criar lead no PHP", leadResponse.error || "sem detalhes");
-    } else {
-      log("Lead UPSell criado com sucesso", leadResponse.ref);
-    }
+    await createLeadInPHP(leadPayload);
+
+    // ===========================================================
+    // 🔹 SAFE MODE — REF sempre salvo
+    // ===========================================================
+    const safeMeta = {
+      ref: upsellRef,
+      parent_reference,
+      name: customer_name,
+      email: customer_email,
+      phone: customer_whatsapp,
+      amount: valor,
+      order_type: "upsell",
+    };
+
+    const externalRefSafe =
+      `${upsellRef}##${Buffer.from(JSON.stringify(safeMeta)).toString(
+        "base64"
+      )}`;
 
     // ===========================================================
     // 🔹 Passo 2 — Criar preferência Mercado Pago
@@ -111,25 +128,38 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           currency_id: "BRL",
         },
       ],
+
+      payment_methods: {
+        excluded_payment_types: [{ id: "ticket" }, { id: "atm" }],
+        installments: 1,
+      },
+
       back_urls: {
         success: "https://dietapronta.online/approved-upsell",
         failure: "https://dietapronta.online/upsell-falhou",
         pending: "https://dietapronta.online/upsell-pendente",
       },
-      auto_return: "approved",
 
+      auto_return: "approved",
       notification_url: "https://dietapronta.online/api/mp-webhook",
 
-      external_reference: upsellRef,
+      // 👇 SAFE MODE
+      external_reference: externalRefSafe,
 
       payer: {
-        name: customer_name || undefined,
-        email: customer_email || undefined,
+        name: customer_name || "Cliente",
+        email: customer_email || "cliente@suaempresa.com",
+        identification: {
+          type: "CPF",
+          number: "00000000000", // 👍 necessário para PIX funcionar
+        },
       },
 
       metadata: {
+        ref: upsellRef,
+        safe_data: safeMeta,
         order_type: "upsell",
-        parent_ref: parent_reference,
+        parent_reference,
         customer_whatsapp,
       },
     };
