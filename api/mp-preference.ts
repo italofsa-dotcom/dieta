@@ -123,7 +123,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
 
       back_urls: {
-        success: "https://dietapronta.online/approved",
+        success: "https://dietapronta.online/upsell",
         failure: "https://dietapronta.online/failure",
         pending: "https://dietapronta.online/pending"
       },
