@@ -150,40 +150,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // Inicia polling de status
-    startPolling(ref);
-  }catch(e){
-    console.error("Erro ao criar preferência:", e);
-    showBanner("Erro ao iniciar pagamento.","bg-rose-50 border-rose-300 text-rose-800");
-  }
+ function startPolling(ref){
+  console.log("🔎 Iniciando polling infinito para ref:", ref);
 
-  function startPolling(ref){
-    let attempts=0;
-    const timer=setInterval(async()=>{
-      attempts++;
-      try{
-        const url=`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`;
-        const res=await fetch(url);
-        const data=await res.json();
-        console.log(`🔍 [${attempts}] Verificando ${url}`,data);
-        if(!data||!data.found)return;
+  const timer = setInterval(async () => {
 
+    try{
+      const url=`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`;
+      const res=await fetch(url);
+      const data=await res.json();
+      console.log("[Polling principal]", data);
+
+      if(data && data.found){
         const status=(data.status||"").toLowerCase();
-        if(status==="approved"||status==="in_process"){
+
+        if(status==="approved" || status==="in_process"){
           clearInterval(timer);
-          console.log("✅ Pagamento aprovado, redirecionando para upsell...");
           showBanner("✅ Pagamento aprovado! Redirecionando...","bg-emerald-50 border-emerald-300 text-emerald-800");
           setTimeout(()=>window.location.href=HOME_UPSELL+encodeURIComponent(ref),2000);
-        }else if(["rejected","cancelled","canceled"].includes(status)){
+        }
+
+        if(["rejected","cancelled","canceled"].includes(status)){
           clearInterval(timer);
           showBanner("Pagamento não aprovado. Tente novamente.","bg-rose-50 border-rose-300 text-rose-800");
           setTimeout(()=>window.location.href=HOME_FAILURE,2000);
         }
-      }catch(err){
-        console.warn("[status-check] erro:",err);
       }
-      if(attempts>36)clearInterval(timer);
-    },5000);
-  }
+
+    }catch(err){
+      console.warn("[Polling Principal] Erro:", err);
+    }
+
+  }, 5000);
+}
+
 });
 </script>
 </body>
