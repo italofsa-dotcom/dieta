@@ -163,54 +163,37 @@ document.addEventListener("DOMContentLoaded", function () {
   function $(id){ return document.getElementById(id); }
   $("year").textContent = new Date().getFullYear();
 
-  // =======================================================================
-  // 🛡️ 1) REF correta e estável
-  // =======================================================================
-  let urlRef = new URLSearchParams(location.search).get("ref");
+  // NUNCA MAIS PEGAMOS REF AUTOMÁTICO DA URL OU DO LOCALSTORAGE
+  // Agora ref só existe depois do clique
   let ref = null;
 
-  if (urlRef && urlRef.startsWith("upsell-")) {
-    ref = urlRef;
-    localStorage.setItem("mp_external_ref_upsell", ref);
-  } else {
-    ref = localStorage.getItem("mp_external_ref_upsell");
-  }
-
-  if (!ref || !ref.startsWith("upsell-")) {
-    ref = "upsell-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
-    localStorage.setItem("mp_external_ref_upsell", ref);
-  }
-
-  console.log("REF FINAL DE UPSELL:", ref);
-
-  // =======================================================================
-  // 🔥 2) Dados do cliente
-  // =======================================================================
+  // Dados do cliente
   const nome  = localStorage.getItem("lead_nome")  || "";
   const email = localStorage.getItem("lead_email") || "";
   const whats = localStorage.getItem("lead_whats") || "";
   const parentRef = localStorage.getItem("mp_external_ref") || "";
 
-  // =======================================================================
-  // 💳 3) BOTÃO: Criar preferência e abrir MP
-  // =======================================================================
-  $("btnPagamento").addEventListener("click", async (ev) => {
+  // =============================================================
+  // 🔥 CRIAR PAGAMENTO
+  // =============================================================
+  $("btnPagamento").addEventListener("click", async ev => {
     ev.preventDefault();
 
     const btn = $("btnPagamento");
     btn.disabled = true;
     btn.textContent = "Gerando pagamento...";
 
-    // ⚠ NÃO gere novo ref aqui — senão diverge.
-    // Use SEMPRE o ref já salvo acima.
+    // 🔥 Ref SEMPRE novo — correto!
+    ref = "upsell-" + Date.now() + "-" + Math.random().toString(36).slice(2,8);
+    localStorage.setItem("mp_external_ref_upsell", ref);
+    console.log("REF NOVO:", ref);
 
     try {
       const r = await fetch(MP_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
           valor: 9.90,
-          external_reference: ref,   // 🔥 AGORA ENVIA O REF CORRETO!
           customer_name: nome,
           customer_email: email,
           customer_whatsapp: whats,
@@ -219,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       const data = await r.json();
-      console.log("MP Preference Upsell:", data);
+      console.log("MP RESPONSE:", data);
 
       if (!data || !data.id) throw new Error("Falha ao criar preferência.");
 
@@ -241,21 +224,19 @@ document.addEventListener("DOMContentLoaded", function () {
     btn.disabled = false;
   });
 
-  // =======================================================================
-  // 🔄 4) Polling automático quando usuário volta do MP
-  // =======================================================================
-  if (document.referrer.includes("mercadopago") && ref.startsWith("upsell-")) {
-    console.log("🟢 Voltou do MP — iniciando polling automático");
-    startPolling(ref, { textContent: "" });
+  // =============================================================
+  // 🔁 Polling automático APENAS quando retornar do Mercado Pago
+  // =============================================================
+  if (document.referrer.includes("mercadopago.com")) {
+    const lastRef = localStorage.getItem("mp_external_ref_upsell");
+    if (lastRef && lastRef.startsWith("upsell-")) {
+      console.log("Iniciando polling automático para ref:", lastRef);
+      startPolling(lastRef, { textContent: "" });
+    }
   }
 
-  // =======================================================================
-  // 🔍 5) Função de verificação
-  // =======================================================================
   function startPolling(ref, btn) {
     let tries = 0;
-
-    console.log("🔍 Polling UPSELL iniciado para:", ref);
 
     const timer = setInterval(async () => {
       tries++;
@@ -263,22 +244,24 @@ document.addEventListener("DOMContentLoaded", function () {
       try {
         const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
         const data = await res.json();
-        console.log("[UPSELL Polling]", data);
+
+        console.log("[Polling Upsell]", data);
 
         if (data && data.found && data.status?.toLowerCase() === "approved") {
           clearInterval(timer);
-          btn.textContent = "✅ Pagamento aprovado! Redirecionando...";
+          btn.textContent = "Pagamento aprovado! Redirecionando...";
           setTimeout(() => window.location.href = HOME_SUCCESS, 1500);
         }
 
-      } catch (e) { console.warn("Erro no polling:", e); }
+      } catch (e) { console.warn(e); }
 
-      if (tries > 60) clearInterval(timer);
+      if (tries > 50) clearInterval(timer);
 
     }, 4000);
   }
 });
 </script>
+
 
 
 
