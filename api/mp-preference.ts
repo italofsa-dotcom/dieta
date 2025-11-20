@@ -1,44 +1,40 @@
 // /api/mp-preference.ts
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const MP_API = 'https://api.mercadopago.com';
+const MP_API = "https://api.mercadopago.com";
 const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 
-// PHP Server
-const LEAD_URL = 'https://italomelo.com/server/save_lead.php';
-const LEAD_TOKEN = '2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e';
+const LEAD_URL = "https://italomelo.com/server/save_lead.php";
+const LEAD_TOKEN = "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
 
 function log(tag: string, data: any) {
   console.log(`[mp-preference] ${tag}:`, typeof data === "object" ? JSON.stringify(data) : data);
 }
 
-// ===========================================================
-// 🔹 Cria lead no PHP (rápido, sem travar MP)
-// ===========================================================
+// ======================================================
+// CREATE LEAD IN PHP
+// ======================================================
 async function createLeadInPHP(payload: any) {
   try {
-    const response = await fetch(LEAD_URL, {
+    const r = await fetch(LEAD_URL, {
       method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
 
-    const data = await response.json();
+    const data = await r.json();
     log("Retorno PHP", data);
     return data;
 
   } catch (err: any) {
     log("Erro PHP", err.message);
-    return { ok: false, error: "erro_comunicacao_php" };
+    return { ok: false };
   }
 }
 
-// ===========================================================
-// 🔹 Handler
-// ===========================================================
+// ======================================================
+// MAIN HANDLER
+// ======================================================
 export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method !== "POST") {
@@ -65,39 +61,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       imc_label = ""
     } = body;
 
-    // ==============================
-    // REF obrigatório
-    // ==============================
+    // REF
     const extRef = external_reference?.trim();
     if (!extRef) {
       return res.status(400).json({ error: "external_reference ausente" });
     }
 
-    // ==============================
-    // Diet title final
-    // ==============================
+    // DIET TITLE
     const finalDietTitle = diet_title?.trim() || titulo;
 
-    // ===========================================================
-    // 🔹 Criação de LEAD
-    // ===========================================================
+    // ======================================================
+    // CREATE LEAD (NON BLOCKING)
+    // ======================================================
     createLeadInPHP({
       ref: extRef,
       name: customer_name,
       email: customer_email,
       phone: customer_whatsapp,
       diet_title: finalDietTitle,
-      body_type: body_type || "Não informado",
-      imc_value: imc_value || "",
-      imc_label: imc_label || "",
+      body_type,
+      imc_value,
+      imc_label,
       amount: valor,
       secret: LEAD_TOKEN
     });
 
-    // ===========================================================
-    // 🔹 External Reference Segura
-    // ===========================================================
-    const safeMeta = {
+    // ======================================================
+    // SAFE DATA → usado no webhook
+    // ======================================================
+    const safeData = {
       ref: extRef,
       name: customer_name,
       email: customer_email,
@@ -109,27 +101,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       amount: valor
     };
 
-    const externalRefSafe =
-      `${extRef}##${Buffer.from(JSON.stringify(safeMeta)).toString("base64")}`;
-
-    // ===========================================================
-    // 🔹 PAYER — FIX DO PIX
-    // ===========================================================
-    const payerBlock: any = {
-      name: customer_name || "Cliente",
-      email: customer_email || "cliente@sistema.com",
-      identification: {
-        type: "CPF",
-        number: "00000000000" // CPF genérico válido
-      }
-    };
-
-    // Remove campos vazios (PIX odeia isso)
-    if (!payerBlock.email) delete payerBlock.email;
-
-    // ===========================================================
-    // 🔹 Preference Mercado Pago
-    // ===========================================================
+    // ======================================================
+    // MERCADO PAGO PREFERENCES
+    // ======================================================
     const prefBody = {
       items: [
         {
@@ -157,19 +131,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       auto_return: "approved",
       notification_url: "https://dietapronta.online/api/mp-webhook",
 
-      external_reference: externalRefSafe,
-      payer: payerBlock,
+      // EXTERNAL REF → ORIGINAL (FUNCIONA)
+      external_reference: extRef,
+
+      // PAYER → sem CPF, sem campos vazios (PIX FUNCIONA)
+      payer: {
+        name: customer_name || undefined,
+        email: customer_email || undefined
+      },
 
       metadata: {
-        ref: extRef,
-        safe_data: safeMeta,
-        order_type: "main_diet"
+        order_type: "main_diet",
+        safe_data: safeData
       }
     };
 
-    // ===========================================================
-    // 🔹 Envio ao Mercado Pago
-    // ===========================================================
+    // SEND TO MP
     const resp = await fetch(`${MP_API}/checkout/preferences`, {
       method: "POST",
       headers: {
@@ -186,6 +163,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(resp.status).json({ error: data });
     }
 
+    // SUCCESS
     return res.status(200).json({
       id: data.id,
       init_point: data.init_point,
