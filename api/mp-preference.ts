@@ -1,177 +1,189 @@
-// /api/mp-preference.ts
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+// /api/mp-preference-upsell.ts
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 const MP_API = "https://api.mercadopago.com";
 const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 
+// 🔐 Server PHP
 const LEAD_URL = "https://italomelo.com/server/save_lead.php";
-const LEAD_TOKEN = "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
+const LEAD_TOKEN =
+  "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
 
 function log(tag: string, data: any) {
-  console.log(`[mp-preference] ${tag}:`, typeof data === "object" ? JSON.stringify(data) : data);
+  console.log(
+    `[mp-preference-upsell] ${tag}:`,
+    typeof data === "object" ? JSON.stringify(data) : data
+  );
 }
 
-// ======================================================
-// CREATE LEAD IN PHP
-// ======================================================
+// ===========================================================
+// 🔹 Criar lead no PHP
+// ===========================================================
 async function createLeadInPHP(payload: any) {
   try {
-    const r = await fetch(LEAD_URL, {
+    const response = await fetch(LEAD_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
     });
 
-    const data = await r.json();
+    const data = await response.json();
     log("Retorno PHP", data);
     return data;
-
   } catch (err: any) {
-    log("Erro PHP", err.message);
-    return { ok: false };
+    log("Erro ao comunicar com PHP", err.message || err);
+    return { ok: false, error: "erro_comunicacao_php" };
   }
 }
 
-// ======================================================
-// MAIN HANDLER
-// ======================================================
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-
+// ===========================================================
+// 🔹 Handler principal
+// ===========================================================
+export default async function handler(
+  req: VercelRequest,
+  res: VercelResponse
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
+
   if (!ACCESS_TOKEN) {
     return res.status(500).json({ error: "MP_ACCESS_TOKEN ausente" });
   }
 
   try {
-    const body: any = req.body || {};
-    log("Body recebido", body);
+    const bodyData: any = req.body || {};
+    log("Body recebido", bodyData);
 
     const {
       valor = 9.9,
-      titulo = "Plano de Dieta Completo",
-      external_reference,
       customer_name = "",
       customer_email = "",
       customer_whatsapp = "",
-      diet_title = "",
-      body_type = "",
-      imc_value = "",
-      imc_label = ""
-    } = body;
+      parent_reference = "",
+    } = bodyData;
 
-    // REF
-    const extRef = external_reference?.trim();
-    if (!extRef) {
-      return res.status(400).json({ error: "external_reference ausente" });
-    }
+    // ===========================================================
+    // 🔹 Criar REF único
+    // ===========================================================
+    const upsellRef =
+      "upsell-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
 
-    // DIET TITLE
-    const finalDietTitle = diet_title?.trim() || titulo;
+    log("Ref upsell gerado", upsellRef);
 
-    // ======================================================
-    // CREATE LEAD (NON BLOCKING)
-    // ======================================================
-    createLeadInPHP({
-      ref: extRef,
+    // ===========================================================
+    // 🔹 Passo 1 — Criar lead no PHP
+    // ===========================================================
+    const leadPayload = {
+      ref: upsellRef,
       name: customer_name,
       email: customer_email,
       phone: customer_whatsapp,
-      diet_title: finalDietTitle,
-      body_type,
-      imc_value,
-      imc_label,
-      amount: valor,
-      secret: LEAD_TOKEN
-    });
 
-    // ======================================================
-    // SAFE DATA → usado no webhook
-    // ======================================================
-    const safeData = {
-      ref: extRef,
-      name: customer_name,
-      email: customer_email,
-      phone: customer_whatsapp,
-      diet_title: finalDietTitle,
-      body_type,
-      imc_value,
-      imc_label,
-      amount: valor
+      diet_title: "200 Receitas Saudáveis",
+      body_type: "Upsell",
+
+      amount: Number(valor),
+      order_type: "upsell",
+
+      status: "pending",
+
+      parent_ref: parent_reference || null,
+      secret: LEAD_TOKEN,
     };
 
-    // ======================================================
-    // MERCADO PAGO PREFERENCES
-    // ======================================================
+    await createLeadInPHP(leadPayload);
+
+    // ===========================================================
+    // 🔹 SAFE MODE — metadados
+    // ===========================================================
+    const safeMeta = {
+      ref: upsellRef,
+      parent_reference,
+      name: customer_name,
+      email: customer_email,
+      phone: customer_whatsapp,
+      amount: valor,
+      order_type: "upsell",
+    };
+
+    const externalRefSafe =
+      `${upsellRef}##${Buffer.from(JSON.stringify(safeMeta)).toString("base64")}`;
+
+    // ===========================================================
+    // 🔹 Passo 2 — Criar preferência Mercado Pago
+    // ===========================================================
     const prefBody = {
       items: [
         {
-          title: finalDietTitle,
+          title: "200 Receitas Saudáveis",
           quantity: 1,
           unit_price: Number(valor),
-          currency_id: "BRL"
-        }
+          currency_id: "BRL",
+        },
       ],
 
       payment_methods: {
-        excluded_payment_types: [
-          { id: "ticket" },
-          { id: "atm" }
-        ],
-        installments: 1
+        excluded_payment_types: [{ id: "ticket" }, { id: "atm" }],
+        installments: 1,
       },
 
       back_urls: {
-        success: "https://dietapronta.online/upsell",
-        failure: "https://dietapronta.online/failure",
-        pending: "https://dietapronta.online/pending"
+        success: "https://dietapronta.online/approved-upsell",
+        failure: "https://dietapronta.online/upsell-falhou",
+        pending: "https://dietapronta.online/upsell-pendente",
       },
 
       auto_return: "approved",
       notification_url: "https://dietapronta.online/api/mp-webhook",
 
-      // EXTERNAL REF → ORIGINAL (FUNCIONA)
-      external_reference: extRef,
+      // SAFE MODE – sempre consistente
+      external_reference: externalRefSafe,
 
-      // PAYER → sem CPF, sem campos vazios (PIX FUNCIONA)
       payer: {
         name: customer_name || undefined,
-        email: customer_email || undefined
+        email: customer_email || undefined,
+        // ⚠ REMOVIDO identification → necessário para PIX funcionar!
       },
 
       metadata: {
-        order_type: "main_diet",
-        safe_data: safeData
-      }
+        ref: upsellRef,
+        safe_data: safeMeta,
+        order_type: "upsell",
+        parent_reference,
+        customer_whatsapp,
+      },
     };
 
-    // SEND TO MP
     const resp = await fetch(`${MP_API}/checkout/preferences`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${ACCESS_TOKEN}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(prefBody)
+      body: JSON.stringify(prefBody),
     });
 
     const data = await resp.json();
-    log("Resposta Mercado Pago", data);
+    log("Preferência Mercado Pago", data);
 
     if (!resp.ok) {
       return res.status(resp.status).json({ error: data });
     }
 
-    // SUCCESS
     return res.status(200).json({
       id: data.id,
       init_point: data.init_point,
-      external_reference: extRef
+      external_reference: upsellRef,
+      order_type: "upsell",
     });
-
   } catch (err: any) {
-    log("Erro geral", err.message);
-    return res.status(500).json({ error: "Erro interno ao criar preferência" });
+    console.error("[mp-preference-upsell] Erro geral:", err);
+    return res
+      .status(500)
+      .json({ error: "Erro interno ao criar preferência do upsell" });
   }
 }
