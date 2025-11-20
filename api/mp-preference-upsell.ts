@@ -16,9 +16,6 @@ function log(tag: string, data: any) {
   );
 }
 
-// ===========================================================
-// 🔹 Criar lead no PHP
-// ===========================================================
 async function createLeadInPHP(payload: any) {
   try {
     const response = await fetch(LEAD_URL, {
@@ -39,20 +36,12 @@ async function createLeadInPHP(payload: any) {
   }
 }
 
-// ===========================================================
-// 🔹 Handler principal
-// ===========================================================
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-) {
-  if (req.method !== "POST") {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== "POST")
     return res.status(405).json({ error: "Method not allowed" });
-  }
 
-  if (!ACCESS_TOKEN) {
+  if (!ACCESS_TOKEN)
     return res.status(500).json({ error: "MP_ACCESS_TOKEN ausente" });
-  }
 
   try {
     const bodyData: any = req.body || {};
@@ -63,16 +52,22 @@ export default async function handler(
       customer_name = "",
       customer_email = "",
       customer_whatsapp = "",
+      external_reference = "",
       parent_reference = "",
     } = bodyData;
 
     // ===========================================================
-    // 🔹 Criar REF único
+    // 🔥 VALIDAR REF vindo do frontend
     // ===========================================================
-    const upsellRef =
-      "upsell-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
+    if (!external_reference || external_reference.trim().length < 8) {
+      log("Erro REF", external_reference);
+      return res
+        .status(400)
+        .json({ error: "external_reference inválido ou ausente" });
+    }
 
-    log("Ref upsell gerado", upsellRef);
+    const upsellRef = external_reference.trim();
+    log("REF USADO (frontend)", upsellRef);
 
     // ===========================================================
     // 🔹 Passo 1 — Criar lead no PHP
@@ -85,11 +80,9 @@ export default async function handler(
 
       diet_title: "200 Receitas Saudáveis",
       body_type: "Upsell",
-
       amount: Number(valor),
-      order_type: "upsell",
 
-      // 🔥 STATUS INICIAL CORRETO
+      order_type: "upsell",
       status: "pending",
 
       parent_ref: parent_reference || null,
@@ -99,7 +92,7 @@ export default async function handler(
     await createLeadInPHP(leadPayload);
 
     // ===========================================================
-    // 🔹 SAFE MODE — REF sempre salvo
+    // 🔹 SAFE MODE — external_reference completo
     // ===========================================================
     const safeMeta = {
       ref: upsellRef,
@@ -143,7 +136,7 @@ export default async function handler(
       auto_return: "approved",
       notification_url: "https://dietapronta.online/api/mp-webhook",
 
-      // 👇 SAFE MODE
+      // 🔥 SAFE MODE + REF DO FRONT
       external_reference: externalRefSafe,
 
       payer: {
@@ -151,7 +144,7 @@ export default async function handler(
         email: customer_email || "cliente@suaempresa.com",
         identification: {
           type: "CPF",
-          number: "00000000000", // 👍 necessário para PIX funcionar
+          number: "00000000000",
         },
       },
 
@@ -176,9 +169,7 @@ export default async function handler(
     const data = await resp.json();
     log("Preferência Mercado Pago", data);
 
-    if (!resp.ok) {
-      return res.status(resp.status).json({ error: data });
-    }
+    if (!resp.ok) return res.status(resp.status).json({ error: data });
 
     return res.status(200).json({
       id: data.id,
