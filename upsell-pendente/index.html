@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pagamento pendente — Upsell ⏳ | 200 Receitas Saudáveis</title>
+  <meta name="description" content="Pagamento do upsell em análise/pendente. Página com verificação automática e redirecionamento ao ser aprovado.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root { --brand: #22c55e; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    .container { max-width: 960px; }
+    .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
+    .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-2xl bg-amber-100 flex items-center justify-center">
+          ⏳
+        </div>
+        <a href="/" class="font-extrabold tracking-tight hover:opacity-80">Dieta Pronta Online</a>
+      </div>
+      <div class="hidden md:block text-sm text-slate-600">
+        Pagamento em análise
+      </div>
+    </div>
+  </header>
+
+  <main class="py-10">
+    <div class="container mx-auto px-4">
+    
+      <!-- BOX PRINCIPAL -->
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-soft">
+        <div class="flex items-start gap-4">
+          <div class="h-12 w-12 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 text-2xl">⏳</div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-extrabold">Pagamento pendente (Upsell)</h1>
+            <p class="mt-2 text-slate-700">
+              Recebemos sua confirmação de pagamento do pacote <strong>200 Receitas Saudáveis</strong>.
+              Ele está <strong>em análise</strong>. Se foi Pix, costuma liberar em instantes.
+            </p>
+            <p class="text-slate-600 text-sm">Assim que for aprovado, você será direcionado automaticamente para a página final.</p>
+          </div>
+        </div>
+
+        <!-- RESUMO -->
+        <div id="resumo" class="mt-6 grid md:grid-cols-3 gap-6">
+          <div class="md:col-span-2 p-5 rounded-2xl border border-slate-200">
+            <p class="text-sm text-slate-500">Seu pacote reservado</p>
+            <h2 class="mt-1 text-xl font-bold">📘 200 Receitas Saudáveis</h2>
+
+            <div id="etiquetas" class="mt-4 flex flex-wrap gap-2 text-sm">
+              <span id="refSpan" class="badge bg-slate-100 text-slate-800 hidden"></span>
+              <span class="badge bg-amber-100 text-amber-900">Aprovação em poucos minutos</span>
+            </div>
+          </div>
+
+          <aside class="p-5 rounded-2xl border border-slate-200">
+            <p class="text-sm text-slate-500">Enquanto isso…</p>
+            <div class="mt-2 grid gap-3">
+              <button id="btnRecarregar" class="text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">
+                Verificar status agora
+              </button>
+              <a id="btnWhats" href="#" class="text-center rounded-xl px-5 py-3 bg-emerald-100 text-emerald-900 font-semibold hover:bg-emerald-200 transition">
+                Falar com suporte
+              </a>
+            </div>
+            <p class="mt-3 text-xs text-slate-500">Sua compra será confirmada automaticamente.</p>
+          </aside>
+        </div>
+
+      </div>
+
+      <div class="mt-6 text-center">
+        <a class="text-sm underline text-slate-600 hover:text-slate-900" href="/">Voltar ao início</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="py-10 text-center text-sm text-slate-500">
+    © <span id="year"></span> Dieta Pronta Online
+  </footer>
+
+<script>
+(function(){
+  function $(id){ return document.getElementById(id); }
+  function qs(k){ try{ return new URLSearchParams(location.search).get(k)||''; }catch(_){ return ''; } }
+
+  const ref = qs('ref') || localStorage.getItem('mp_external_ref_upsell') || '';
+  const nome = localStorage.getItem('lead_nome') || '';
+  const whats = localStorage.getItem('lead_whats') || '';
+
+  if(ref){
+    $('refSpan').textContent = "Ref: " + ref;
+    $('refSpan').classList.remove('hidden');
+  }
+
+  // WHATSAPP LINK
+  const msg = [
+    "Olá, sou " + (nome || "cliente") + ".",
+    "Meu pagamento do UPSELL está pendente.",
+    ref ? "Ref: " + ref : ""
+  ].join("\n");
+
+  $('btnWhats').href = "https://wa.me/5519982391022?text=" + encodeURIComponent(msg);
+
+  // RECARREGAR STATUS
+  $('btnRecarregar').onclick = () => {
+    const url = new URL("/upsell-pendente/", location.origin);
+    if(ref) url.searchParams.set("ref", ref);
+    location.href = url.toString();
+  };
+
+  // AUTO-POLLING → verifica aprovação
+  async function check() {
+    if(!ref) return;
+    try {
+      const r = await fetch(`https://italomelo.com/server/check_status.php?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
+      const data = await r.json();
+      console.log("[UPS-Check]", data);
+
+      if (data.found && data.status?.toLowerCase() === "approved") {
+        location.href = "/approved-upsell?ref=" + encodeURIComponent(ref);
+      }
+
+    } catch(e){ console.warn("[Erro]", e); }
+  }
+
+  // loop de verificação a cada 6 segundos
+  setInterval(check, 6000);
+  check(); // primeira chamada imediata
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+})();
+</script>
+
+</body>
+</html>
