@@ -4,7 +4,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 const MP_API = "https://api.mercadopago.com";
 const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 
-// 🔐 Servidor PHP
+// 🔐 Server PHP
 const LEAD_URL = "https://italomelo.com/server/save_lead.php";
 const LEAD_TOKEN =
   "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
@@ -33,7 +33,6 @@ async function createLeadInPHP(payload: any) {
     const data = await response.json();
     log("Retorno PHP", data);
     return data;
-
   } catch (err: any) {
     log("Erro ao comunicar com PHP", err.message || err);
     return { ok: false, error: "erro_comunicacao_php" };
@@ -65,24 +64,18 @@ export default async function handler(
       customer_email = "",
       customer_whatsapp = "",
       parent_reference = "",
-      external_reference = "", // 🔥 Novo: recebendo REF do frontend
     } = bodyData;
 
     // ===========================================================
-    // 🔹 REF ÚNICO — Agora respeita o REF enviado pelo frontend
+    // 🔹 Criar REF único
     // ===========================================================
     const upsellRef =
-      external_reference && external_reference.trim().length > 0
-        ? external_reference.trim()
-        : "upsell-" +
-          Date.now() +
-          "-" +
-          Math.random().toString(36).slice(2, 8);
+      "upsell-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
 
-    log("Ref upsell DEFINIDO", upsellRef);
+    log("Ref upsell gerado", upsellRef);
 
     // ===========================================================
-    // 🔹 Passo 1 — Criar lead do Upsell
+    // 🔹 Passo 1 — Criar lead no PHP
     // ===========================================================
     const leadPayload = {
       ref: upsellRef,
@@ -96,18 +89,16 @@ export default async function handler(
       amount: Number(valor),
       order_type: "upsell",
 
-      // 🔥 STATUS correto
       status: "pending",
 
       parent_ref: parent_reference || null,
       secret: LEAD_TOKEN,
     };
 
-    const leadResp = await createLeadInPHP(leadPayload);
-    log("Lead UPSell criado", leadResp);
+    await createLeadInPHP(leadPayload);
 
     // ===========================================================
-    // 🔹 SAFE MODE — REF sempre salvo sem risco de extravio
+    // 🔹 SAFE MODE — metadados
     // ===========================================================
     const safeMeta = {
       ref: upsellRef,
@@ -120,9 +111,7 @@ export default async function handler(
     };
 
     const externalRefSafe =
-      `${upsellRef}##${Buffer.from(JSON.stringify(safeMeta)).toString(
-        "base64"
-      )}`;
+      `${upsellRef}##${Buffer.from(JSON.stringify(safeMeta)).toString("base64")}`;
 
     // ===========================================================
     // 🔹 Passo 2 — Criar preferência Mercado Pago
@@ -151,16 +140,13 @@ export default async function handler(
       auto_return: "approved",
       notification_url: "https://dietapronta.online/api/mp-webhook",
 
-      // 🔥 Agora o Mercado Pago recebe SEMPRE a mesma REF do admin
+      // SAFE MODE – sempre consistente
       external_reference: externalRefSafe,
 
       payer: {
-        name: customer_name || "Cliente",
-        email: customer_email || "cliente@suaempresa.com",
-        identification: {
-          type: "CPF",
-          number: "00000000000", // Necessário para PIX
-        },
+        name: customer_name || undefined,
+        email: customer_email || undefined,
+        // ⚠ REMOVIDO identification → necessário para PIX funcionar!
       },
 
       metadata: {
@@ -191,10 +177,9 @@ export default async function handler(
     return res.status(200).json({
       id: data.id,
       init_point: data.init_point,
-      external_reference: upsellRef, // 🔥 volta REF correto
+      external_reference: upsellRef,
       order_type: "upsell",
     });
-
   } catch (err: any) {
     console.error("[mp-preference-upsell] Erro geral:", err);
     return res
