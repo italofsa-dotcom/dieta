@@ -316,25 +316,37 @@ document.getElementById("btnEmail").addEventListener("click", async (e) => {
 
   <!-- Event snippet for Compra conversion page -->
 <script>
-  // Captura parâmetros da URL
   function getParam(p) {
-    const url = new URL(window.location.href);
-    return url.searchParams.get(p);
+    try {
+      return new URL(window.location.href).searchParams.get(p);
+    } catch (_) {
+      return null;
+    }
   }
 
-  // Usa external_reference como transaction_id (melhor opção)
-  const transactionId =
-    getParam('external_reference') ||
-    getParam('payment_id') ||
-    'fallback_' + Date.now(); // segurança caso tudo falhe
+  // 🟢 External Reference seguro (pode vir como: upsell-xxxxx##BASE64)
+  let rawRef = getParam("external_reference") || getParam("ref") || "";
 
-  gtag('event', 'conversion', {
-      'send_to': 'AW-17661147688/q7jPCMKArLQbEKj0vuVB',
-      'value': 9.90,
-      'currency': 'BRL',
-      'transaction_id': transactionId
+  // 🟢 Extrai somente a parte antes do "##"
+  let cleanedRef = rawRef.includes("##")
+    ? rawRef.split("##")[0]
+    : rawRef;
+
+  // Fallback absoluto
+  if (!cleanedRef || cleanedRef.trim() === "") {
+    cleanedRef = "fallback_" + Date.now();
+  }
+
+  console.log("🔍 Transaction ID usado no Google Ads:", cleanedRef);
+
+  gtag("event", "conversion", {
+    send_to: "AW-17661147688/q7jPCMKArLQbEKj0vuVB",
+    value: 9.90,
+    currency: "BRL",
+    transaction_id: cleanedRef
   });
 </script>
+
   
   
 
