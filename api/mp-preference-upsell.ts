@@ -4,10 +4,9 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 const MP_API = "https://api.mercadopago.com";
 const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 
-// 🔐 Server PHP
+// 🔐 PHP Lead Server
 const LEAD_URL = "https://italomelo.com/server/save_lead.php";
-const LEAD_TOKEN =
-  "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
+const LEAD_TOKEN = "2a8e5cda3b49e2f6f72dc0d4a1f9f83e9c0fda8b2f7a3e1c4d6b9e7f5a2c1d8e";
 
 function log(tag: string, data: any) {
   console.log(
@@ -16,36 +15,35 @@ function log(tag: string, data: any) {
   );
 }
 
-// ===========================================================
-// 🔹 Criar lead no PHP
-// ===========================================================
+// ====================================================================
+// 🔹 Envia LEAD para o PHP
+// ====================================================================
 async function createLeadInPHP(payload: any) {
   try {
     const response = await fetch(LEAD_URL, {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
 
     const data = await response.json();
     log("Retorno PHP", data);
     return data;
+
   } catch (err: any) {
     log("Erro ao comunicar com PHP", err.message || err);
     return { ok: false, error: "erro_comunicacao_php" };
   }
 }
 
-// ===========================================================
+// ====================================================================
 // 🔹 Handler principal
-// ===========================================================
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-) {
+// ====================================================================
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -55,29 +53,21 @@ export default async function handler(
   }
 
   try {
-    const bodyData: any = req.body || {};
-    log("Body recebido", bodyData);
+    const { valor = 9.9, customer_name = "", customer_email = "", customer_whatsapp = "", parent_reference = "" } = req.body;
+    log("Body recebido", req.body);
 
-    const {
-      valor = 9.9,
-      customer_name = "",
-      customer_email = "",
-      customer_whatsapp = "",
-      parent_reference = "",
-    } = bodyData;
-
-    // ===========================================================
-    // 🔹 Criar REF único
-    // ===========================================================
+    // ------------------------------------------------------------
+    // 🔹 REF única gerada pelo backend
+    // ------------------------------------------------------------
     const upsellRef =
       "upsell-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
 
-    log("Ref upsell gerado", upsellRef);
+    log("GERANDO REF:", upsellRef);
 
-    // ===========================================================
-    // 🔹 Passo 1 — Criar lead no PHP
-    // ===========================================================
-    const leadPayload = {
+    // ------------------------------------------------------------
+    // 🔹 Cria LEAD no PHP
+    // ------------------------------------------------------------
+    await createLeadInPHP({
       ref: upsellRef,
       name: customer_name,
       email: customer_email,
@@ -88,65 +78,69 @@ export default async function handler(
 
       amount: Number(valor),
       order_type: "upsell",
-
       status: "pending",
-
       parent_ref: parent_reference || null,
-      secret: LEAD_TOKEN,
-    };
+      secret: LEAD_TOKEN
+    });
 
-    await createLeadInPHP(leadPayload);
-
-    // ===========================================================
-    // 🔹 SAFE MODE — metadados
-    // ===========================================================
+    // ------------------------------------------------------------
+    // 🔹 SAFE MODE — ref codificada pra evitar erro no mobile
+    // ------------------------------------------------------------
     const safeMeta = {
       ref: upsellRef,
-      parent_reference,
+      parent_ref: parent_reference || "",
       name: customer_name,
       email: customer_email,
       phone: customer_whatsapp,
-      amount: valor,
-      order_type: "upsell",
+      amount: Number(valor)
     };
 
     const externalRefSafe =
       `${upsellRef}##${Buffer.from(JSON.stringify(safeMeta)).toString("base64")}`;
 
-    // ===========================================================
-    // 🔹 Passo 2 — Criar preferência Mercado Pago
-    // ===========================================================
+    // ------------------------------------------------------------
+    // 🔹 Criar preferência no Mercado Pago
+    // ------------------------------------------------------------
     const prefBody = {
       items: [
         {
           title: "200 Receitas Saudáveis",
           quantity: 1,
           unit_price: Number(valor),
-          currency_id: "BRL",
-        },
+          currency_id: "BRL"
+        }
       ],
 
+      // 🔥 CORRETO — igual ao pre-pagamento
       payment_methods: {
-        excluded_payment_types: [{ id: "ticket" }, { id: "atm" }],
-        installments: 1,
+        excluded_payment_types: [
+          { id: "ticket" },
+          { id: "atm" }
+        ],
+        installments: 1
       },
 
       back_urls: {
         success: "https://dietapronta.online/approved-upsell",
         failure: "https://dietapronta.online/upsell-falhou",
-        pending: "https://dietapronta.online/upsell-pendente",
+        pending: "https://dietapronta.online/upsell-pendente"
       },
 
       auto_return: "approved",
+
       notification_url: "https://dietapronta.online/api/mp-webhook",
 
-      // SAFE MODE – sempre consistente
+      // REF 100% segura
       external_reference: externalRefSafe,
 
+      // 🔥 CORREÇÃO ESSENCIAL PARA PIX FUNCIONAR
       payer: {
-        name: customer_name || undefined,
-        email: customer_email || undefined,
-        // ⚠ REMOVIDO identification → necessário para PIX funcionar!
+        name: customer_name || "Cliente",
+        email: customer_email || "cliente@suaempresa.com",
+        identification: {
+          type: "CPF",
+          number: "00000000000"
+        }
       },
 
       metadata: {
@@ -154,21 +148,21 @@ export default async function handler(
         safe_data: safeMeta,
         order_type: "upsell",
         parent_reference,
-        customer_whatsapp,
-      },
+        customer_whatsapp
+      }
     };
 
     const resp = await fetch(`${MP_API}/checkout/preferences`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${ACCESS_TOKEN}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(prefBody),
+      body: JSON.stringify(prefBody)
     });
 
     const data = await resp.json();
-    log("Preferência Mercado Pago", data);
+    log("Resposta Mercado Pago", data);
 
     if (!resp.ok) {
       return res.status(resp.status).json({ error: data });
@@ -176,14 +170,13 @@ export default async function handler(
 
     return res.status(200).json({
       id: data.id,
-      init_point: data.init_point,
       external_reference: upsellRef,
-      order_type: "upsell",
+      init_point: data.init_point,
+      order_type: "upsell"
     });
+
   } catch (err: any) {
     console.error("[mp-preference-upsell] Erro geral:", err);
-    return res
-      .status(500)
-      .json({ error: "Erro interno ao criar preferência do upsell" });
+    return res.status(500).json({ error: "Erro interno ao criar preferência do upsell" });
   }
 }
