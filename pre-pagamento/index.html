@@ -695,84 +695,99 @@ if ($('countdown')) {
   
 
 
-  // === Pagamento Mercado Pago ===
-  const ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
-  try { localStorage.setItem('mp_external_ref', ref); } catch(e){}
+ // === Pagamento Mercado Pago ===
+const ref = 'ref-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+localStorage.setItem('mp_external_ref', ref);
 
-  $('btnPagamento')?.addEventListener('click', async ev => {
-    ev.preventDefault();
-    const btn = $('btnPagamento');
-    btn.disabled = true;
-    btn.textContent = "Gerando pagamento...";
-    try {
-      const r = await fetch(MP_ENDPOINT, {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-          valor: 4.90,
-          titulo: "Plano de Dieta Completo",
-          external_reference: ref,
-          customer_name: nome,
-          customer_email: localStorage.getItem('lead_email') || '',
-          customer_whatsapp: localStorage.getItem('lead_whats') || '',
-          body_type: biotipo,
-          diet_title: diet_title,
-          imc_value: imc,
-          imc_label: imc_label
-        })
-      });
-      const data = await r.json();
-      if (!data || !data.id) throw new Error("Falha ao criar preferência.");
+$('btnPagamento')?.addEventListener('click', async ev => {
+  ev.preventDefault();
+  const btn = $('btnPagamento');
+  btn.disabled = true;
+  btn.textContent = "Gerando pagamento...";
 
-      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
-      mp.checkout({
-        preference: { id: data.id },
-        autoOpen: true,
-        render: { container: "#mp-checkout", label: "Pagar R$ 4,90" }
-      });
+  try {
+    const r = await fetch(MP_ENDPOINT, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        valor: 4.90,
+        titulo: "Plano de Dieta Completo",
+        external_reference: ref,
+        customer_name: nome,
+        customer_email: localStorage.getItem('lead_email') || '',
+        customer_whatsapp: localStorage.getItem('lead_whats') || '',
+        body_type: biotipo,
+        diet_title: diet_title,
+        imc_value: imc,
+        imc_label: imc_label
+      })
+    });
 
-      btn.textContent = "Abrindo pagamento...";
-      startPolling(ref, btn);
-    } catch (e) {
-      console.error(e);
-      btn.textContent = "Erro, tente novamente";
-    }
-    btn.disabled = false;
-  });
+    const data = await r.json();
+    if (!data || !data.id) throw new Error("Falha ao criar preferência.");
 
-  // ✅ Nova função de verificação aprimorada
-  function startPolling(ref, btn) {
-    let tries = 0;
-    const localRef = localStorage.getItem('mp_external_ref') || ref;
-    console.log("[Polling] Iniciando verificação do ref:", localRef);
+    const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+    mp.checkout({
+      preference: { id: data.id },
+      autoOpen: true,
+      render: { container: "#mp-checkout", label: "Pagar R$ 4,90" }
+    });
 
-    const timer = setInterval(async () => {
-      tries++;
-      try {
-        const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(localRef)}&t=${Date.now()}`);
-        const data = await res.json();
-        console.log("[Polling]", data);
-
-        if (data && data.found) {
-          const st = (data.status || "").toLowerCase();
-          if (st === "approved") {
-            clearInterval(timer);
-            btn.textContent = "✅ Pagamento aprovado! Redirecionando...";
-            setTimeout(() => {
-              window.location.href = HOME_UPSELL + encodeURIComponent(localRef);
-            }, 2000);
-          } else if (["rejected", "cancelled", "canceled"].includes(st)) {
-            clearInterval(timer);
-            btn.textContent = "❌ Pagamento não aprovado. Tente novamente.";
-          }
-        }
-      } catch (e) {
-        console.warn("[Polling erro]", e);
-      }
-
-      if (tries > 36) clearInterval(timer);
-    }, 5000);
+    btn.textContent = "Abrindo pagamento...";
+    startPolling(ref, btn);   // ref ORIGINAL garantido
+  } catch (e) {
+    console.error(e);
+    btn.textContent = "Erro, tente novamente";
   }
+
+  btn.disabled = false;
+});
+
+// === POLLING 100% COMPATÍVEL COM CELULAR ===
+function startPolling(originalRef, btn) {
+  let tries = 0;
+
+  // ref nunca some, mesmo no app do MP
+  const ref = originalRef;
+
+  console.log("[Polling] Monitorando ref:", ref);
+
+  const timer = setInterval(async () => {
+    tries++;
+
+    try {
+      const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
+      const data = await res.json();
+      console.log("[Polling]", data);
+
+      if (data && data.found) {
+        const st = (data.status || "").toLowerCase();
+
+        if (st === "approved") {
+          clearInterval(timer);
+          btn.textContent = "✅ Pagamento aprovado! Redirecionando...";
+          setTimeout(() => { window.location.href = HOME_UPSELL + encodeURIComponent(ref); }, 1500);
+          return;
+        }
+
+        if (["rejected", "cancelled", "canceled"].includes(st)) {
+          clearInterval(timer);
+          btn.textContent = "❌ Pagamento não aprovado. Tente novamente.";
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("[Polling erro]", e);
+    }
+
+    if (tries > 36) {
+      clearInterval(timer);
+      console.log("[Polling] Timeout");
+    }
+
+  }, 5000);
+}
+
 
   // === Rolagem suave até a galeria ===
   document.getElementById('btnResultados')?.addEventListener('click', () => {
