@@ -105,79 +105,70 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       log('Lead criado com sucesso no PHP', leadResponse.ref);
     }
 
-    // ===========================================================
-    // 🔹 Passo 2: criar preferência Mercado Pago
-    // ===========================================================
-    const prefBody = {
-      items: [
-        {
-          title: finalDietTitle, // ✅ o título do produto será o tipo de dieta
-          quantity: 1,
-          unit_price: Number(valor),
-          currency_id: 'BRL'
-        }
-      ],
-      
-      payment_methods: {
-      excluded_payment_types: [
-      { id: 'ticket' }, // 🚫 bloqueia boleto
-      { id: 'atm' }     // 🚫 bloqueia caixa eletrônico
-      ],
-      installments: 1 // opcional: pagamento à vista
-      },
-      
-      back_urls: {
-        success: 'https://dietapronta.online/approved',
-        failure: 'https://dietapronta.online/failure',
-        pending: 'https://dietapronta.online/pending'
-      },
-      auto_return: 'approved',
-      notification_url: 'https://dietapronta.online/api/mp-webhook',
-      external_reference: extRef,
-      payer: {
-        name: customer_name || undefined,
-        email: customer_email || undefined
-      },
-      metadata: {
-        order_type: 'main_diet',
-        diet_title: finalDietTitle,
-        body_type,
-        imc_value,
-        imc_label,
-        customer_whatsapp
-      }
-    };
+ // ===========================================================
+// 🔹 Passo 2: criar preferência Mercado Pago
+// ===========================================================
 
-    const resp = await fetch(`${MP_API}/checkout/preferences`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${ACCESS_TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(prefBody)
-    });
+// Cria um bloco seguro que SEMPRE chega no webhook
+const safeMeta = {
+  ref: extRef,
+  name: customer_name,
+  email: customer_email,
+  phone: customer_whatsapp,
+  diet_title: finalDietTitle,
+  body_type: body_type || "",
+  imc_value: imc_value || "",
+  imc_label: imc_label || "",
+  amount: valor
+};
 
-    const data = await resp.json();
-    log('Resposta Mercado Pago', data);
+// external_reference sempre chega 100% — mobile safe
+const externalRefSafe = `${extRef}##${Buffer.from(JSON.stringify(safeMeta)).toString("base64")}`;
 
-    if (!resp.ok) {
-      return res.status(resp.status).json({ error: data });
+const prefBody = {
+  items: [
+    {
+      title: finalDietTitle,
+      quantity: 1,
+      unit_price: Number(valor),
+      currency_id: 'BRL'
     }
+  ],
 
-    log('Preferência criada com sucesso', {
-      id: data.id,
-      ref: extRef,
-      tipo: finalDietTitle
-    });
+  payment_methods: {
+    excluded_payment_types: [
+      { id: 'ticket' },
+      { id: 'atm' }
+    ],
+    installments: 1
+  },
 
-    return res.status(200).json({
-      id: data.id,
-      init_point: data.init_point,
-      external_reference: extRef,
-      diet_title: finalDietTitle
-    });
-  } catch (err: any) {
-    console.error('[mp-preference] Erro geral:', err);
-    return res.status(500).json({ error: 'Erro interno ao criar preferência de pagamento' });
+  back_urls: {
+    success: 'https://dietapronta.online/approved',
+    failure: 'https://dietapronta.online/failure',
+    pending: 'https://dietapronta.online/pending'
+  },
+
+  auto_return: 'approved',
+  notification_url: 'https://dietapronta.online/api/mp-webhook',
+
+  // 👇 SAFE VERSION
+  external_reference: externalRefSafe,
+
+  payer: {
+    name: customer_name || undefined,
+    email: customer_email || undefined
+  },
+
+  metadata: {
+    ref: extRef, // NOVO ✔ GARANTE IDENTIFICAÇÃO DO LEAD
+    safe_data: safeMeta, // Back-up dos dados completos
+    order_type: 'main_diet',
+    diet_title: finalDietTitle,
+    body_type,
+    imc_value,
+    imc_label,
+    customer_whatsapp
   }
-}
+};
+
