@@ -11,7 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root { --brand: #22c55e; }
-    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif; }
+    body { font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif; }
     .container { max-width: 960px; }
     .shadow-soft { box-shadow: 0 10px 25px rgba(2, 6, 23, 0.08); }
     .badge{ display:inline-block; padding:4px 10px; border-radius:999px; font-weight:700; font-size:.8rem; }
@@ -26,10 +26,6 @@
         </div>
         <a href="/" class="font-extrabold tracking-tight hover:opacity-80">Dieta Pronta Online</a>
       </div>
-      <nav class="hidden md:flex gap-6 text-sm text-slate-600">
-        <a href="/" class="hover:text-slate-900">Início</a>
-        <a href="/pre-pagamento/" class="hover:text-slate-900">Plano</a>
-      </nav>
     </div>
   </header>
 
@@ -42,8 +38,8 @@
           </div>
           <div>
             <h1 class="text-2xl md:text-3xl font-extrabold">Pagamento pendente</h1>
-            <p class="mt-2 text-slate-700">Recebemos sua confirmação de pagamento e ele está <strong>em análise</strong>. Se foi <strong>Pix</strong>, a liberação costuma acontecer em alguns minutos.</p>
-            <p class="text-slate-600 text-sm">Assim que o provedor aprovar, você será direcionado automaticamente para o acesso.</p>
+            <p class="mt-2 text-slate-700">Seu pagamento está <strong>em análise</strong>. Pagamentos Pix costumam ser liberados rapidamente!</p>
+            <p class="text-slate-600 text-sm">Quando seu pagamento for aprovado, você será redirecionado automaticamente.</p>
           </div>
         </div>
 
@@ -57,7 +53,7 @@
               <span id="etqBiotipo" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
               <span id="etqImc" class="badge bg-emerald-100 text-emerald-800 hidden"></span>
               <span id="refSpan" class="badge bg-slate-100 text-slate-800 hidden"></span>
-              <span id="tempoSpan" class="badge bg-amber-100 text-amber-900">Aprovação costuma sair em poucos minutos</span>
+              <span class="badge bg-amber-100 text-amber-900">Aprovação costuma sair em poucos minutos</span>
             </div>
           </div>
 
@@ -67,12 +63,8 @@
               <button id="btnRecarregar" class="text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">Verificar status agora</button>
               <a id="btnWhats" href="#" class="text-center rounded-xl px-5 py-3 bg-emerald-100 text-emerald-900 font-semibold hover:bg-emerald-200 transition">Falar com suporte</a>
             </div>
-            <p class="mt-3 text-xs text-slate-500">Assim que o pagamento for aprovado, você receberá seu plano imediatamente.</p>
           </aside>
         </div>
-      </div>
-      <div class="mt-6 text-center">
-        <a class="text-sm underline text-slate-600 hover:text-slate-900" href="/">Voltar para a página inicial</a>
       </div>
     </div>
   </main>
@@ -81,58 +73,51 @@
     <p>© <span id="year"></span> Dieta Pronta Online. Todos os direitos reservados.</p>
   </footer>
 
+  <!-- ========================= -->
+  <!--     SCRIPT CORRIGIDO      -->
+  <!-- ========================= -->
   <script>
     (function(){
-      function $(id){ return document.getElementById(id); }
-      function qs(k){ try{ return new URLSearchParams(location.search).get(k)||''; }catch(_){ return ''; } }
+      const $ = id => document.getElementById(id);
+      const qs = k => new URLSearchParams(location.search).get(k) || '';
 
-      var nome  = qs('nome')  || localStorage.getItem('lead_nome')  || '';
-      var email = qs('email') || localStorage.getItem('lead_email') || '';
-      var whats = qs('whats') || localStorage.getItem('lead_whats') || '';
-      var ref   = qs('ref')   || localStorage.getItem('mp_external_ref') || '';
+      const CHECK_STATUS = "https://italomelo.com/server/check_status.php";
+      const APPROVED_URL = "https://dietapronta.online/approved?ref=";
 
-      var resultTitle = localStorage.getItem('quiz_result_title') || '';
-      var resultDesc  = localStorage.getItem('quiz_result_desc')  || '';
-      var dietTitle   = localStorage.getItem('quiz_result_diet_title') || '';
-      var bodyName    = localStorage.getItem('quiz_result_body_name')  || '';
-      var imcVal      = localStorage.getItem('quiz_imc_value') || '';
-      var imcLbl      = localStorage.getItem('quiz_imc_label') || '';
+      let ref = qs('ref') || localStorage.getItem('mp_external_ref') || '';
 
-      if(nome) { /* nome não exibido em destaque aqui */ }
-      if(resultTitle) { $('planoTitle').textContent = resultTitle; }
-      if(resultDesc)  { $('planoDesc').textContent  = resultDesc; }
-      if(dietTitle){ var e=$('etqDieta'); e.textContent='Dieta: '+dietTitle; e.classList.remove('hidden'); }
-      if(bodyName){ var e=$('etqBiotipo'); e.textContent='Biotipo: '+bodyName; e.classList.remove('hidden'); }
-      if(imcVal){ var e=$('etqImc'); e.textContent='IMC: '+imcVal + (imcLbl? ' ('+imcLbl+')':'' ); e.classList.remove('hidden'); }
-      if(ref){ var e=$('refSpan'); e.textContent='Ref: '+ref; e.classList.remove('hidden'); }
+      // Exibe REF
+      if (ref) {
+        $('refSpan').textContent = "Ref: " + ref;
+        $('refSpan').classList.remove("hidden");
+      }
 
       // Botão suporte
-      var linhas=[
-        'Oi, sou ' + (nome||'cliente') + '.',
-        'Meu pagamento ainda aparece como pendente. Poderiam verificar?',
-        ref? 'Ref: '+ref : ''
-      ].filter(Boolean);
-      var linkWhats='https://wa.me/5519982391022?text='+encodeURIComponent(linhas.join('\n'));
-      $('btnWhats').setAttribute('href', linkWhats);
+      $("btnWhats").href = "https://wa.me/5519982391022?text=" + encodeURIComponent(
+        "Oi! Meu pagamento está pendente.\nRef: " + ref
+      );
 
-      // Verificar status agora (recarrega a rota de pagamento que contém o verificador client-side)
-      $('btnRecarregar').addEventListener('click', function(){
-        var pay = new URL('/pagamento/', location.origin);
-        if(ref) pay.searchParams.set('ref', ref);
-        if(nome) pay.searchParams.set('nome', nome);
-        if(email) pay.searchParams.set('email', email);
-        if(whats) pay.searchParams.set('whats', whats);
-        location.href = pay.toString();
-      });
+      // 🔥 FUNÇÃO PRINCIPAL DE VERIFICAÇÃO
+      async function verificar() {
+        if (!ref) return;
+        try {
+          const r = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
+          const data = await r.json();
+          console.log("[CHECK]", data);
 
-      // Atualização periódica: tenta reabrir /pagamento a cada 90s
-      setInterval(function(){
-        var pay = new URL('/pagamento/', location.origin);
-        if(ref) pay.searchParams.set('ref', ref);
-        location.href = pay.toString();
-      }, 90000);
+          if (data.found && data.status === "approved") {
+            window.location.href = APPROVED_URL + encodeURIComponent(ref);
+          }
+        } catch (e) { console.warn(e); }
+      }
 
-      $('year').textContent = (new Date()).getFullYear();
+      // Verificar manualmente
+      $("btnRecarregar").addEventListener("click", verificar);
+
+      // Verificação automática a cada 4s (rápido p/ Pix)
+      setInterval(verificar, 4000);
+
+      $("year").textContent = new Date().getFullYear();
     })();
   </script>
 </body>
