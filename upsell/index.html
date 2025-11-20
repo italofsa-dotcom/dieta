@@ -154,108 +154,106 @@
 
   <!-- Script -->
   <script>
-  document.addEventListener("DOMContentLoaded", function(){
-    const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
-    const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference-upsell";
-    const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
-    const HOME_SUCCESS  = "https://dietapronta.online/approved-upsell";
+document.addEventListener("DOMContentLoaded", function(){
+  const MP_PUBLIC_KEY = "APP_USR-87cc4830-2ac4-410d-82b8-f295612a75b0";
+  const MP_ENDPOINT   = "https://dietapronta.online/api/mp-preference-upsell";
+  const CHECK_STATUS  = "https://italomelo.com/server/check_status.php";
+  const HOME_SUCCESS  = "https://dietapronta.online/approved-upsell";
 
-    function $(id){ return document.getElementById(id); }
-    $('year').textContent = (new Date()).getFullYear();
+  function $(id){ return document.getElementById(id); }
+  $('year').textContent = (new Date()).getFullYear();
 
-    // Countdown
-    let timeLeft = 5 * 60;
-    const countdownEl = $('countdown');
-    const countdownBox = $('countdownBox');
-    const btnPagamento = $('btnPagamento');
-    setInterval(() => {
-      const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-      const sec = String(timeLeft % 60).padStart(2, '0');
-      countdownEl.textContent = `${min}:${sec}`;
-      if (timeLeft <= 60) countdownBox.classList.add("pulse");
-      if (timeLeft <= 0) {
-        countdownEl.textContent = "00:00";
-        countdownBox.textContent = "⏰ Oferta Expirada!";
-        btnPagamento.textContent = "⏰ Oferta Expirada";
-        btnPagamento.classList.add("bg-gray-400", "cursor-not-allowed", "hover:bg-gray-400");
-        btnPagamento.removeAttribute("href");
-      }
-      timeLeft--;
-    }, 1000);
+  // === Captura ref se o usuário retornou do Mercado Pago ===
+  let ref = new URLSearchParams(location.search).get("ref")
+           || localStorage.getItem("mp_external_ref_upsell");
 
-    // Pessoas comprando
-    const buyersEl = $('buyersNumber');
-    let buyers = 24 + Math.floor(Math.random() * 8);
-    buyersEl.textContent = buyers;
-    setInterval(() => {
-      const change = Math.random() < 0.5 ? -1 : 1;
-      buyers = Math.max(20, buyers + change);
-      buyersEl.textContent = buyers;
-    }, 7000);
+  // Se o ref não existir ainda (primeira visita)
+  if (!ref) {
+    ref = "upsell-" + Date.now() + "-" + Math.random().toString(36).slice(2,8);
+    localStorage.setItem("mp_external_ref_upsell", ref);
+  }
 
-    // === Pagamento Mercado Pago ===
-    const nome = localStorage.getItem('lead_nome') || '';
-    const email = localStorage.getItem('lead_email') || '';
-    const whats = localStorage.getItem('lead_whats') || '';
-    const ref = 'ref-upsell-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
-    try { localStorage.setItem('mp_external_ref_upsell', ref); } catch(e){}
+  console.log("REF do Upsell:", ref);
 
-    $('btnPagamento').addEventListener('click', async (ev) => {
-      ev.preventDefault();
-      const btn = $('btnPagamento');
-      btn.disabled = true;
-      btn.textContent = "Gerando pagamento...";
+  // === Pagamento Mercado Pago ===
+  const nome = localStorage.getItem('lead_nome') || '';
+  const email = localStorage.getItem('lead_email') || '';
+  const whats = localStorage.getItem('lead_whats') || '';
+
+  $('btnPagamento').addEventListener('click', async (ev) => {
+    ev.preventDefault();
+    const btn = $('btnPagamento');
+    btn.disabled = true;
+    btn.textContent = "Gerando pagamento...";
+
+    try {
+      const r = await fetch(MP_ENDPOINT, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          valor: 9.90,
+          external_reference: ref, // 🔥 Agora o backend usa o mesmo ref
+          customer_name: nome,
+          customer_email: email,
+          customer_whatsapp: whats
+        })
+      });
+
+      const data = await r.json();
+      if (!data || !data.id) throw new Error("Falha ao criar preferência.");
+
+      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
+      mp.checkout({
+        preference: { id: data.id },
+        autoOpen: true,
+        render: { container: "#mp-checkout", label: "Pagar R$ 9,90" }
+      });
+
+      btn.textContent = "Abrindo pagamento...";
+      startPolling(ref, btn);
+
+    } catch (e) {
+      console.error(e);
+      btn.textContent = "Erro, tente novamente";
+    }
+    btn.disabled = false;
+  });
+
+  // === Polling Automático (para computador) ===
+  // Se o usuário voltou do Mercado Pago, iniciamos automaticamente
+  if (document.referrer.includes("mercadopago") || location.search.includes("ref=")) {
+    console.log("🟢 Voltou do Mercado Pago — iniciando polling automático");
+    const fakeBtn = { textContent: "" };
+    startPolling(ref, fakeBtn);
+  }
+
+  function startPolling(ref, btn) {
+    let tries = 0;
+
+    const timer = setInterval(async () => {
+      tries++;
 
       try {
-        const r = await fetch(MP_ENDPOINT, {
-          method: "POST",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({
-            valor: 9.90,
-            titulo: "200 Receitas Saudáveis",
-            external_reference: ref,
-            customer_name: nome,
-            customer_email: email,
-            customer_whatsapp: whats
-          })
-        });
+        const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
+        const data = await res.json();
+        console.log("[Upsell Polling]", data);
 
-        const data = await r.json();
-        if (!data || !data.id) throw new Error("Falha ao criar preferência.");
+        if (data && data.found && data.status?.toLowerCase() === "approved") {
+          clearInterval(timer);
+          btn.textContent = "✅ Pagamento aprovado! Redirecionando...";
+          setTimeout(() => window.location.href = HOME_SUCCESS, 1500);
+        }
+      } catch (e) { console.warn(e); }
 
-        const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
-        mp.checkout({
-          preference: { id: data.id },
-          autoOpen: true,
-          render: { container: "#mp-checkout", label: "Pagar R$ 9,90" }
-        });
+      if (tries > 50) clearInterval(timer);
 
-        btn.textContent = "Abrindo pagamento...";
-        startPolling(ref, btn);
-      } catch (e) {
-        console.error(e);
-        btn.textContent = "Erro, tente novamente";
-      }
-      btn.disabled = false;
-    });
+    }, 4000);
+  }
+});
+</script>
 
-    function startPolling(ref, btn) {
-      let tries = 0;
-      const timer = setInterval(async () => {
-        tries++;
-        try {
-          const res = await fetch(`${CHECK_STATUS}?ref=${encodeURIComponent(ref)}&t=${Date.now()}`);
-          const data = await res.json();
-          if (data && data.found && data.status?.toLowerCase() === "approved") {
-            clearInterval(timer);
-            btn.textContent = "✅ Pagamento aprovado! Redirecionando...";
-            setTimeout(() => window.location.href = HOME_SUCCESS, 2000);
-          }
-        } catch (e) { console.warn(e); }
-        if (tries > 40) clearInterval(timer);
-      }, 5000);
-    }
-  });
-  </script>
+
+
+  
 </body>
 </html>
