@@ -7,10 +7,42 @@ const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
 const DATA_DIR = "/tmp";
 const LOG_FILE = path.join(DATA_DIR, "mp_webhook_log.txt");
 
+// =============================================================
+// 🔥 Função de conversão Google Ads (Server-side)
+// =============================================================
+async function sendGoogleAdsConversion(value: number, currency: string = "BRL") {
+  const conversionId = "17661147688";
+  const conversionLabel = "q7jPCMKArLQbEKj0vuVB";
+
+  const url =
+    `https://www.googleadservices.com/pagead/conversion/${conversionId}/?` +
+    `label=${conversionLabel}&value=${encodeURIComponent(value)}` +
+    `&currency=${encodeURIComponent(currency)}&guid=ON&script=0`;
+
+  try {
+    const resp = await fetch(url);
+    const text = await resp.text();
+
+    const logPath = path.join(DATA_DIR, "google_ads_log.txt");
+    fs.appendFileSync(
+      logPath,
+      `[${new Date().toISOString()}] Google Ads Conversion Sent → ${url} | resp=${text}\n`
+    );
+  } catch (e: any) {
+    const logPath = path.join(DATA_DIR, "google_ads_log.txt");
+    fs.appendFileSync(
+      logPath,
+      `[${new Date().toISOString()}] ERRO Google Ads → ${e.message}\n`
+    );
+  }
+}
+
 // ========== LOG UTIL ==========
 function log(msg: string) {
   const line = `[${new Date().toISOString()}] ${msg}\n`;
-  try { fs.appendFileSync(LOG_FILE, line); } catch {}
+  try {
+    fs.appendFileSync(LOG_FILE, line);
+  } catch {}
   console.log(line);
 }
 
@@ -60,6 +92,10 @@ async function recheckPayment(paymentId: string, ref: string, delaySec: number) 
     if (status === "approved") {
       await updateLocalStatus(ref, status);
       log(`[recheck] ✅ confirmado e atualizado (${ref})`);
+
+      // 🚀 Envia conversão Google Ads
+      const value = payment.transaction_amount || 0;
+      await sendGoogleAdsConversion(value);
     }
   } catch (e: any) {
     log(`[recheck] erro ao reconsultar: ${e.message}`);
@@ -67,7 +103,7 @@ async function recheckPayment(paymentId: string, ref: string, delaySec: number) 
 }
 
 // =============================================================
-// 🔥 FUNÇÃO QUE NORMALIZA external_reference COM OU SEM "##"
+// 🔥 NORMALIZA external_reference
 // =============================================================
 function extractRef(extRefRaw: string = "") {
   if (!extRefRaw) return { ref: "", extra: null };
@@ -101,12 +137,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     log(`[mp-webhook] Recebido: topic=${topic} id=${id}`);
 
     // =============================================================
-    // === CASO 1: PAGAMENTO DIRETO (mais comum)
+    // === CASO 1: payment ===
     // =============================================================
     if (topic === "payment" || body.type === "payment") {
       const payment = await fetchPayment(id);
 
-      // 🔥 EXTRACTOR SEGURO
       const extRefRaw = payment.external_reference || "";
       const { ref } = extractRef(extRefRaw);
 
@@ -115,6 +150,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (ref && status) {
         await updateLocalStatus(ref, status);
+
+        // 🚀 Se aprovado → Envia conversão Google Ads
+        if (status === "approved") {
+          const value = payment.transaction_amount || 0;
+          await sendGoogleAdsConversion(value);
+        }
 
         if (status === "pending") {
           recheckPayment(id, ref, 30);
@@ -126,10 +167,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // =============================================================
-    // === CASO 2: MERCHANT ORDER (fallback)
+    // === CASO 2: merchant_order ===
     // =============================================================
     if (topic === "merchant_order" || body.type === "merchant_order") {
-      const merchantId = id || (body.resource && body.resource.split("/").pop()) || "";
+      const merchantId =
+        id || (body.resource && body.resource.split("/").pop()) || "";
 
       if (!merchantId) {
         log("[mp-webhook] merchant_order sem id");
@@ -145,7 +187,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       const payment = await fetchPayment(paymentId);
 
-      // 🔥 EXTRACTOR SEGURO
       const extRefRaw = payment.external_reference || "";
       const { ref } = extractRef(extRefRaw);
 
@@ -154,6 +195,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (ref && status) {
         await updateLocalStatus(ref, status);
+
+        // 🚀 Se aprovado → Envia conversão Google Ads
+        if (status === "approved") {
+          const value = payment.transaction_amount || 0;
+          await sendGoogleAdsConversion(value);
+        }
 
         if (status === "pending") {
           recheckPayment(paymentId, ref, 30);
@@ -169,7 +216,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // =============================================================
     log(`[mp-webhook] Ignorado topic/type: ${topic}`);
     return res.status(200).json({ ok: true });
-
   } catch (e: any) {
     log(`[mp-webhook] ERRO GERAL: ${e.message}`);
     return res.status(200).json({ ok: true });
