@@ -91,7 +91,7 @@
         <div class="text-sm text-slate-500">Oferta Limitada</div>
 
         <h3 class="text-4xl font-extrabold mt-2 text-emerald-600">
-          De <span class="text-red-500 line-through">R$ 149,90</span> por apenas <span class="text-emerald-600 text-5xl">R$ 9,90!</span>
+          De <span class="text-red-500 line-through">R$ 49,90</span> por apenas <span class="text-emerald-600 text-5xl">R$ 3,90!</span>
         </h3>
 
         <p class="mt-4 text-slate-700 text-lg">
@@ -108,7 +108,7 @@
         <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
           <a id="btnPagamento" href="#" 
              class="flex-1 text-center rounded-xl px-5 py-4 bg-[var(--brand)] text-white font-bold text-xl hover:bg-emerald-600 transition">
-             Quero minhas 200 receitas por R$ 9,90 ➜
+             Quero minhas 200 receitas por R$ 3,90 ➜
           </a>
 
           <a href="https://dietapronta.online/approved"
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          valor: 9.90,
+          valor: 3.90,
           customer_name: nome,
           customer_email: email,
           customer_whatsapp: whats,
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
       mp.checkout({
         preference: { id: data.id },
         autoOpen: true,
-        render: { container: "#mp-checkout", label: "Pagar R$ 9,90" }
+        render: { container: "#mp-checkout", label: "Pagar R$ 3,90" }
       });
 
       btn.textContent = "Abrindo pagamento...";
