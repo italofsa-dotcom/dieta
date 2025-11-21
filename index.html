@@ -448,6 +448,16 @@ fieldset.step legend {
 
   <script>
   (function(){
+
+      localStorage.removeItem('quiz_selected');
+      localStorage.removeItem('quiz_current');
+      localStorage.removeItem('quiz_height_cm');
+      localStorage.removeItem('quiz_weight_kg');
+      localStorage.removeItem('quiz_body_key');
+      localStorage.removeItem('quiz_imc_value');
+      localStorage.removeItem('quiz_imc_label');
+
+    
     /* ===================== CONFIG ===================== */
     var PRE_PAG_URL   = "/pre-pagamento/";           // página de pré-pagamento
     var LEAD_ENDPOINT = "https://italomelo.com/server/save_lead.php";      // endpoint PHP no seu cPanel
@@ -586,7 +596,7 @@ fieldset.step legend {
 {
   type:'radio',
   q:"🎉 PARABÉNS POR CHEGAR ATÉ AQUI",
-  a:["Sabemos o quanto é caro o acesso a bons profissionais da área da saúde.<br><br>Uma consulta com um excelente Nutricionista 🥗 ou Endocrinologista 🩺 costuma variar entre <b>R$ 350,00 e R$ 550,00</b>, e isso faz com que muitas pessoas desistam do objetivo de perder peso ⚖️ ou ganhar massa muscular 💪<br><br>Foi por isso que criamos o <b>Dieta Pronta Online</b> 🌐💚<br><br> Nosso site nasceu para ajudar pessoas como você, que desejam ter acesso a uma dieta de qualidade, personalizada e totalmente adaptada ao seu perfil — sem precisar gastar altos valores com consultas. ✨<br><br> Siga o passo a passo que vamos te enviar e você verá resultados surpreendentes em pouquíssimo tempo!<br><br>Agora é hora de colocar o plano em prática… vamos lá? 🚀🔥",
+  a:["Sabemos o quanto é caro o acesso a bons profissionais da área da saúde.<br><br>Uma consulta com um bom Nutricionista 🥗 ou Endocrinologista 🩺 costuma variar entre <b>R$ 350,00 e R$ 550,00</b>, e isso faz com que muitas pessoas desistam do objetivo de perder peso ⚖️ ou ganhar massa muscular 💪<br><br>Foi por isso que criamos o <b>Dieta Pronta Online</b> 🌐💚<br><br> Nosso site nasceu para ajudar pessoas como você, que desejam ter acesso a uma dieta de qualidade, personalizada e totalmente adaptada ao seu perfil — sem precisar gastar altos valores com consultas. ✨<br><br> Siga o passo a passo que vamos te enviar e você verá resultados surpreendentes em pouquíssimo tempo!<br><br>Agora é hora de colocar o plano em prática… vamos lá? 🚀🔥",
     "🙌 Sim, quero meu plano agora!"]}
  
    ];
