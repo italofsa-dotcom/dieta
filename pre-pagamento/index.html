@@ -171,7 +171,7 @@
           <h4 class="text-2xl font-extrabold mt-3 text-emerald-600">
              
 
-            De <span class="text-red-500 line-through">R$ 349,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 49,90</span>
+            De <span class="text-red-500 line-through">R$ 249,90</span> por apenas <span class="text-emerald-600 text-3xl">R$ 19,90</span>
           </h4>
    <p class="mt-3 text-slate-700 text-sm leading-relaxed">
   🔥 <strong>ATENÇÃO MÁXIMA!</strong><br>
@@ -190,7 +190,7 @@
       </p>
           <div class="mt-4 text-sm text-slate-500">Acesso imediato • Conteúdo digital • Acesso Vitalício</div>
           <div id="mp-checkout" class="mt-6"></div>
-          <a id="btnPagamento" href="#" class="mt-4 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">👉🏽 Garantir TUDO por R$ 49,90</a>
+          <a id="btnPagamento" href="#" class="mt-4 block text-center rounded-xl px-5 py-3 bg-[var(--brand)] text-white font-semibold hover:bg-emerald-600 transition">👉🏽 Garantir TUDO por R$ 19,90</a>
          
           <div id="buyersCount" class="mt-4 text-amber-600 font-semibold text-lg">
             🔥 <span id="buyersNumber">37</span> pessoas compraram na última hora!
@@ -710,7 +710,7 @@ $('btnPagamento')?.addEventListener('click', async ev => {
       method: "POST",
       headers: {"Content-Type":"application/json"},
       body: JSON.stringify({
-        valor: 49.90,
+        valor: 19.90,
         titulo: "Plano de Dieta Completo",
         external_reference: ref,
         customer_name: nome,
@@ -730,7 +730,7 @@ $('btnPagamento')?.addEventListener('click', async ev => {
     mp.checkout({
       preference: { id: data.id },
       autoOpen: true,
-      render: { container: "#mp-checkout", label: "Pagar R$ 49,90" }
+      render: { container: "#mp-checkout", label: "Pagar R$ 19,90" }
     });
 
     btn.textContent = "Abrindo pagamento...";
